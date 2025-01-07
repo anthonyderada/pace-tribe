@@ -6,12 +6,15 @@ export const Navbar = () => {
   const isAuthenticated = false; // TODO: Replace with actual auth state
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background dark:bg-background-dark border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold text-accent-primary cursor-pointer" onClick={() => navigate("/")}>
+              <span 
+                className="text-2xl font-bold text-accent-primary cursor-pointer" 
+                onClick={() => navigate("/")}
+              >
                 Pace Tribe
               </span>
             </div>
@@ -35,7 +38,10 @@ export const Navbar = () => {
                 <Button variant="ghost" onClick={() => navigate("/login")}>
                   Login
                 </Button>
-                <Button onClick={() => navigate("/register")} className="bg-accent-primary hover:bg-accent-dark text-white">
+                <Button 
+                  onClick={() => navigate("/register")} 
+                  className="bg-accent-primary hover:bg-accent-dark text-white"
+                >
                   Join Now
                 </Button>
               </>
