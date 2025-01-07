@@ -5,7 +5,7 @@ import { MapPin, Calendar, Users } from "lucide-react";
 const EventDetail = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="mb-8">
+      <Card className="mb-8 bg-card">
         <CardHeader>
           <CardTitle className="text-4xl font-bold">Saturday Morning Run</CardTitle>
           <CardDescription className="flex items-center gap-2">
@@ -33,7 +33,7 @@ const EventDetail = () => {
             </div>
             <div>
               <h3 className="text-xl font-semibold mb-4">Organized by</h3>
-              <Card>
+              <Card className="bg-card">
                 <CardHeader>
                   <CardTitle className="text-lg">Trail Blazers</CardTitle>
                   <CardDescription>Running Club</CardDescription>

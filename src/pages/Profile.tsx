@@ -5,7 +5,7 @@ import { MapPin, Calendar, Users } from "lucide-react";
 const Profile = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="mb-8">
+      <Card className="mb-8 bg-card">
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
             <div className="w-32 h-32 rounded-full bg-accent flex items-center justify-center">
@@ -26,7 +26,7 @@ const Profile = () => {
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <Card>
+        <Card className="bg-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-card-foreground">
               <Users className="h-5 w-5" />
@@ -38,7 +38,7 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-card-foreground">
               <Calendar className="h-5 w-5" />
