@@ -14,9 +14,9 @@ const Events = () => {
         <div className="flex gap-4 items-center">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-            <Input className="pl-10 bg-card border-input" placeholder="Search events..." />
+            <Input className="pl-10 bg-zinc-800 border-zinc-700 text-zinc-100 placeholder:text-zinc-500" placeholder="Search events..." />
           </div>
-          <Button className="bg-accent-primary hover:bg-accent-dark">
+          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
             Create Event
           </Button>
         </div>
@@ -24,20 +24,20 @@ const Events = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[1, 2, 3].map((event) => (
-          <Card key={event} className="bg-card border-input">
+          <Card key={event} className="border-0 bg-zinc-900/90">
             <CardHeader>
-              <CardTitle className="text-foreground">Saturday Morning Run</CardTitle>
-              <CardDescription className="text-muted-foreground flex items-center gap-2">
+              <CardTitle className="text-zinc-100">Saturday Morning Run</CardTitle>
+              <CardDescription className="text-zinc-400 flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 March 30, 2024 - 8:00 AM
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-zinc-400 mb-4">
                 Join us for a casual 5K run through Golden Gate Park.
               </p>
               <Button 
-                className="w-full bg-accent-primary hover:bg-accent-dark"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
                 onClick={() => navigate(`/events/${event}`)}
               >
                 View Event
