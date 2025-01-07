@@ -3,7 +3,7 @@ import { Navbar } from "./Navbar";
 
 export const Layout = () => {
   return (
-    <div className="min-h-screen bg-background dark:bg-background-dark">
+    <div className="min-h-screen bg-black">
       <Navbar />
       <main className="pt-16">
         <Outlet />
