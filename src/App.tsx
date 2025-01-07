@@ -6,6 +6,8 @@ import Register from "./pages/Register";
 import Clubs from "./pages/Clubs";
 import Events from "./pages/Events";
 import Profile from "./pages/Profile";
+import ClubDetail from "./pages/ClubDetail";
+import EventDetail from "./pages/EventDetail";
 
 function App() {
   return (
@@ -16,7 +18,9 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Index />} />
           <Route path="/clubs" element={<Clubs />} />
+          <Route path="/clubs/:id" element={<ClubDetail />} />
           <Route path="/events" element={<Events />} />
+          <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Routes>
