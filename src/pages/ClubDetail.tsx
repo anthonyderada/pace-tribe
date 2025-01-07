@@ -14,41 +14,44 @@ const ClubDetail = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-4 text-zinc-100">About</h3>
-              <p className="text-zinc-400">
-                A community of trail runners exploring the Bay Area's best paths. We welcome runners of all levels and organize weekly group runs, training sessions, and social events.
-              </p>
-              <div className="flex items-center gap-4 mt-6">
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-zinc-400" />
-                  <span className="text-zinc-400">156 members</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-zinc-400" />
-                  <span className="text-zinc-400">Founded 2022</span>
-                </div>
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-zinc-100">About</h3>
+            <p className="text-zinc-400">
+              A community of trail runners exploring the Bay Area's best paths. We welcome runners of all levels and organize weekly group runs, training sessions, and social events.
+            </p>
+            <div className="flex items-center gap-4 mt-6">
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-zinc-400" />
+                <span className="text-zinc-400">156 members</span>
               </div>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-4 text-zinc-100">Upcoming Events</h3>
-              <div className="space-y-4">
-                <Card className="border-0 bg-zinc-900/90">
-                  <CardHeader>
-                    <CardTitle className="text-lg text-zinc-100">Saturday Morning Run</CardTitle>
-                    <CardDescription className="text-zinc-400">March 30, 2024 - 8:00 AM</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-zinc-400">Join us for a casual 5K run through Golden Gate Park.</p>
-                  </CardContent>
-                </Card>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-zinc-400" />
+                <span className="text-zinc-400">Founded 2022</span>
               </div>
             </div>
           </div>
           <Button className="w-full mt-8 bg-emerald-600 hover:bg-emerald-700 text-white">
             Join Club
           </Button>
+        </CardContent>
+      </Card>
+
+      <Card className="border-0 bg-zinc-900/90">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold text-zinc-100">Upcoming Events</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <Card className="border-0 bg-zinc-900/90">
+              <CardHeader>
+                <CardTitle className="text-lg text-zinc-100">Saturday Morning Run</CardTitle>
+                <CardDescription className="text-zinc-400">March 30, 2024 - 8:00 AM</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-zinc-400">Join us for a casual 5K run through Golden Gate Park.</p>
+              </CardContent>
+            </Card>
+          </div>
         </CardContent>
       </Card>
     </div>
