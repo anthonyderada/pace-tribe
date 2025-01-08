@@ -1,11 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, MapPin, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ClubDetail = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="mb-8 border-0 bg-zinc-900/90">
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      <Card className="border-0 bg-zinc-900/90">
         <CardHeader>
           <CardTitle className="text-4xl font-bold text-zinc-100">Trail Blazers</CardTitle>
           <CardDescription className="flex items-center gap-2 text-zinc-400">
@@ -42,7 +45,10 @@ const ClubDetail = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <Card className="border-0 bg-zinc-900/90">
+            <Card 
+              className="border-0 bg-zinc-900/90 cursor-pointer hover:bg-zinc-800/90 transition-colors"
+              onClick={() => navigate('/events/1')}
+            >
               <CardHeader>
                 <CardTitle className="text-lg text-zinc-100">Saturday Morning Run</CardTitle>
                 <CardDescription className="text-zinc-400">March 30, 2024 - 8:00 AM</CardDescription>
