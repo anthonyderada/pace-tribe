@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Clubs = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -16,9 +18,11 @@ const Clubs = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
             <Input className="pl-10 bg-zinc-800 border-zinc-700 text-zinc-100 placeholder:text-zinc-500" placeholder="Search clubs..." />
           </div>
-          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
-            Create Club
-          </Button>
+          {user && (
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              Create Club
+            </Button>
+          )}
         </div>
       </div>
 
