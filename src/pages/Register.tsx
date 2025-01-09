@@ -34,10 +34,10 @@ const Register = () => {
 
   const getErrorMessage = (error: AuthError) => {
     if (error instanceof AuthApiError) {
-      switch (error.message) {
-        case "User already registered":
+      switch (error.code) {
+        case "user_already_exists":
           return "This email is already registered. Please try logging in instead.";
-        case "Invalid login credentials":
+        case "invalid_credentials":
           return "Invalid email or password. Please check your credentials.";
         default:
           return error.message;
