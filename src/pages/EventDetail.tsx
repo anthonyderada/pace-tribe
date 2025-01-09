@@ -35,9 +35,16 @@ const EventDetail = () => {
               </div>
             </div>
           </div>
-          {user && (
+          {user ? (
             <Button className="w-full mt-8 bg-emerald-600 hover:bg-emerald-700 text-white">
               Register for Event
+            </Button>
+          ) : (
+            <Button 
+              className="w-full mt-8 bg-emerald-600 hover:bg-emerald-700 text-white"
+              onClick={() => navigate('/login')}
+            >
+              Login to Register
             </Button>
           )}
         </CardContent>
