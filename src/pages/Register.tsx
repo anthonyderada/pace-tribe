@@ -5,27 +5,29 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AuthError, AuthApiError } from "@supabase/supabase-js";
+import { toast } from "@/hooks/use-toast";
 
 const Register = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") {
-        navigate("/");
-      }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_IN" && session) {
         setError(""); // Clear any errors on successful signup
+        navigate("/");
       }
-      // Handle signup errors
       if (event === "USER_UPDATED") {
-        supabase.auth.getSession().then(({ error }) => {
-          if (error) {
-            const errorMessage = getErrorMessage(error);
-            setError(errorMessage);
-          }
-        });
+        const { error } = await supabase.auth.getSession();
+        if (error) {
+          const errorMessage = getErrorMessage(error);
+          setError(errorMessage);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: errorMessage,
+          });
+        }
       }
     });
 
@@ -39,6 +41,10 @@ const Register = () => {
           return "This email is already registered. Please try logging in instead.";
         case "invalid_credentials":
           return "Invalid email or password. Please check your credentials.";
+        case "email_not_confirmed":
+          return "Please verify your email address before signing in.";
+        case "invalid_grant":
+          return "Invalid login credentials.";
         default:
           return error.message;
       }
