@@ -17,34 +17,28 @@ const Register = () => {
         setError(""); // Clear any errors on successful signup
         navigate("/");
       }
-      if (event === "USER_UPDATED") {
-        const { error } = await supabase.auth.getSession();
-        if (error) {
-          const errorMessage = getErrorMessage(error);
-          setError(errorMessage);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: errorMessage,
-          });
-        }
-      }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  const handleAuthError = (error: AuthError) => {
+    const errorMessage = getErrorMessage(error);
+    setError(errorMessage);
+    toast({
+      variant: "destructive",
+      title: "Registration Error",
+      description: errorMessage,
+    });
+  };
+
   const getErrorMessage = (error: AuthError) => {
     if (error instanceof AuthApiError) {
-      switch (error.code) {
-        case "user_already_exists":
+      switch (error.status) {
+        case 422:
           return "This email is already registered. Please try logging in instead.";
-        case "invalid_credentials":
-          return "Invalid email or password. Please check your credentials.";
-        case "email_not_confirmed":
-          return "Please verify your email address before signing in.";
-        case "invalid_grant":
-          return "Invalid login credentials.";
+        case 400:
+          return "Invalid email or password format. Please check your credentials.";
         default:
           return error.message;
       }
@@ -89,6 +83,7 @@ const Register = () => {
             providers={[]}
             redirectTo={window.location.origin}
             view="sign_up"
+            onError={handleAuthError}
           />
         </div>
       </div>
