@@ -2,6 +2,13 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { Menu } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -11,6 +18,59 @@ export const Navbar = () => {
     await supabase.auth.signOut();
     navigate("/login");
   };
+
+  const NavItems = () => (
+    <>
+      <Button 
+        variant="ghost" 
+        onClick={() => navigate("/clubs")}
+        className="text-gray-300 hover:text-white hover:bg-gray-800"
+      >
+        Clubs
+      </Button>
+      <Button 
+        variant="ghost" 
+        onClick={() => navigate("/events")}
+        className="text-gray-300 hover:text-white hover:bg-gray-800"
+      >
+        Events
+      </Button>
+      {user ? (
+        <>
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/profile")}
+            className="text-gray-300 hover:text-white hover:bg-gray-800"
+          >
+            Profile
+          </Button>
+          <Button 
+            onClick={handleSignOut}
+            variant="ghost" 
+            className="text-gray-300 hover:text-white hover:bg-gray-800"
+          >
+            Sign Out
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/login")}
+            className="text-gray-300 hover:text-white hover:bg-gray-800"
+          >
+            Login
+          </Button>
+          <Button 
+            onClick={() => navigate("/register")} 
+            className="bg-emerald-500 hover:bg-emerald-600 text-white"
+          >
+            Join Now
+          </Button>
+        </>
+      )}
+    </>
+  );
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
@@ -27,43 +87,47 @@ export const Navbar = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" onClick={() => navigate("/clubs")}
-              className="text-gray-300 hover:text-white hover:bg-gray-800">
-              Clubs
-            </Button>
-            <Button variant="ghost" onClick={() => navigate("/events")}
-              className="text-gray-300 hover:text-white hover:bg-gray-800">
-              Events
-            </Button>
-            {user ? (
-              <>
-                <Button variant="ghost" onClick={() => navigate("/profile")}
-                  className="text-gray-300 hover:text-white hover:bg-gray-800">
-                  Profile
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-4">
+            <NavItems />
+          </div>
+
+          {/* Mobile Navigation */}
+          <div className="flex md:hidden items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-gray-300">
+                  <Menu className="h-6 w-6" />
                 </Button>
-                <Button 
-                  onClick={handleSignOut}
-                  variant="ghost" 
-                  className="text-gray-300 hover:text-white hover:bg-gray-800"
-                >
-                  Sign Out
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="ghost" onClick={() => navigate("/login")}
-                  className="text-gray-300 hover:text-white hover:bg-gray-800">
-                  Login
-                </Button>
-                <Button 
-                  onClick={() => navigate("/register")} 
-                  className="bg-emerald-500 hover:bg-emerald-600 text-white"
-                >
-                  Join Now
-                </Button>
-              </>
-            )}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-black border border-gray-800">
+                <DropdownMenuItem onClick={() => navigate("/clubs")} className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800">
+                  Clubs
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/events")} className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800">
+                  Events
+                </DropdownMenuItem>
+                {user ? (
+                  <>
+                    <DropdownMenuItem onClick={() => navigate("/profile")} className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800">
+                      Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSignOut} className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800">
+                      Sign Out
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem onClick={() => navigate("/login")} className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800">
+                      Login
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/register")} className="text-emerald-500 hover:text-emerald-400 focus:text-emerald-400 focus:bg-gray-800">
+                      Join Now
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
