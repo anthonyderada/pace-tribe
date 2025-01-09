@@ -260,7 +260,11 @@ const ClubDetail = () => {
           </div>
           {user ? (
             <Button 
-              className="w-full mt-8 bg-emerald-600 hover:bg-emerald-700 text-white"
+              className={`w-full mt-8 ${
+                isMember 
+                  ? "bg-red-600 hover:bg-red-700" 
+                  : "bg-emerald-600 hover:bg-emerald-700"
+              } text-white`}
               onClick={isMember ? handleLeaveClub : handleJoinClub}
               disabled={isJoining}
             >
