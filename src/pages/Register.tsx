@@ -17,7 +17,7 @@ const Register = () => {
         setError(""); // Clear any errors on successful signup
         navigate("/");
       }
-      if (event === "SIGNED_UP" as const) {
+      if (event === "SIGNED_UP" && session) {
         const { error: signUpError } = await supabase.auth.getSession();
         if (signUpError) {
           const errorMessage = getErrorMessage(signUpError);
@@ -57,7 +57,7 @@ const Register = () => {
         <div className="bg-zinc-900/90 p-8 rounded-lg border border-zinc-800">
           {error && (
             <Alert variant="destructive" className="mb-4">
-              <AlertDescription>{errorMessage}</AlertDescription>
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
           <Auth
