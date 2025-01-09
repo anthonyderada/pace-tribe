@@ -17,7 +17,7 @@ const Register = () => {
         setError(""); // Clear any errors on successful signup
         navigate("/");
       }
-      if (event === "SIGNUP") {
+      if (event === "USER_SIGNED_UP") {
         const { error: signUpError } = await supabase.auth.getSession();
         if (signUpError) {
           const errorMessage = getErrorMessage(signUpError);
@@ -36,10 +36,10 @@ const Register = () => {
 
   const getErrorMessage = (error: AuthError) => {
     if (error instanceof AuthApiError) {
-      switch (error.status) {
-        case 422:
+      switch (error.code) {
+        case 'user_already_exists':
           return "This email is already registered. Please try logging in instead.";
-        case 400:
+        case 'invalid_credentials':
           return "Invalid email or password format. Please check your credentials.";
         default:
           return error.message;
