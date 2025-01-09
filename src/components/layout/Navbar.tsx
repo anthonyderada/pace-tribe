@@ -16,7 +16,7 @@ export const Navbar = () => {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    navigate("/login");
+    navigate("/"); // Changed from "/login" to "/"
   };
 
   const NavItems = () => (
