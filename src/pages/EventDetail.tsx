@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 type Event = {
   id: string;
@@ -50,9 +50,18 @@ const EventDetail = () => {
             )
           `)
           .eq("id", id)
-          .single();
+          .maybeSingle();
 
         if (eventError) throw eventError;
+        if (!eventData) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Event not found",
+          });
+          navigate("/events");
+          return;
+        }
         setEvent(eventData);
 
         // Check if user is a participant
@@ -62,7 +71,7 @@ const EventDetail = () => {
             .select("id")
             .eq("event_id", id)
             .eq("user_id", user.id)
-            .single();
+            .maybeSingle();
 
           setIsParticipant(!!data);
         }
@@ -107,7 +116,7 @@ const EventDetail = () => {
               )
             `)
             .eq("id", id)
-            .single();
+            .maybeSingle();
 
           if (data) {
             setEvent(data);
