@@ -41,6 +41,7 @@ const Clubs = () => {
               placeholder="Search clubs..." 
             />
           </div>
+          {/* Temporarily hidden for testing
           {user && (
             <Button 
               className="bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -49,6 +50,7 @@ const Clubs = () => {
               Create Club
             </Button>
           )}
+          */}
         </div>
       </div>
 

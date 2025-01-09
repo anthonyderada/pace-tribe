@@ -46,6 +46,7 @@ const Events = () => {
               placeholder="Search events..." 
             />
           </div>
+          {/* Temporarily hidden for testing
           {user && (
             <Button 
               className="bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -54,6 +55,7 @@ const Events = () => {
               Create Event
             </Button>
           )}
+          */}
         </div>
       </div>
 
