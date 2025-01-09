@@ -15,7 +15,7 @@ const Register = () => {
       if (event === "SIGNED_IN") {
         navigate("/");
       }
-      if (event === "SIGNED_UP") {
+      if (event === "SIGNED_IN" && session) {
         setError(""); // Clear any errors on successful signup
       }
       // Handle signup errors
