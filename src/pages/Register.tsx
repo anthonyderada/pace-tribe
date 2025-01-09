@@ -17,7 +17,7 @@ const Register = () => {
         setError(""); // Clear any errors on successful signup
         navigate("/");
       }
-      if (event === "USER_SIGNED_UP") {
+      if (event === "SIGNED_UP") {
         const { error: signUpError } = await supabase.auth.getSession();
         if (signUpError) {
           const errorMessage = getErrorMessage(signUpError);
