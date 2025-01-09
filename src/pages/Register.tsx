@@ -17,20 +17,22 @@ const Register = () => {
         setError(""); // Clear any errors on successful signup
         navigate("/");
       }
+      if (event === "SIGNUP") {
+        const { error: signUpError } = await supabase.auth.getSession();
+        if (signUpError) {
+          const errorMessage = getErrorMessage(signUpError);
+          setError(errorMessage);
+          toast({
+            variant: "destructive",
+            title: "Registration Error",
+            description: errorMessage,
+          });
+        }
+      }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
-
-  const handleAuthError = (error: AuthError) => {
-    const errorMessage = getErrorMessage(error);
-    setError(errorMessage);
-    toast({
-      variant: "destructive",
-      title: "Registration Error",
-      description: errorMessage,
-    });
-  };
 
   const getErrorMessage = (error: AuthError) => {
     if (error instanceof AuthApiError) {
@@ -83,7 +85,6 @@ const Register = () => {
             providers={[]}
             redirectTo={window.location.origin}
             view="sign_up"
-            onError={handleAuthError}
           />
         </div>
       </div>
