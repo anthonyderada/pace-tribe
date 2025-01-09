@@ -20,12 +20,8 @@ const Events = () => {
         .from('events')
         .select(`
           *,
-          clubs (
-            name
-          ),
-          event_participants (
-            user_id
-          )
+          club:clubs(name),
+          participants:event_participants(user_id)
         `)
         .order('date', { ascending: true });
       
@@ -63,7 +59,6 @@ const Events = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {isLoading ? (
-          // Loading skeletons
           [...Array(6)].map((_, index) => (
             <Card key={`skeleton-${index}`} className="border-0 bg-zinc-900/50">
               <CardHeader>
@@ -78,7 +73,11 @@ const Events = () => {
           ))
         ) : events && events.length > 0 ? (
           events.map((event) => (
-            <Card key={event.id} className="border-0 bg-zinc-900/50 hover:bg-zinc-900/80 transition-colors">
+            <Card 
+              key={event.id} 
+              className="border-0 bg-zinc-900/50 hover:bg-zinc-900/80 transition-colors cursor-pointer"
+              onClick={() => navigate(`/events/${event.id}`)}
+            >
               <CardHeader>
                 <CardTitle className="text-zinc-100">{event.title}</CardTitle>
                 <CardDescription className="text-zinc-400 flex items-center gap-2">
@@ -86,7 +85,7 @@ const Events = () => {
                   {format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
                 </CardDescription>
                 <CardDescription className="text-zinc-400">
-                  Organized by {event.clubs?.name}
+                  Organized by {event.club?.name}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -97,11 +96,14 @@ const Events = () => {
                   {event.location || 'Location TBD'}
                 </div>
                 <div className="text-zinc-400 mb-4">
-                  {event.event_participants?.length || 0} participants
+                  {event.participants?.length || 0} participants
                 </div>
                 <Button 
                   className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-                  onClick={() => navigate(`/events/${event.id}`)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/events/${event.id}`);
+                  }}
                 >
                   View Event
                 </Button>
