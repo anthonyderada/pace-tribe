@@ -2,9 +2,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Users, MapPin, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ClubDetail = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
@@ -33,9 +35,18 @@ const ClubDetail = () => {
               </div>
             </div>
           </div>
-          <Button className="w-full mt-8 bg-emerald-600 hover:bg-emerald-700 text-white">
-            Join Club
-          </Button>
+          {user ? (
+            <Button className="w-full mt-8 bg-emerald-600 hover:bg-emerald-700 text-white">
+              Join Club
+            </Button>
+          ) : (
+            <Button 
+              className="w-full mt-8 bg-emerald-600 hover:bg-emerald-700 text-white"
+              onClick={() => navigate('/login')}
+            >
+              Login to Join
+            </Button>
+          )}
         </CardContent>
       </Card>
 
