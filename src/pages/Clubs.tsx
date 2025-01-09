@@ -32,12 +32,12 @@ const Clubs = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-4">Running Clubs</h1>
+        <h1 className="text-4xl font-bold text-zinc-100 mb-4">Running Clubs</h1>
         <div className="flex gap-4 items-center">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400" />
             <Input 
-              className="pl-10" 
+              className="pl-10 bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500" 
               placeholder="Search clubs..." 
             />
           </div>
@@ -56,28 +56,28 @@ const Clubs = () => {
         {isLoading ? (
           // Loading skeletons
           [...Array(6)].map((_, index) => (
-            <Card key={`skeleton-${index}`} className="border-0">
+            <Card key={`skeleton-${index}`} className="border-0 bg-zinc-900/50">
               <CardHeader>
-                <Skeleton className="h-6 w-2/3 mb-2" />
-                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-6 w-2/3 mb-2 bg-zinc-800" />
+                <Skeleton className="h-4 w-1/3 bg-zinc-800" />
               </CardHeader>
               <CardContent>
-                <Skeleton className="h-20 mb-4" />
-                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-20 mb-4 bg-zinc-800" />
+                <Skeleton className="h-10 w-full bg-zinc-800" />
               </CardContent>
             </Card>
           ))
         ) : clubs && clubs.length > 0 ? (
           clubs.map((club) => (
-            <Card key={club.id} className="border-0">
+            <Card key={club.id} className="border-0 bg-zinc-900/50 hover:bg-zinc-900/80 transition-colors">
               <CardHeader>
-                <CardTitle className="text-foreground">{club.name}</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-zinc-100">{club.name}</CardTitle>
+                <CardDescription className="text-zinc-400">
                   {club.location || 'Location not specified'}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground mb-4">
+                <p className="text-zinc-400 mb-4">
                   {club.description || 'No description available'}
                 </p>
                 <Button 
@@ -90,7 +90,7 @@ const Clubs = () => {
             </Card>
           ))
         ) : (
-          <div className="col-span-full text-center text-muted-foreground">
+          <div className="col-span-full text-center text-zinc-400">
             No clubs found
           </div>
         )}
