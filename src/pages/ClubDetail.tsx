@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { format } from "date-fns";
 
 type Club = {
   id: string;
@@ -15,12 +16,23 @@ type Club = {
   created_at: string;
 };
 
+type Event = {
+  id: string;
+  title: string;
+  description: string | null;
+  date: string;
+  location: string | null;
+  club_id: string;
+  event_participants: { id: string }[];
+};
+
 const ClubDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useAuth();
   const { toast } = useToast();
   const [club, setClub] = useState<Club | null>(null);
+  const [events, setEvents] = useState<Event[]>([]);
   const [memberCount, setMemberCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isMember, setIsMember] = useState(false);
@@ -38,6 +50,20 @@ const ClubDetail = () => {
 
         if (clubError) throw clubError;
         setClub(clubData);
+
+        // Get club events
+        const { data: eventsData, error: eventsError } = await supabase
+          .from("events")
+          .select(`
+            *,
+            event_participants(id)
+          `)
+          .eq("club_id", id)
+          .gte("date", new Date().toISOString())
+          .order("date", { ascending: true });
+
+        if (eventsError) throw eventsError;
+        setEvents(eventsData);
 
         // Get member count
         const { count, error: countError } = await supabase
@@ -74,7 +100,7 @@ const ClubDetail = () => {
 
     getClubDetails();
 
-    // Set up real-time subscription for member count
+    // Set up real-time subscription for member count and events
     const channel = supabase
       .channel('schema-db-changes')
       .on(
@@ -105,6 +131,29 @@ const ClubDetail = () => {
             
             setIsMember(!!data);
           }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'events',
+          filter: `club_id=eq.${id}`
+        },
+        async () => {
+          // Update events list
+          const { data } = await supabase
+            .from("events")
+            .select(`
+              *,
+              event_participants(id)
+            `)
+            .eq("club_id", id)
+            .gte("date", new Date().toISOString())
+            .order("date", { ascending: true });
+          
+          if (data) setEvents(data);
         }
       )
       .subscribe();
@@ -234,18 +283,39 @@ const ClubDetail = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <Card 
-              className="border-0 bg-zinc-900/90 cursor-pointer hover:bg-zinc-800/90 transition-colors"
-              onClick={() => navigate('/events/1')}
-            >
-              <CardHeader>
-                <CardTitle className="text-lg text-zinc-100">Saturday Morning Run</CardTitle>
-                <CardDescription className="text-zinc-400">March 30, 2024 - 8:00 AM</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-zinc-400">Join us for a casual 5K run through Golden Gate Park.</p>
-              </CardContent>
-            </Card>
+            {events.length > 0 ? (
+              events.map((event) => (
+                <Card 
+                  key={event.id}
+                  className="border-0 bg-zinc-900/90 cursor-pointer hover:bg-zinc-800/90 transition-colors"
+                  onClick={() => navigate(`/events/${event.id}`)}
+                >
+                  <CardHeader>
+                    <CardTitle className="text-lg text-zinc-100">{event.title}</CardTitle>
+                    <CardDescription className="text-zinc-400">
+                      {format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-zinc-400 mb-2">
+                      {event.description || "No description available."}
+                    </p>
+                    {event.location && (
+                      <div className="flex items-center gap-2 text-zinc-400 text-sm">
+                        <MapPin className="h-4 w-4" />
+                        {event.location}
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2 text-zinc-400 text-sm mt-2">
+                      <Users className="h-4 w-4" />
+                      {event.event_participants.length} participants
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <p className="text-zinc-400">No upcoming events scheduled.</p>
+            )}
           </div>
         </CardContent>
       </Card>
