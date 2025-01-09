@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AuthError } from "@supabase/supabase-js";
+import { AuthError, AuthApiError } from "@supabase/supabase-js";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -33,12 +33,17 @@ const Register = () => {
   }, [navigate]);
 
   const getErrorMessage = (error: AuthError) => {
-    switch (error.message) {
-      case "User already registered":
-        return "This email is already registered. Please try logging in instead.";
-      default:
-        return error.message;
+    if (error instanceof AuthApiError) {
+      switch (error.message) {
+        case "User already registered":
+          return "This email is already registered. Please try logging in instead.";
+        case "Invalid login credentials":
+          return "Invalid email or password. Please check your credentials.";
+        default:
+          return error.message;
+      }
     }
+    return error.message;
   };
 
   return (
