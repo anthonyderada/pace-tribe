@@ -183,7 +183,7 @@ const EventDetail = () => {
   if (isLoading || !event) {
     return (
       <div className="container mx-auto px-4 py-8 space-y-8">
-        <Card className="border-0 bg-zinc-900/90">
+        <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
           <CardHeader>
             <div className="h-8 w-3/4 bg-zinc-800 rounded animate-pulse" />
             <div className="h-4 w-1/2 bg-zinc-800 rounded animate-pulse mt-2" />
@@ -201,7 +201,7 @@ const EventDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
-      <Card className="border-0 bg-zinc-900/90">
+      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
         <CardHeader>
           <CardTitle className="text-4xl font-bold text-zinc-100">
             {event.title}
@@ -256,7 +256,7 @@ const EventDetail = () => {
         </CardContent>
       </Card>
 
-      <Card className="border-0 bg-zinc-900/90">
+      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-zinc-100">
             Organized by
@@ -264,10 +264,10 @@ const EventDetail = () => {
         </CardHeader>
         <CardContent>
           <Card
-            className="border-0 bg-zinc-900/90 cursor-pointer hover:bg-zinc-800/90 transition-colors"
+            className="border border-zinc-800 bg-zinc-800/50 rounded-xl cursor-pointer hover:bg-zinc-800/80 transition-colors"
             onClick={() => navigate(`/clubs/${event.club_id}`)}
           >
-            <CardHeader>
+            <CardHeader className="pb-2">
               <CardTitle className="text-lg text-zinc-100">
                 {event.clubs.name}
               </CardTitle>
