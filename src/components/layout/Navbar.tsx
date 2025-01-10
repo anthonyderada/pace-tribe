@@ -78,12 +78,12 @@ export const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span 
-                className="text-2xl font-bold text-emerald-500 cursor-pointer" 
+              <img 
+                src="/lovable-uploads/1faaf273-a78d-49de-8eb3-539d415832a1.png"
+                alt="Pace Tribe Logo"
+                className="h-8 cursor-pointer" 
                 onClick={() => navigate("/")}
-              >
-                Pace Tribe
-              </span>
+              />
             </div>
           </div>
 
