@@ -64,7 +64,7 @@ const Clubs = () => {
         {isLoading ? (
           // Loading skeletons
           [...Array(6)].map((_, index) => (
-            <Card key={`skeleton-${index}`} className="border-0 bg-zinc-900/50">
+            <Card key={`skeleton-${index}`} className="bg-zinc-800/50 rounded-2xl border-0">
               <CardHeader>
                 <Skeleton className="h-6 w-2/3 mb-2 bg-zinc-800" />
                 <Skeleton className="h-4 w-1/3 bg-zinc-800" />
@@ -78,25 +78,15 @@ const Clubs = () => {
           clubs.map((club) => (
             <Card 
               key={club.id} 
-              className="border-0 bg-zinc-900/50 hover:bg-zinc-900/80 transition-colors cursor-pointer"
+              className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
               onClick={() => navigate(`/clubs/${club.id}`)}
             >
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-zinc-100">{club.name}</CardTitle>
-                  <span className="text-sm text-zinc-400">
-                    {club.club_members?.length || 0} members
-                  </span>
-                </div>
-                <CardDescription className="text-zinc-400">
-                  {club.location || 'Location not specified'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-zinc-400 line-clamp-3">
-                  {club.description || 'No description available'}
-                </p>
-              </CardContent>
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-xl font-semibold text-white">{club.name}</h3>
+                <span className="text-gray-400 text-sm">{club.club_members?.length || 0} members</span>
+              </div>
+              <p className="text-gray-400 text-sm mb-4">{club.location || 'Location not specified'}</p>
+              <p className="text-gray-400 line-clamp-3">{club.description || 'No description available'}</p>
             </Card>
           ))
         ) : (
