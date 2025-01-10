@@ -10,7 +10,7 @@ const Register = () => {
 
   useEffect(() => {
     // Handle successful registration redirects
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       if (session) {
         navigate("/");
       }
@@ -30,16 +30,29 @@ const Register = () => {
             email,
             password,
           });
-          if (error) throw error;
-        } catch (error: any) {
-          if (error.status === 422) {
-            toast({
-              variant: "destructive",
-              title: "Registration Failed",
-              description: "This email is already registered. Please try logging in instead.",
-            });
+          
+          if (error) {
+            if (error.status === 422) {
+              toast({
+                variant: "destructive",
+                title: "Registration Failed",
+                description: "This email is already registered. Please try logging in instead.",
+              });
+            } else {
+              toast({
+                variant: "destructive",
+                title: "Registration Failed",
+                description: error.message,
+              });
+            }
+            return;
           }
-          // Let the form continue with its default handling for other cases
+        } catch (error: any) {
+          toast({
+            variant: "destructive",
+            title: "Registration Failed",
+            description: "An unexpected error occurred. Please try again.",
+          });
           return;
         }
       });
