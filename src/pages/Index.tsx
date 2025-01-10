@@ -13,7 +13,12 @@ const Index = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('clubs')
-        .select('*, club_members(count)')
+        .select(`
+          *,
+          club_members!club_members_club_id_fkey (
+            count
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -84,7 +89,9 @@ const Index = () => {
               >
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-xl font-semibold text-white">{club.name}</h3>
-                  <span className="text-gray-400 text-sm">{club.club_members?.length || 0} members</span>
+                  <span className="text-gray-400 text-sm">
+                    {club.club_members[0]?.count || 0} members
+                  </span>
                 </div>
                 <p className="text-gray-400 text-sm mb-4">{club.location || 'Location not specified'}</p>
                 <p className="text-gray-400">{club.description || 'No description available'}</p>
