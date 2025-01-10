@@ -48,7 +48,13 @@ const EventDetail = () => {
           .select(`
             *,
             clubs (
-              name
+              name,
+              location,
+              description,
+              club_members (
+                id,
+                user_id
+              )
             ),
             event_participants (
               id,
@@ -114,7 +120,13 @@ const EventDetail = () => {
             .select(`
               *,
               clubs (
-                name
+                name,
+                location,
+                description,
+                club_members (
+                  id,
+                  user_id
+                )
               ),
               event_participants (
                 id,
