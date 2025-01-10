@@ -4,35 +4,26 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
-import { AuthError } from "@supabase/supabase-js";
 
 const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session) {
-        navigate("/");
-      }
-    });
-
-    // Add error handler for sign up
-    const handleSignUpError = (error: AuthError) => {
-      if (error.message.includes("User already registered")) {
+      if (event === 'SIGNED_UP' && !session) {
+        // This means the signup failed
         toast({
           variant: "destructive",
           title: "Registration Failed",
           description: "This email is already registered. Please try logging in instead.",
         });
+      } else if (session) {
+        navigate("/");
       }
-    };
-
-    // Listen for auth errors
-    const authListener = supabase.auth.onError(handleSignUpError);
+    });
 
     return () => {
       subscription.unsubscribe();
-      authListener.data.subscription.unsubscribe();
     };
   }, [navigate]);
 
