@@ -16,7 +16,7 @@ export const Navbar = () => {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    navigate("/"); // Changed from "/login" to "/"
+    navigate("/");
   };
 
   const NavItems = () => (
@@ -79,9 +79,9 @@ export const Navbar = () => {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <img 
-                src="/lovable-uploads/1faaf273-a78d-49de-8eb3-539d415832a1.png"
-                alt="Pace Tribe Logo"
-                className="h-8 cursor-pointer" 
+                src="/lovable-uploads/3ebe28ba-92cf-406c-9111-8d73785be588.png"
+                alt="Logo"
+                className="h-8 w-auto cursor-pointer" 
                 onClick={() => navigate("/")}
               />
             </div>
