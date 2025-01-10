@@ -17,6 +17,12 @@ type Event = {
   club_id: string;
   clubs: {
     name: string;
+    location: string | null;
+    description: string | null;
+    club_members: {
+      id: string;
+      user_id: string;
+    }[];
   };
   event_participants: {
     id: string;
@@ -268,13 +274,23 @@ const EventDetail = () => {
             onClick={() => navigate(`/clubs/${event.club_id}`)}
           >
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg text-zinc-100">
-                {event.clubs.name}
-              </CardTitle>
-              <CardDescription className="text-zinc-400">
-                Running Club
+              <div className="flex justify-between items-start mb-2">
+                <CardTitle className="text-xl font-semibold text-white">
+                  {event.clubs.name}
+                </CardTitle>
+                <span className="text-gray-400 text-sm">
+                  {event.clubs.club_members?.length || 0} members
+                </span>
+              </div>
+              <CardDescription className="text-gray-400 text-sm">
+                {event.clubs.location || 'Location not specified'}
               </CardDescription>
             </CardHeader>
+            <CardContent>
+              <p className="text-gray-400">
+                {event.clubs.description || 'No description available'}
+              </p>
+            </CardContent>
           </Card>
         </CardContent>
       </Card>
