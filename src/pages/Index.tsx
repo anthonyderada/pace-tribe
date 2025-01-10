@@ -74,7 +74,6 @@ const Index = () => {
                   <div className="h-6 bg-zinc-700 rounded mb-2"></div>
                   <div className="h-4 bg-zinc-700 rounded w-1/3 mb-4"></div>
                   <div className="h-20 bg-zinc-700 rounded mb-4"></div>
-                  <div className="h-10 bg-zinc-700 rounded"></div>
                 </div>
               ))
             ) : clubs?.map((club) => (
@@ -88,12 +87,7 @@ const Index = () => {
                   <span className="text-gray-400 text-sm">{club.club_members?.length || 0} members</span>
                 </div>
                 <p className="text-gray-400 text-sm mb-4">{club.location || 'Location not specified'}</p>
-                <p className="text-gray-400 mb-6">{club.description || 'No description available'}</p>
-                <Button 
-                  className="w-full bg-emerald-500 hover:bg-emerald-600"
-                >
-                  View Club
-                </Button>
+                <p className="text-gray-400">{club.description || 'No description available'}</p>
               </div>
             ))}
           </div>
