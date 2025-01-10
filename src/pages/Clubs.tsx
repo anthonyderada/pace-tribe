@@ -17,7 +17,13 @@ const Clubs = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('clubs')
-        .select('*')
+        .select(`
+          *,
+          club_members (
+            id,
+            user_id
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -65,29 +71,31 @@ const Clubs = () => {
               </CardHeader>
               <CardContent>
                 <Skeleton className="h-20 mb-4 bg-zinc-800" />
-                <Skeleton className="h-10 w-full bg-zinc-800" />
               </CardContent>
             </Card>
           ))
         ) : clubs && clubs.length > 0 ? (
           clubs.map((club) => (
-            <Card key={club.id} className="border-0 bg-zinc-900/50 hover:bg-zinc-900/80 transition-colors">
+            <Card 
+              key={club.id} 
+              className="border-0 bg-zinc-900/50 hover:bg-zinc-900/80 transition-colors cursor-pointer"
+              onClick={() => navigate(`/clubs/${club.id}`)}
+            >
               <CardHeader>
-                <CardTitle className="text-zinc-100">{club.name}</CardTitle>
+                <div className="flex justify-between items-start">
+                  <CardTitle className="text-zinc-100">{club.name}</CardTitle>
+                  <span className="text-sm text-zinc-400">
+                    {club.club_members?.length || 0} members
+                  </span>
+                </div>
                 <CardDescription className="text-zinc-400">
                   {club.location || 'Location not specified'}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-zinc-400 line-clamp-3">
                   {club.description || 'No description available'}
                 </p>
-                <Button 
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-                  onClick={() => navigate(`/clubs/${club.id}`)}
-                >
-                  View Club
-                </Button>
               </CardContent>
             </Card>
           ))
