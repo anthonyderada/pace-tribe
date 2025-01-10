@@ -2,9 +2,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const navigate = useNavigate();
+
+  const { data: clubs, isLoading } = useQuery({
+    queryKey: ['featuredClubs'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('clubs')
+        .select('*, club_members(count)')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data;
+    },
+  });
 
   return (
     <div className="relative">
@@ -52,25 +67,38 @@ const Index = () => {
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Featured Club Cards */}
-            <div className="bg-zinc-900/50 rounded-lg overflow-hidden">
-              <div className="aspect-video bg-zinc-800"></div>
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-semibold text-white">Morning Pacers</h3>
-                  <span className="text-gray-400">156 members</span>
+            {isLoading ? (
+              // Loading state
+              Array(3).fill(0).map((_, i) => (
+                <div key={i} className="bg-zinc-900/50 rounded-lg overflow-hidden animate-pulse">
+                  <div className="aspect-video bg-zinc-800"></div>
+                  <div className="p-6">
+                    <div className="h-6 bg-zinc-800 rounded mb-2"></div>
+                    <div className="h-4 bg-zinc-800 rounded w-1/3 mb-4"></div>
+                    <div className="h-20 bg-zinc-800 rounded mb-4"></div>
+                    <div className="h-10 bg-zinc-800 rounded"></div>
+                  </div>
                 </div>
-                <p className="text-gray-400 text-sm mb-4">Central Park, NYC</p>
-                <p className="text-gray-400 mb-4">Early morning running group focused on building endurance and community.</p>
-                <div className="flex gap-2 mb-4">
-                  <span className="text-xs bg-zinc-800 text-gray-300 px-3 py-1 rounded-full">Morning Runs</span>
-                  <span className="text-xs bg-zinc-800 text-gray-300 px-3 py-1 rounded-full">All Levels</span>
-                  <span className="text-xs bg-zinc-800 text-gray-300 px-3 py-1 rounded-full">Social</span>
+              ))
+            ) : clubs?.map((club) => (
+              <div key={club.id} className="bg-zinc-900/50 rounded-lg overflow-hidden">
+                <div className="aspect-video bg-zinc-800"></div>
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-xl font-semibold text-white">{club.name}</h3>
+                    <span className="text-gray-400">{club.club_members?.length || 0} members</span>
+                  </div>
+                  <p className="text-gray-400 text-sm mb-4">{club.location || 'Location not specified'}</p>
+                  <p className="text-gray-400 mb-4">{club.description || 'No description available'}</p>
+                  <Button 
+                    className="w-full bg-emerald-500 hover:bg-emerald-600"
+                    onClick={() => navigate(`/clubs/${club.id}`)}
+                  >
+                    View Club
+                  </Button>
                 </div>
-                <Button className="w-full bg-emerald-500 hover:bg-emerald-600">Join Club</Button>
               </div>
-            </div>
-            {/* ... Similar cards for Trail Blazers and Marathon Masters */}
+            ))}
           </div>
         </div>
       </div>
