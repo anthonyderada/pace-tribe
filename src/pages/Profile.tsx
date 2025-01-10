@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { format } from "date-fns";
 
 type Profile = {
   username: string | null;
@@ -19,12 +20,23 @@ type Club = {
   location: string | null;
 };
 
+type Event = {
+  id: string;
+  title: string;
+  date: string;
+  location: string | null;
+  club: {
+    name: string;
+  };
+};
+
 const Profile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [joinedClubs, setJoinedClubs] = useState<Club[]>([]);
+  const [registeredEvents, setRegisteredEvents] = useState<Event[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
@@ -49,8 +61,6 @@ const Profile = () => {
         setUsername(data.username || "");
       } catch (error) {
         console.error("Error fetching profile:", error);
-      } finally {
-        setLoading(false);
       }
     }
 
@@ -82,12 +92,51 @@ const Profile = () => {
       }
     }
 
+    async function getRegisteredEvents() {
+      try {
+        const { data, error } = await supabase
+          .from("event_participants")
+          .select(`
+            event_id,
+            events (
+              id,
+              title,
+              date,
+              location,
+              clubs (
+                name
+              )
+            )
+          `)
+          .eq("user_id", user.id);
+
+        if (error) throw error;
+
+        const events = data.map(item => ({
+          id: item.events.id,
+          title: item.events.title,
+          date: item.events.date,
+          location: item.events.location,
+          club: {
+            name: item.events.clubs.name
+          }
+        }));
+
+        setRegisteredEvents(events);
+      } catch (error) {
+        console.error("Error fetching registered events:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     getProfile();
     getJoinedClubs();
+    getRegisteredEvents();
 
-    // Set up real-time subscription for club memberships
-    const channel = supabase
-      .channel('schema-db-changes')
+    // Set up real-time subscription for club memberships and event registrations
+    const clubsChannel = supabase
+      .channel('schema-db-changes-clubs')
       .on(
         'postgres_changes',
         {
@@ -97,14 +146,30 @@ const Profile = () => {
           filter: `user_id=eq.${user.id}`
         },
         () => {
-          // Refresh the clubs list when changes occur
           getJoinedClubs();
         }
       )
       .subscribe();
 
+    const eventsChannel = supabase
+      .channel('schema-db-changes-events')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'event_participants',
+          filter: `user_id=eq.${user.id}`
+        },
+        () => {
+          getRegisteredEvents();
+        }
+      )
+      .subscribe();
+
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(clubsChannel);
+      supabase.removeChannel(eventsChannel);
     };
   }, [user, navigate]);
 
@@ -237,11 +302,42 @@ const Profile = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-zinc-100">
               <Calendar className="h-5 w-5" />
-              Upcoming Events
+              Registered Events
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-zinc-400">No upcoming events</p>
+            {registeredEvents.length > 0 ? (
+              <div className="space-y-4">
+                {registeredEvents.map((event) => (
+                  <Card 
+                    key={event.id}
+                    className="border-0 bg-zinc-800/90 cursor-pointer hover:bg-zinc-700/90 transition-colors"
+                    onClick={() => navigate(`/events/${event.id}`)}
+                  >
+                    <CardHeader>
+                      <CardTitle className="text-lg text-zinc-100">{event.title}</CardTitle>
+                      <div className="space-y-2">
+                        <p className="text-sm text-zinc-400 flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          {format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
+                        </p>
+                        {event.location && (
+                          <p className="text-sm text-zinc-400 flex items-center gap-2">
+                            <MapPin className="h-4 w-4" />
+                            {event.location}
+                          </p>
+                        )}
+                        <p className="text-sm text-zinc-400">
+                          Organized by {event.club.name}
+                        </p>
+                      </div>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <p className="text-zinc-400">No events registered yet</p>
+            )}
           </CardContent>
         </Card>
       </div>
