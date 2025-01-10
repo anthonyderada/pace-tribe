@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Calendar } from "lucide-react";
@@ -62,54 +62,37 @@ const Events = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {isLoading ? (
           [...Array(6)].map((_, index) => (
-            <Card key={`skeleton-${index}`} className="border-0 bg-zinc-900/50">
-              <CardHeader>
+            <Card key={`skeleton-${index}`} className="bg-zinc-800/50 rounded-2xl border-0">
+              <div className="p-6">
                 <Skeleton className="h-6 w-2/3 mb-2 bg-zinc-800" />
                 <Skeleton className="h-4 w-1/3 bg-zinc-800" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-20 mb-4 bg-zinc-800" />
-                <Skeleton className="h-10 w-full bg-zinc-800" />
-              </CardContent>
+                <Skeleton className="h-20 mt-4 bg-zinc-800" />
+              </div>
             </Card>
           ))
         ) : events && events.length > 0 ? (
           events.map((event) => (
             <Card 
               key={event.id} 
-              className="border-0 bg-zinc-900/50 hover:bg-zinc-900/80 transition-colors cursor-pointer"
+              className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
               onClick={() => navigate(`/events/${event.id}`)}
             >
-              <CardHeader>
-                <CardTitle className="text-zinc-100">{event.title}</CardTitle>
-                <CardDescription className="text-zinc-400 flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  {format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
-                </CardDescription>
-                <CardDescription className="text-zinc-400">
-                  Organized by {event.club?.name}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-zinc-400 mb-4">
-                  {event.description || 'No description available'}
-                </p>
-                <div className="text-zinc-400 mb-4">
-                  {event.location || 'Location TBD'}
-                </div>
-                <div className="text-zinc-400 mb-4">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-xl font-semibold text-white">{event.title}</h3>
+                <span className="text-gray-400 text-sm">
                   {event.participants?.length || 0} participants
-                </div>
-                <Button 
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/events/${event.id}`);
-                  }}
-                >
-                  View Event
-                </Button>
-              </CardContent>
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+                <Calendar className="h-4 w-4" />
+                {format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
+              </div>
+              <p className="text-gray-400 text-sm mb-4">
+                Organized by {event.club?.name}
+              </p>
+              <p className="text-gray-400 line-clamp-3">
+                {event.description || 'No description available'}
+              </p>
             </Card>
           ))
         ) : (
