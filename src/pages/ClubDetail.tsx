@@ -229,7 +229,7 @@ const ClubDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
-      <Card className="border-0 bg-zinc-900/90">
+      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
         <CardHeader>
           <CardTitle className="text-4xl font-bold text-zinc-100">{club.name}</CardTitle>
           {club.location && (
@@ -281,7 +281,7 @@ const ClubDetail = () => {
         </CardContent>
       </Card>
 
-      <Card className="border-0 bg-zinc-900/90">
+      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-zinc-100">Upcoming Events</CardTitle>
         </CardHeader>
@@ -291,10 +291,10 @@ const ClubDetail = () => {
               events.map((event) => (
                 <Card 
                   key={event.id}
-                  className="border-0 bg-zinc-900/90 cursor-pointer hover:bg-zinc-800/90 transition-colors"
+                  className="border border-zinc-800 bg-zinc-800/50 rounded-xl cursor-pointer hover:bg-zinc-800/80 transition-colors"
                   onClick={() => navigate(`/events/${event.id}`)}
                 >
-                  <CardHeader>
+                  <CardHeader className="pb-2">
                     <CardTitle className="text-lg text-zinc-100">{event.title}</CardTitle>
                     <CardDescription className="text-zinc-400">
                       {format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
