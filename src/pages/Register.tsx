@@ -3,8 +3,6 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AuthError } from "@supabase/supabase-js";
 import { toast } from "@/hooks/use-toast";
 
 const Register = () => {
@@ -12,8 +10,20 @@ const Register = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
+      if (event === 'SIGNED_IN' && session) {
         navigate("/");
+      }
+      
+      // Handle registration errors
+      if (event === 'USER_DELETED') {
+        const error = new URL(window.location.href).searchParams.get('error_description');
+        if (error?.includes('422')) {
+          toast({
+            variant: "destructive",
+            title: "Registration Failed",
+            description: "This email is already registered. Please try logging in instead.",
+          });
+        }
       }
     });
 
