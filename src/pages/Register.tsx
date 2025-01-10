@@ -4,26 +4,25 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { AuthChangeEvent } from "@supabase/supabase-js";
 
 const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
       if (event === 'SIGNED_IN' && session) {
         navigate("/");
       }
       
       // Handle registration errors
-      if (event === 'USER_DELETED') {
-        const error = new URL(window.location.href).searchParams.get('error_description');
-        if (error?.includes('422')) {
-          toast({
-            variant: "destructive",
-            title: "Registration Failed",
-            description: "This email is already registered. Please try logging in instead.",
-          });
-        }
+      const error = new URL(window.location.href).searchParams.get('error_description');
+      if (error?.includes('422')) {
+        toast({
+          variant: "destructive",
+          title: "Registration Failed",
+          description: "This email is already registered. Please try logging in instead.",
+        });
       }
     });
 
