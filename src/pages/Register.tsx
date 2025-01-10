@@ -9,18 +9,41 @@ const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_UP' && !session) {
-        // This means the signup failed
-        toast({
-          variant: "destructive",
-          title: "Registration Failed",
-          description: "This email is already registered. Please try logging in instead.",
-        });
-      } else if (session) {
+    // Handle successful registration redirects
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
+      if (session) {
         navigate("/");
       }
     });
+
+    // Override the default signup handler to add our error handling
+    const signUpForm = document.querySelector('form');
+    if (signUpForm) {
+      signUpForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(signUpForm as HTMLFormElement);
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+
+        try {
+          const { error } = await supabase.auth.signUp({
+            email,
+            password,
+          });
+          if (error) throw error;
+        } catch (error: any) {
+          if (error.status === 422) {
+            toast({
+              variant: "destructive",
+              title: "Registration Failed",
+              description: "This email is already registered. Please try logging in instead.",
+            });
+          }
+          // Let the form continue with its default handling for other cases
+          return;
+        }
+      });
+    }
 
     return () => {
       subscription.unsubscribe();
