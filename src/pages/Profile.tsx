@@ -398,7 +398,8 @@ const Profile = () => {
                   <div className="flex gap-2 justify-center md:justify-start">
                     <Button
                       onClick={handleUpdateProfile}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                      className="border border-white text-white hover:bg-white hover:text-black transition-colors"
+                      variant="outline"
                       disabled={uploading}
                     >
                       <Save className="w-4 h-4 mr-2" />
@@ -413,6 +414,7 @@ const Profile = () => {
                         setBio(profile?.bio || "");
                       }}
                       disabled={uploading}
+                      className="border border-white text-white hover:bg-white hover:text-black transition-colors"
                     >
                       Cancel
                     </Button>
@@ -459,7 +461,8 @@ const Profile = () => {
                 <div className="flex gap-2">
                   <Button
                     onClick={handleUpdateAccolades}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="border border-white text-white hover:bg-white hover:text-black transition-colors"
+                    variant="outline"
                   >
                     <Save className="w-4 h-4 mr-2" />
                     Save
@@ -470,6 +473,7 @@ const Profile = () => {
                       setIsEditingAccolades(false);
                       setPersonalBests(accolades?.personal_bests || "");
                     }}
+                    className="border border-white text-white hover:bg-white hover:text-black transition-colors"
                   >
                     Cancel
                   </Button>
