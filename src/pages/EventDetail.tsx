@@ -63,10 +63,13 @@ const EventDetail = () => {
                 user_id
               )
             ),
-            event_participants (
+            event_participants!inner (
               id,
               user_id,
-              profiles:profiles(username, avatar_url)
+              profiles!inner (
+                username,
+                avatar_url
+              )
             )
           `)
           .eq("id", id)
@@ -136,10 +139,13 @@ const EventDetail = () => {
                   user_id
                 )
               ),
-              event_participants (
+              event_participants!inner (
                 id,
                 user_id,
-                profiles:profiles(username, avatar_url)
+                profiles!inner (
+                  username,
+                  avatar_url
+                )
               )
             `)
             .eq("id", id)
