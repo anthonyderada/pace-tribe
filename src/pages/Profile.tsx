@@ -398,7 +398,7 @@ const Profile = () => {
                   <div className="flex gap-2 justify-center md:justify-start">
                     <Button
                       onClick={handleUpdateProfile}
-                      className="border border-white text-white hover:bg-white hover:text-black transition-colors"
+                      className="border border-white bg-white text-black hover:bg-transparent hover:text-white transition-colors"
                       variant="outline"
                       disabled={uploading}
                     >
@@ -414,7 +414,7 @@ const Profile = () => {
                         setBio(profile?.bio || "");
                       }}
                       disabled={uploading}
-                      className="border border-white text-white hover:bg-white hover:text-black transition-colors"
+                      className="border border-white text-white hover:bg-white hover:text-black transition-colors bg-transparent"
                     >
                       Cancel
                     </Button>
@@ -461,7 +461,7 @@ const Profile = () => {
                 <div className="flex gap-2">
                   <Button
                     onClick={handleUpdateAccolades}
-                    className="border border-white text-white hover:bg-white hover:text-black transition-colors"
+                    className="border border-white bg-white text-black hover:bg-transparent hover:text-white transition-colors"
                     variant="outline"
                   >
                     <Save className="w-4 h-4 mr-2" />
@@ -473,7 +473,7 @@ const Profile = () => {
                       setIsEditingAccolades(false);
                       setPersonalBests(accolades?.personal_bests || "");
                     }}
-                    className="border border-white text-white hover:bg-white hover:text-black transition-colors"
+                    className="border border-white text-white hover:bg-white hover:text-black transition-colors bg-transparent"
                   >
                     Cancel
                   </Button>
