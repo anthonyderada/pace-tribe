@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Calendar, Users, Edit2, Save, Trophy } from "lucide-react";
+import { MapPin, Calendar, Users, Edit2, Save, Trophy, Upload } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 type Profile = {
   username: string | null;
@@ -52,6 +53,7 @@ const Profile = () => {
   const [accolades, setAccolades] = useState<Accolades | null>(null);
   const [isEditingAccolades, setIsEditingAccolades] = useState(false);
   const [personalBests, setPersonalBests] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -204,6 +206,55 @@ const Profile = () => {
     };
   }, [user, navigate]);
 
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      if (!event.target.files || event.target.files.length === 0) {
+        return;
+      }
+      const file = event.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user?.id}-${Math.random()}.${fileExt}`;
+
+      setUploading(true);
+
+      const { error: uploadError } = await supabase.storage
+        .from('assets')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('assets')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', user?.id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      setProfile(prev => ({ ...prev!, avatar_url: publicUrl }));
+      
+      toast({
+        title: "Success",
+        description: "Profile picture updated successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update profile picture",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleUpdateProfile = async () => {
     try {
       const { error } = await supabase
@@ -272,10 +323,31 @@ const Profile = () => {
       <Card className="mb-8 border-0 bg-zinc-900/90">
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-            <div className="w-32 h-32 rounded-full bg-emerald-600 flex items-center justify-center">
-              <span className="text-4xl text-white">
-                {profile?.username?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase()}
-              </span>
+            <div className="relative">
+              <Avatar className="w-32 h-32">
+                <AvatarImage src={profile?.avatar_url || undefined} />
+                <AvatarFallback className="bg-emerald-600 text-4xl text-white">
+                  {profile?.username?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              {isEditing && (
+                <div className="absolute bottom-0 right-0">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    id="avatar-upload"
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                  />
+                  <label
+                    htmlFor="avatar-upload"
+                    className="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded-full"
+                  >
+                    <Upload className="w-4 h-4" />
+                  </label>
+                </div>
+              )}
             </div>
             <div className="flex-1 text-center md:text-left">
               {isEditing ? (
@@ -302,6 +374,7 @@ const Profile = () => {
                     <Button
                       onClick={handleUpdateProfile}
                       className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                      disabled={uploading}
                     >
                       <Save className="w-4 h-4 mr-2" />
                       Save
@@ -314,6 +387,7 @@ const Profile = () => {
                         setLocation(profile?.location || "");
                         setBio(profile?.bio || "");
                       }}
+                      disabled={uploading}
                     >
                       Cancel
                     </Button>
