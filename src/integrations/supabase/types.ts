@@ -125,8 +125,10 @@ export type Database = {
           created_by: string
           date: string
           description: string | null
+          distance: number | null
           id: string
           location: string | null
+          pace: string | null
           title: string
         }
         Insert: {
@@ -135,8 +137,10 @@ export type Database = {
           created_by: string
           date: string
           description?: string | null
+          distance?: number | null
           id?: string
           location?: string | null
+          pace?: string | null
           title: string
         }
         Update: {
@@ -145,8 +149,10 @@ export type Database = {
           created_by?: string
           date?: string
           description?: string | null
+          distance?: number | null
           id?: string
           location?: string | null
+          pace?: string | null
           title?: string
         }
         Relationships: [

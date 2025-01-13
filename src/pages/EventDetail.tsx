@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Users } from "lucide-react";
+import { MapPin, Calendar, Users, Route, Timer } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +15,8 @@ type Event = {
   date: string;
   location: string | null;
   club_id: string;
+  distance: number | null;
+  pace: string | null;
   clubs: {
     name: string;
     location: string | null;
@@ -199,7 +201,6 @@ const EventDetail = () => {
   };
 
   if (isLoading || !event) {
-    // ... keep existing code (loading state)
     return (
       <div className="container mx-auto px-4 py-8 space-y-8">
         <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
@@ -243,6 +244,18 @@ const EventDetail = () => {
                 <div className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-zinc-400" />
                   <span className="text-zinc-400">{event.location}</span>
+                </div>
+              )}
+              {event.distance && (
+                <div className="flex items-center gap-2">
+                  <Route className="h-5 w-5 text-zinc-400" />
+                  <span className="text-zinc-400">{event.distance} km</span>
+                </div>
+              )}
+              {event.pace && (
+                <div className="flex items-center gap-2">
+                  <Timer className="h-5 w-5 text-zinc-400" />
+                  <span className="text-zinc-400">{event.pace}</span>
                 </div>
               )}
               <div className="flex items-center gap-2">
