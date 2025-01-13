@@ -95,7 +95,7 @@ const Profile = () => {
       try {
         const { data, error } = await supabase
           .from("profiles")
-          .select("username, avatar_url, bio, location, preferred_distance, comfortable_pace")
+          .select("username, avatar_url, bio, location, preferred_distance, comfortable_pace, seeking_training_partners, seeking_casual_meetups, seeking_race_pacers")
           .eq("id", user.id)
           .single();
 
@@ -107,6 +107,9 @@ const Profile = () => {
         setLocation(data.location || "");
         setPreferredDistance(data.preferred_distance || "");
         setComfortablePace(data.comfortable_pace || "");
+        setSeekingTrainingPartners(data.seeking_training_partners || false);
+        setSeekingCasualMeetups(data.seeking_casual_meetups || false);
+        setSeekingRacePacers(data.seeking_race_pacers || false);
         
         // Parse the pace range from the stored format
         if (data.comfortable_pace) {
@@ -353,7 +356,10 @@ const Profile = () => {
         .update({ 
           username,
           bio,
-          location
+          location,
+          seeking_training_partners: seekingTrainingPartners,
+          seeking_casual_meetups: seekingCasualMeetups,
+          seeking_race_pacers: seekingRacePacers
         })
         .eq("id", user?.id);
 
@@ -363,7 +369,10 @@ const Profile = () => {
         ...prev!, 
         username,
         bio,
-        location
+        location,
+        seeking_training_partners: seekingTrainingPartners,
+        seeking_casual_meetups: seekingCasualMeetups,
+        seeking_race_pacers: seekingRacePacers
       }));
       setIsEditing(false);
       toast({
@@ -850,4 +859,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
