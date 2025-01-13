@@ -495,12 +495,21 @@ const Profile = () => {
                   <label className="text-sm text-zinc-400 mb-2 block">
                     Preferred Race Distance
                   </label>
-                  <Input
+                  <Select
                     value={preferredDistance}
-                    onChange={(e) => setPreferredDistance(e.target.value)}
-                    placeholder="e.g., Half Marathon"
-                    className="bg-zinc-800 border-zinc-700"
-                  />
+                    onValueChange={setPreferredDistance}
+                  >
+                    <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                      <SelectValue placeholder="Select preferred distance" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="5k">5k</SelectItem>
+                      <SelectItem value="10k">10k</SelectItem>
+                      <SelectItem value="Half Marathon">Half Marathon</SelectItem>
+                      <SelectItem value="Marathon">Marathon</SelectItem>
+                      <SelectItem value="Ultras">Ultras</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <label className="text-sm text-zinc-400 mb-2 block">
@@ -548,7 +557,7 @@ const Profile = () => {
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-lg font-semibold text-zinc-100 mb-2">
-                      My preferred race distance
+                      Preferred race distance
                     </h3>
                     <p className="text-zinc-400">
                       {profile?.preferred_distance || "Not set"}
@@ -556,7 +565,7 @@ const Profile = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-zinc-100 mb-2">
-                      My comfortable pace
+                      Comfortable pace
                     </h3>
                     <p className="text-zinc-400">
                       {profile?.comfortable_pace || "Not set"}
