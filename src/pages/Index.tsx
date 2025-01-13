@@ -26,6 +26,15 @@ const Index = () => {
     },
   });
 
+  const categories = [
+    { name: 'Trails', icon: '🌲' },
+    { name: 'Road', icon: '🛣️', selected: true },
+    { name: 'Track', icon: '🏃' },
+    { name: 'Coaching', icon: '👥' },
+    { name: 'Social', icon: '🤝' },
+    { name: 'Recovery', icon: '🧘' },
+  ];
+
   return (
     <div className="relative">
       {/* Hero Section */}
@@ -38,7 +47,7 @@ const Index = () => {
             <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
               Connect with local running clubs, join group runs, and become part of a community that shares your passion for running.
             </p>
-            <div className="max-w-md mx-auto mb-8">
+            <div className="max-w-md mx-auto mb-12">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <Input 
@@ -47,12 +56,32 @@ const Index = () => {
                   className="pl-10 w-full bg-zinc-800/50 border-zinc-700"
                 />
                 <Button 
-                  className="absolute right-0 top-0 h-full bg-emerald-500 hover:bg-emerald-600"
+                  className="absolute right-0 top-0 h-full bg-white hover:bg-white text-black"
                   onClick={() => navigate("/clubs")}
                 >
                   Search
                 </Button>
               </div>
+            </div>
+
+            {/* Categories Row */}
+            <div className="flex justify-center gap-8 mb-16">
+              {categories.map((category) => (
+                <div 
+                  key={category.name}
+                  className={`flex flex-col items-center cursor-pointer ${
+                    category.selected ? 'opacity-100' : 'opacity-50'
+                  } hover:opacity-100 transition-opacity`}
+                >
+                  <div className="text-3xl mb-2">{category.icon}</div>
+                  <span className="text-white text-sm">
+                    {category.name}
+                  </span>
+                  {category.selected && (
+                    <div className="h-0.5 w-full bg-white mt-2"></div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
