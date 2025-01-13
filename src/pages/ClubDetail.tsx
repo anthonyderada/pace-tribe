@@ -259,20 +259,18 @@ const ClubDetail = () => {
             </div>
           </div>
           {user ? (
-            <Button 
-              className={`w-full mt-8 ${
-                isMember 
-                  ? "bg-red-600 hover:bg-red-700" 
-                  : "bg-emerald-600 hover:bg-emerald-700"
-              } text-white`}
+            <Button
               onClick={isMember ? handleLeaveClub : handleJoinClub}
+              className="w-full mt-8 border border-white bg-white text-black hover:bg-gray-100"
+              variant="outline"
               disabled={isJoining}
             >
               {isJoining ? "Processing..." : (isMember ? "Leave Club" : "Join Club")}
             </Button>
           ) : (
             <Button 
-              className="w-full mt-8 bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="w-full mt-8 border border-white bg-white text-black hover:bg-gray-100"
+              variant="outline"
               onClick={() => navigate('/login')}
             >
               Login to Join
