@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Salad, ShoppingBag, Brush } from "lucide-react";
+import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -54,18 +54,15 @@ const Index = () => {
     },
     {
       name: 'Nutrition',
-      icon: 'lucide',
-      LucideIcon: Salad
+      icon: '/lovable-uploads/12df4cdf-f053-47f8-9e42-9a02b17d451d.png',
     },
     {
       name: 'Shoe Store',
-      icon: 'lucide',
-      LucideIcon: ShoppingBag
+      icon: '/lovable-uploads/a1d393c8-d808-4613-982f-a4a705184f57.png',
     },
     {
       name: 'Cleaning',
-      icon: 'lucide',
-      LucideIcon: Brush
+      icon: '/lovable-uploads/e2f4d6b0-e690-4dee-afd7-226ae3eb50b5.png',
     }
   ];
 
@@ -108,15 +105,11 @@ const Index = () => {
                   } hover:opacity-100 transition-opacity flex-shrink-0`}
                 >
                   <div className="w-12 h-12 mb-2">
-                    {category.icon === 'lucide' && category.LucideIcon ? (
-                      <category.LucideIcon className="w-full h-full text-white" />
-                    ) : (
-                      <img 
-                        src={category.icon} 
-                        alt={category.name}
-                        className="w-full h-full object-contain invert"
-                      />
-                    )}
+                    <img 
+                      src={category.icon} 
+                      alt={category.name}
+                      className="w-full h-full object-contain invert"
+                    />
                   </div>
                   <span className="text-white text-sm whitespace-nowrap">
                     {category.name}
