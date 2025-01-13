@@ -7,7 +7,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Event = {
   id: string;
@@ -30,10 +29,6 @@ type Event = {
   event_participants: {
     id: string;
     user_id: string;
-    profiles: {
-      username: string | null;
-      avatar_url: string | null;
-    };
   }[];
 };
 
@@ -65,11 +60,7 @@ const EventDetail = () => {
             ),
             event_participants (
               id,
-              user_id,
-              profiles:profiles!inner (
-                username,
-                avatar_url
-              )
+              user_id
             )
           `)
           .eq("id", id)
@@ -141,11 +132,7 @@ const EventDetail = () => {
               ),
               event_participants (
                 id,
-                user_id,
-                profiles:profiles!inner (
-                  username,
-                  avatar_url
-                )
+                user_id
               )
             `)
             .eq("id", id)
@@ -331,34 +318,6 @@ const EventDetail = () => {
               </p>
             </CardContent>
           </Card>
-        </CardContent>
-      </Card>
-
-      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-zinc-100">
-            Who is going?
-          </CardTitle>
-          <CardDescription className="text-zinc-400">
-            {event.event_participants.length} {event.event_participants.length === 1 ? 'person' : 'people'} registered
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {event.event_participants.map((participant) => (
-              <div key={participant.id} className="flex items-center gap-3">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={participant.profiles.avatar_url || undefined} />
-                  <AvatarFallback className="bg-zinc-800 text-zinc-400">
-                    {participant.profiles.username?.[0]?.toUpperCase() || '?'}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-zinc-100">
-                  {participant.profiles.username || 'Anonymous Runner'}
-                </span>
-              </div>
-            ))}
-          </div>
         </CardContent>
       </Card>
     </div>
