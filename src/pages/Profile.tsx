@@ -65,7 +65,7 @@ const Profile = () => {
   const [personalBests, setPersonalBests] = useState("");
   const [uploading, setUploading] = useState(false);
   const [preferredDistance, setPreferredDistance] = useState("");
-  const [paceRange, setPaceRange] = useState([8, 9]); // Default to 8-9 min/mile range
+  const [paceRange, setPaceRange] = useState([6, 7]); // Default to 6-7 min/mile range
   const [comfortablePace, setComfortablePace] = useState("");
   const [isEditingPreferences, setIsEditingPreferences] = useState(false);
 
@@ -559,8 +559,8 @@ const Profile = () => {
                     <Slider
                       value={paceRange}
                       onValueChange={setPaceRange}
-                      min={5}
-                      max={15}
+                      min={4.5}
+                      max={10}
                       step={0.25}
                       className="w-full"
                     />
