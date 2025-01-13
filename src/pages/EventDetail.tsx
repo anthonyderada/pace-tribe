@@ -172,7 +172,7 @@ const EventDetail = () => {
 
         toast({
           title: "Success",
-          description: "You have unfollowed the event",
+          description: "You have unregistered from the event",
         });
       } else {
         // Join event
@@ -185,7 +185,7 @@ const EventDetail = () => {
 
         toast({
           title: "Success",
-          description: "You are now following the event",
+          description: "You are now registered for the event",
         });
       }
     } catch (error) {
@@ -193,7 +193,7 @@ const EventDetail = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update participation",
+        description: "Failed to update registration",
       });
     }
   };
@@ -262,14 +262,14 @@ const EventDetail = () => {
               }`}
               onClick={handleParticipation}
             >
-              {isParticipant ? "Unfollow" : "Follow"}
+              {isParticipant ? "Unregister" : "Register"}
             </Button>
           ) : (
             <Button
               className="w-full mt-8 border border-white bg-white text-black hover:bg-gray-100"
               onClick={() => navigate("/login")}
             >
-              Login to Follow
+              Login to Register
             </Button>
           )}
         </CardContent>
