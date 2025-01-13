@@ -268,7 +268,7 @@ const ClubDetail = () => {
                 variant="outline"
                 disabled={isJoining}
               >
-                {isJoining ? "Processing..." : (isMember ? "Leave Club" : "Join Club")}
+                {isJoining ? "Processing..." : (isMember ? "Unfollow" : "Follow")}
               </Button>
             </div>
           ) : (
@@ -277,7 +277,7 @@ const ClubDetail = () => {
               variant="outline"
               onClick={() => navigate('/login')}
             >
-              Login to Join
+              Login to Follow
             </Button>
           )}
         </CardContent>
