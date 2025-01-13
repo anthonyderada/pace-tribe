@@ -321,7 +321,17 @@ const Profile = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="mb-8 border-0 bg-zinc-900/90">
-        <CardHeader>
+        <CardHeader className="relative">
+          {!isEditing && (
+            <Button
+              onClick={() => setIsEditing(true)}
+              className="absolute top-4 right-4 bg-transparent hover:bg-zinc-800/50 text-zinc-400 hover:text-white"
+              size="icon"
+              variant="ghost"
+            >
+              <Pencil className="h-5 w-5" />
+            </Button>
+          )}
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
             <div className="relative">
               <Avatar className="w-32 h-32">
@@ -406,13 +416,6 @@ const Profile = () => {
                     <p className="text-zinc-400">
                       {profile?.bio || "No bio added yet"}
                     </p>
-                    <Button
-                      onClick={() => setIsEditing(true)}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                    >
-                      <Edit2 className="w-4 h-4 mr-2" />
-                      Edit Profile
-                    </Button>
                   </div>
                 </>
               )}
