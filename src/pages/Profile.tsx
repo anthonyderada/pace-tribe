@@ -57,6 +57,69 @@ type Event = {
   };
 };
 
+const TimeInput = ({ 
+  hours, 
+  minutes, 
+  seconds, 
+  onChange 
+}: { 
+  hours: string; 
+  minutes: string; 
+  seconds: string; 
+  onChange: (time: { hours: string; minutes: string; seconds: string }) => void;
+}) => {
+  const validateTimeValue = (value: string, max: number) => {
+    const num = parseInt(value);
+    if (isNaN(num)) return "00";
+    if (num < 0) return "00";
+    if (num > max) return max.toString().padStart(2, '0');
+    return num.toString().padStart(2, '0');
+  };
+
+  const handleChange = (field: 'hours' | 'minutes' | 'seconds', value: string) => {
+    const newValue = validateTimeValue(value, field === 'hours' ? 99 : 59);
+    onChange({
+      hours: field === 'hours' ? newValue : hours,
+      minutes: field === 'minutes' ? newValue : minutes,
+      seconds: field === 'seconds' ? newValue : seconds,
+    });
+  };
+
+  return (
+    <div className="flex gap-2 items-center">
+      <Input
+        type="number"
+        min="0"
+        max="99"
+        value={hours}
+        onChange={(e) => handleChange('hours', e.target.value)}
+        className="w-20"
+        placeholder="HH"
+      />
+      <span className="text-zinc-400">:</span>
+      <Input
+        type="number"
+        min="0"
+        max="59"
+        value={minutes}
+        onChange={(e) => handleChange('minutes', e.target.value)}
+        className="w-20"
+        placeholder="MM"
+      />
+      <span className="text-zinc-400">:</span>
+      <Input
+        type="number"
+        min="0"
+        max="59"
+        value={seconds}
+        onChange={(e) => handleChange('seconds', e.target.value)}
+        className="w-20"
+        placeholder="SS"
+      />
+    </div>
+  );
+};
+
 const Profile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -71,10 +134,10 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [accolades, setAccolades] = useState<Accolades | null>(null);
   const [isEditingAccolades, setIsEditingAccolades] = useState(false);
-  const [pb5k, setPb5k] = useState("");
-  const [pb10k, setPb10k] = useState("");
-  const [pbHalfMarathon, setPbHalfMarathon] = useState("");
-  const [pbMarathon, setPbMarathon] = useState("");
+  const [pb5kTime, setPb5kTime] = useState({ hours: "00", minutes: "00", seconds: "00" });
+  const [pb10kTime, setPb10kTime] = useState({ hours: "00", minutes: "00", seconds: "00" });
+  const [pbHalfTime, setPbHalfTime] = useState({ hours: "00", minutes: "00", seconds: "00" });
+  const [pbMarathonTime, setPbMarathonTime] = useState({ hours: "00", minutes: "00", seconds: "00" });
   const [pbUltra, setPbUltra] = useState("");
   const [uploading, setUploading] = useState(false);
   const [preferredDistance, setPreferredDistance] = useState("");
@@ -85,6 +148,20 @@ const Profile = () => {
   const [seekingCasualMeetups, setSeekingCasualMeetups] = useState(false);
   const [seekingRacePacers, setSeekingRacePacers] = useState(false);
   const [preferredShoeBrands, setPreferredShoeBrands] = useState<string[]>([]);
+
+  const formatTimeToInterval = (time: { hours: string; minutes: string; seconds: string }) => {
+    return `${time.hours}:${time.minutes}:${time.seconds}`;
+  };
+
+  const parseIntervalToTime = (interval: string | null) => {
+    if (!interval) return { hours: "00", minutes: "00", seconds: "00" };
+    const [hours = "00", minutes = "00", seconds = "00"] = interval.split(':');
+    return {
+      hours: hours.padStart(2, '0'),
+      minutes: minutes.padStart(2, '0'),
+      seconds: seconds.padStart(2, '0')
+    };
+  };
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -170,23 +247,23 @@ const Profile = () => {
   const handleUpdateAccolades = async () => {
     try {
       const { error } = await supabase
-        .from('accolades')
+        .from("accolades")
         .update({
-          pb_5k: pb5k,
-          pb_10k: pb10k,
-          pb_half_marathon: pbHalfMarathon,
-          pb_marathon: pbMarathon,
+          pb_5k: formatTimeToInterval(pb5kTime),
+          pb_10k: formatTimeToInterval(pb10kTime),
+          pb_half_marathon: formatTimeToInterval(pbHalfTime),
+          pb_marathon: formatTimeToInterval(pbMarathonTime),
           pb_ultra: pbUltra,
         })
-        .eq('user_id', user?.id);
+        .eq("user_id", user?.id);
 
       if (error) throw error;
 
       setAccolades({
-        pb_5k: pb5k,
-        pb_10k: pb10k,
-        pb_half_marathon: pbHalfMarathon,
-        pb_marathon: pbMarathon,
+        pb_5k: formatTimeToInterval(pb5kTime),
+        pb_10k: formatTimeToInterval(pb10kTime),
+        pb_half_marathon: formatTimeToInterval(pbHalfTime),
+        pb_marathon: formatTimeToInterval(pbMarathonTime),
         pb_ultra: pbUltra,
       });
       setIsEditingAccolades(false);
@@ -253,10 +330,10 @@ const Profile = () => {
         if (error) throw error;
 
         setAccolades(data);
-        setPb5k(data.pb_5k || "");
-        setPb10k(data.pb_10k || "");
-        setPbHalfMarathon(data.pb_half_marathon || "");
-        setPbMarathon(data.pb_marathon || "");
+        setPb5kTime(parseIntervalToTime(data.pb_5k));
+        setPb10kTime(parseIntervalToTime(data.pb_10k));
+        setPbHalfTime(parseIntervalToTime(data.pb_half_marathon));
+        setPbMarathonTime(parseIntervalToTime(data.pb_marathon));
         setPbUltra(data.pb_ultra || "");
       } catch (error) {
         console.error("Error fetching accolades:", error);
@@ -806,42 +883,38 @@ const Profile = () => {
               <div className="space-y-4">
                 <div>
                   <label className="text-sm text-zinc-400 mb-2 block">5K</label>
-                  <Input
-                    type="text"
-                    placeholder="HH:MM:SS"
-                    value={pb5k}
-                    onChange={(e) => setPb5k(e.target.value)}
-                    pattern="^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]$"
+                  <TimeInput
+                    hours={pb5kTime.hours}
+                    minutes={pb5kTime.minutes}
+                    seconds={pb5kTime.seconds}
+                    onChange={setPb5kTime}
                   />
                 </div>
                 <div>
                   <label className="text-sm text-zinc-400 mb-2 block">10K</label>
-                  <Input
-                    type="text"
-                    placeholder="HH:MM:SS"
-                    value={pb10k}
-                    onChange={(e) => setPb10k(e.target.value)}
-                    pattern="^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]$"
+                  <TimeInput
+                    hours={pb10kTime.hours}
+                    minutes={pb10kTime.minutes}
+                    seconds={pb10kTime.seconds}
+                    onChange={setPb10kTime}
                   />
                 </div>
                 <div>
                   <label className="text-sm text-zinc-400 mb-2 block">Half Marathon</label>
-                  <Input
-                    type="text"
-                    placeholder="HH:MM:SS"
-                    value={pbHalfMarathon}
-                    onChange={(e) => setPbHalfMarathon(e.target.value)}
-                    pattern="^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]$"
+                  <TimeInput
+                    hours={pbHalfTime.hours}
+                    minutes={pbHalfTime.minutes}
+                    seconds={pbHalfTime.seconds}
+                    onChange={setPbHalfTime}
                   />
                 </div>
                 <div>
                   <label className="text-sm text-zinc-400 mb-2 block">Marathon</label>
-                  <Input
-                    type="text"
-                    placeholder="HH:MM:SS"
-                    value={pbMarathon}
-                    onChange={(e) => setPbMarathon(e.target.value)}
-                    pattern="^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]$"
+                  <TimeInput
+                    hours={pbMarathonTime.hours}
+                    minutes={pbMarathonTime.minutes}
+                    seconds={pbMarathonTime.seconds}
+                    onChange={setPbMarathonTime}
                   />
                 </div>
                 <div>
@@ -866,10 +939,10 @@ const Profile = () => {
                     variant="outline"
                     onClick={() => {
                       setIsEditingAccolades(false);
-                      setPb5k(accolades?.pb_5k || "");
-                      setPb10k(accolades?.pb_10k || "");
-                      setPbHalfMarathon(accolades?.pb_half_marathon || "");
-                      setPbMarathon(accolades?.pb_marathon || "");
+                      setPb5kTime(parseIntervalToTime(accolades?.pb_5k));
+                      setPb10kTime(parseIntervalToTime(accolades?.pb_10k));
+                      setPbHalfTime(parseIntervalToTime(accolades?.pb_half_marathon));
+                      setPbMarathonTime(parseIntervalToTime(accolades?.pb_marathon));
                       setPbUltra(accolades?.pb_ultra || "");
                     }}
                     className="border border-white text-white bg-transparent"
