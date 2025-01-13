@@ -414,6 +414,14 @@ const Profile = () => {
     }
   };
 
+  const getConnectionPreferences = () => {
+    const preferences = [];
+    if (profile?.seeking_training_partners) preferences.push("Looking for Training Partners");
+    if (profile?.seeking_casual_meetups) preferences.push("Interested in Casual Meetups");
+    if (profile?.seeking_race_pacers) preferences.push("Looking for Race Day Pacers");
+    return preferences.length > 0 ? preferences : ["None"];
+  };
+
   if (loading) {
     return <div className="container mx-auto px-4 py-8">Loading...</div>;
   }
@@ -702,18 +710,12 @@ const Profile = () => {
                       Connection Preferences
                     </h3>
                     <div className="space-y-1">
-                      <p className="text-zinc-400 flex items-center gap-2">
-                        <UserPlus className="h-4 w-4" />
-                        {profile?.seeking_training_partners ? "Looking for Training Partners" : "Not seeking Training Partners"}
-                      </p>
-                      <p className="text-zinc-400 flex items-center gap-2">
-                        <UserPlus className="h-4 w-4" />
-                        {profile?.seeking_casual_meetups ? "Interested in Casual Meetups" : "Not interested in Casual Meetups"}
-                      </p>
-                      <p className="text-zinc-400 flex items-center gap-2">
-                        <UserPlus className="h-4 w-4" />
-                        {profile?.seeking_race_pacers ? "Looking for Race Day Pacers" : "Not seeking Race Day Pacers"}
-                      </p>
+                      {getConnectionPreferences().map((preference, index) => (
+                        <p key={index} className="text-zinc-400 flex items-center gap-2">
+                          <UserPlus className="h-4 w-4" />
+                          {preference}
+                        </p>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -859,3 +861,4 @@ const Profile = () => {
 };
 
 export default Profile;
+
