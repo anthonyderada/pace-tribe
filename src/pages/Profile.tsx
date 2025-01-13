@@ -12,13 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 type Profile = {
   username: string | null;
@@ -34,7 +27,11 @@ type Profile = {
 };
 
 type Accolades = {
-  personal_bests: string | null;
+  pb_5k: string | null;
+  pb_10k: string | null;
+  pb_half_marathon: string | null;
+  pb_marathon: string | null;
+  pb_ultra: string | null;
 };
 
 type Club = {
@@ -67,7 +64,11 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [accolades, setAccolades] = useState<Accolades | null>(null);
   const [isEditingAccolades, setIsEditingAccolades] = useState(false);
-  const [personalBests, setPersonalBests] = useState("");
+  const [pb5k, setPb5k] = useState("");
+  const [pb10k, setPb10k] = useState("");
+  const [pbHalfMarathon, setPbHalfMarathon] = useState("");
+  const [pbMarathon, setPbMarathon] = useState("");
+  const [pbUltra, setPbUltra] = useState("");
   const [uploading, setUploading] = useState(false);
   const [preferredDistance, setPreferredDistance] = useState("");
   const [paceRange, setPaceRange] = useState([6, 7]);
@@ -164,20 +165,27 @@ const Profile = () => {
       const { error } = await supabase
         .from('accolades')
         .update({
-          personal_bests: personalBests,
+          pb_5k: pb5k,
+          pb_10k: pb10k,
+          pb_half_marathon: pbHalfMarathon,
+          pb_marathon: pbMarathon,
+          pb_ultra: pbUltra,
         })
         .eq('user_id', user?.id);
 
       if (error) throw error;
 
-      setAccolades(prev => ({
-        ...prev!,
-        personal_bests: personalBests,
-      }));
+      setAccolades({
+        pb_5k: pb5k,
+        pb_10k: pb10k,
+        pb_half_marathon: pbHalfMarathon,
+        pb_marathon: pbMarathon,
+        pb_ultra: pbUltra,
+      });
       setIsEditingAccolades(false);
       toast({
-        title: "Accolades updated",
-        description: "Your personal bests have been updated successfully.",
+        title: "Personal bests updated",
+        description: "Your personal best times have been updated successfully.",
       });
     } catch (error) {
       toast({
@@ -222,24 +230,6 @@ const Profile = () => {
         setSeekingCasualMeetups(data.seeking_casual_meetups || false);
         setSeekingRacePacers(data.seeking_race_pacers || false);
         setPreferredShoeBrands(data.preferred_shoe_brand || []);
-        
-        if (data.comfortable_pace) {
-          const rangeParts = data.comfortable_pace.split(' - ');
-          if (rangeParts.length === 2) {
-            const lowPaceParts = rangeParts[0].split(':');
-            const highPaceParts = rangeParts[1].split(':');
-            if (lowPaceParts.length === 2 && highPaceParts.length === 2) {
-              const lowMinutes = parseInt(lowPaceParts[0]);
-              const lowSeconds = parseInt(lowPaceParts[1]);
-              const highMinutes = parseInt(highPaceParts[0]);
-              const highSeconds = parseInt(highPaceParts[1]);
-              setPaceRange([
-                lowMinutes + (lowSeconds / 60),
-                highMinutes + (highSeconds / 60)
-              ]);
-            }
-          }
-        }
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -249,14 +239,18 @@ const Profile = () => {
       try {
         const { data, error } = await supabase
           .from("accolades")
-          .select("personal_bests")
+          .select("pb_5k, pb_10k, pb_half_marathon, pb_marathon, pb_ultra")
           .eq("user_id", user.id)
           .single();
 
         if (error) throw error;
 
         setAccolades(data);
-        setPersonalBests(data.personal_bests || "");
+        setPb5k(data.pb_5k || "");
+        setPb10k(data.pb_10k || "");
+        setPbHalfMarathon(data.pb_half_marathon || "");
+        setPbMarathon(data.pb_marathon || "");
+        setPbUltra(data.pb_ultra || "");
       } catch (error) {
         console.error("Error fetching accolades:", error);
       }
@@ -803,12 +797,55 @@ const Profile = () => {
           <CardContent>
             {isEditingAccolades ? (
               <div className="space-y-4">
-                <Textarea
-                  value={personalBests}
-                  onChange={(e) => setPersonalBests(e.target.value)}
-                  placeholder="Enter your personal best times..."
-                  className="min-h-[150px]"
-                />
+                <div>
+                  <label className="text-sm text-zinc-400 mb-2 block">5K</label>
+                  <Input
+                    type="text"
+                    placeholder="HH:MM:SS"
+                    value={pb5k}
+                    onChange={(e) => setPb5k(e.target.value)}
+                    pattern="^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]$"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-zinc-400 mb-2 block">10K</label>
+                  <Input
+                    type="text"
+                    placeholder="HH:MM:SS"
+                    value={pb10k}
+                    onChange={(e) => setPb10k(e.target.value)}
+                    pattern="^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]$"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-zinc-400 mb-2 block">Half Marathon</label>
+                  <Input
+                    type="text"
+                    placeholder="HH:MM:SS"
+                    value={pbHalfMarathon}
+                    onChange={(e) => setPbHalfMarathon(e.target.value)}
+                    pattern="^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]$"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-zinc-400 mb-2 block">Marathon</label>
+                  <Input
+                    type="text"
+                    placeholder="HH:MM:SS"
+                    value={pbMarathon}
+                    onChange={(e) => setPbMarathon(e.target.value)}
+                    pattern="^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]$"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-zinc-400 mb-2 block">Ultra</label>
+                  <Input
+                    type="text"
+                    placeholder="Distance and time"
+                    value={pbUltra}
+                    onChange={(e) => setPbUltra(e.target.value)}
+                  />
+                </div>
                 <div className="flex gap-2">
                   <Button
                     onClick={handleUpdateAccolades}
@@ -822,7 +859,11 @@ const Profile = () => {
                     variant="outline"
                     onClick={() => {
                       setIsEditingAccolades(false);
-                      setPersonalBests(accolades?.personal_bests || "");
+                      setPb5k(accolades?.pb_5k || "");
+                      setPb10k(accolades?.pb_10k || "");
+                      setPbHalfMarathon(accolades?.pb_half_marathon || "");
+                      setPbMarathon(accolades?.pb_marathon || "");
+                      setPbUltra(accolades?.pb_ultra || "");
                     }}
                     className="border border-white text-white bg-transparent"
                   >
@@ -840,9 +881,28 @@ const Profile = () => {
                 >
                   <Pencil className="h-5 w-5 md:h-6 md:w-6" />
                 </Button>
-                <p className="text-zinc-400 whitespace-pre-line mb-4">
-                  {accolades?.personal_bests || "No personal bests recorded yet"}
-                </p>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-zinc-100">5K</h3>
+                    <p className="text-zinc-400">{accolades?.pb_5k || "Not set"}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-zinc-100">10K</h3>
+                    <p className="text-zinc-400">{accolades?.pb_10k || "Not set"}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-zinc-100">Half Marathon</h3>
+                    <p className="text-zinc-400">{accolades?.pb_half_marathon || "Not set"}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-zinc-100">Marathon</h3>
+                    <p className="text-zinc-400">{accolades?.pb_marathon || "Not set"}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-zinc-100">Ultra</h3>
+                    <p className="text-zinc-400">{accolades?.pb_ultra || "Not set"}</p>
+                  </div>
+                </div>
               </div>
             )}
           </CardContent>
@@ -930,4 +990,3 @@ const Profile = () => {
 };
 
 export default Profile;
-

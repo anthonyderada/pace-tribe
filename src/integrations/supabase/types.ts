@@ -13,21 +13,33 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          personal_bests: string | null
+          pb_10k: unknown | null
+          pb_5k: unknown | null
+          pb_half_marathon: unknown | null
+          pb_marathon: unknown | null
+          pb_ultra: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
-          personal_bests?: string | null
+          pb_10k?: unknown | null
+          pb_5k?: unknown | null
+          pb_half_marathon?: unknown | null
+          pb_marathon?: unknown | null
+          pb_ultra?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
-          personal_bests?: string | null
+          pb_10k?: unknown | null
+          pb_5k?: unknown | null
+          pb_half_marathon?: unknown | null
+          pb_marathon?: unknown | null
+          pb_ultra?: string | null
           updated_at?: string
           user_id?: string
         }
