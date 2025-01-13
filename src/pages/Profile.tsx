@@ -325,16 +325,18 @@ const Profile = () => {
 
         if (error) throw error;
 
-        setAccolades({
-          pb_5k: data.pb_5k as string | null,
-          pb_10k: data.pb_10k as string | null,
-          pb_half_marathon: data.pb_half_marathon as string | null,
-          pb_marathon: data.pb_marathon as string | null
-        });
-        setPb5kTime(parseIntervalToTime(data.pb_5k));
-        setPb10kTime(parseIntervalToTime(data.pb_10k));
-        setPbHalfTime(parseIntervalToTime(data.pb_half_marathon));
-        setPbMarathonTime(parseIntervalToTime(data.pb_marathon));
+        if (data) {
+          setAccolades({
+            pb_5k: data.pb_5k,
+            pb_10k: data.pb_10k,
+            pb_half_marathon: data.pb_half_marathon,
+            pb_marathon: data.pb_marathon
+          });
+          setPb5kTime(parseIntervalToTime(data.pb_5k));
+          setPb10kTime(parseIntervalToTime(data.pb_10k));
+          setPbHalfTime(parseIntervalToTime(data.pb_half_marathon));
+          setPbMarathonTime(parseIntervalToTime(data.pb_marathon));
+        }
       } catch (error) {
         console.error("Error fetching accolades:", error);
       }
@@ -1055,4 +1057,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
