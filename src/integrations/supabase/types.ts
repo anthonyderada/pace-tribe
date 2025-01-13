@@ -13,33 +13,30 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          pb_10k: unknown | null
-          pb_5k: unknown | null
-          pb_half_marathon: unknown | null
-          pb_marathon: unknown | null
-          pb_ultra: string | null
+          pb_10k: string | null
+          pb_5k: string | null
+          pb_half_marathon: string | null
+          pb_marathon: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
-          pb_10k?: unknown | null
-          pb_5k?: unknown | null
-          pb_half_marathon?: unknown | null
-          pb_marathon?: unknown | null
-          pb_ultra?: string | null
+          pb_10k?: string | null
+          pb_5k?: string | null
+          pb_half_marathon?: string | null
+          pb_marathon?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
-          pb_10k?: unknown | null
-          pb_5k?: unknown | null
-          pb_half_marathon?: unknown | null
-          pb_marathon?: unknown | null
-          pb_ultra?: string | null
+          pb_10k?: string | null
+          pb_5k?: string | null
+          pb_half_marathon?: string | null
+          pb_marathon?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -112,7 +109,7 @@ export type Database = {
           event_id: string
           id?: string
           joined_at?: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           event_id?: string
