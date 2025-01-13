@@ -13,10 +13,10 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          pb_10k: unknown | null
-          pb_5k: unknown | null
-          pb_half_marathon: unknown | null
-          pb_marathon: unknown | null
+          pb_10k: string | null
+          pb_5k: string | null
+          pb_half_marathon: string | null
+          pb_marathon: string | null
           pb_ultra: string | null
           updated_at: string
           user_id: string
@@ -24,10 +24,10 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          pb_10k?: unknown | null
-          pb_5k?: unknown | null
-          pb_half_marathon?: unknown | null
-          pb_marathon?: unknown | null
+          pb_10k?: string | null
+          pb_5k?: string | null
+          pb_half_marathon?: string | null
+          pb_marathon?: string | null
           pb_ultra?: string | null
           updated_at?: string
           user_id: string
@@ -35,10 +35,10 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          pb_10k?: unknown | null
-          pb_5k?: unknown | null
-          pb_half_marathon?: unknown | null
-          pb_marathon?: unknown | null
+          pb_10k?: string | null
+          pb_5k?: string | null
+          pb_half_marathon?: string | null
+          pb_marathon?: string | null
           pb_ultra?: string | null
           updated_at?: string
           user_id?: string
