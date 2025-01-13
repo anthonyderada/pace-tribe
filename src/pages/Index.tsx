@@ -41,7 +41,7 @@ const Index = () => {
       icon: '/lovable-uploads/0e9e5ef6-c03a-469d-a897-99700fa12bd0.png',
     },
     { 
-      name: 'Coaching', 
+      name: 'Performance', 
       icon: '/lovable-uploads/ef1bf8f5-8d03-4e1b-97de-c32adbc3661f.png',
     },
     { 
