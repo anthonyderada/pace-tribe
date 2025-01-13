@@ -167,7 +167,7 @@ const Index = () => {
           </p>
           <Button 
             onClick={() => navigate("/register")}
-            className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 text-lg"
+            className="bg-white text-black px-8 py-3 text-lg"
           >
             Join Now
           </Button>
