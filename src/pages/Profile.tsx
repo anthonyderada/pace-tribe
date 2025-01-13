@@ -329,7 +329,7 @@ const Profile = () => {
               size="icon"
               variant="ghost"
             >
-              <Pencil className="h-5 w-5" />
+              <Pencil className="h-5 w-5 md:h-6 md:w-6" />
             </Button>
           )}
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
@@ -483,7 +483,7 @@ const Profile = () => {
                   size="icon"
                   variant="ghost"
                 >
-                  <Pencil className="h-5 w-5" />
+                  <Pencil className="h-5 w-5 md:h-6 md:w-6" />
                 </Button>
                 <p className="text-zinc-400 whitespace-pre-line mb-4">
                   {accolades?.personal_bests || "No personal bests recorded yet"}
