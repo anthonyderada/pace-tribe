@@ -9,42 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      accolades: {
-        Row: {
-          created_at: string
-          id: string
-          pb_10k: unknown | null
-          pb_5k: unknown | null
-          pb_half_marathon: unknown | null
-          pb_marathon: unknown | null
-          pb_ultra: string | null
-          updated_at: string
-          user_id: string
+        accolades: {
+          Row: {
+            created_at: string
+            id: string
+            pb_10k: string | null
+            pb_5k: string | null
+            pb_half_marathon: string | null
+            pb_marathon: string | null
+            updated_at: string
+            user_id: string
+          }
+          Insert: {
+            created_at?: string
+            id?: string
+            pb_10k?: string | null
+            pb_5k?: string | null
+            pb_half_marathon?: string | null
+            pb_marathon?: string | null
+            updated_at?: string
+            user_id: string
+          }
+          Update: {
+            created_at?: string
+            id?: string
+            pb_10k?: string | null
+            pb_5k?: string | null
+            pb_half_marathon?: string | null
+            pb_marathon?: string | null
+            updated_at?: string
+            user_id?: string
+          }
+          Relationships: []
         }
-        Insert: {
-          created_at?: string
-          id?: string
-          pb_10k?: unknown | null
-          pb_5k?: unknown | null
-          pb_half_marathon?: unknown | null
-          pb_marathon?: unknown | null
-          pb_ultra?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          pb_10k?: unknown | null
-          pb_5k?: unknown | null
-          pb_half_marathon?: unknown | null
-          pb_marathon?: unknown | null
-          pb_ultra?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       club_members: {
         Row: {
           club_id: string
@@ -337,3 +334,4 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
     ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
