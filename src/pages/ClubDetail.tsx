@@ -259,14 +259,18 @@ const ClubDetail = () => {
             </div>
           </div>
           {user ? (
-            <Button
-              onClick={isMember ? handleLeaveClub : handleJoinClub}
-              className="w-full mt-8 border border-white bg-white text-black hover:bg-gray-100"
-              variant="outline"
-              disabled={isJoining}
-            >
-              {isJoining ? "Processing..." : (isMember ? "Leave Club" : "Join Club")}
-            </Button>
+            <div className="flex gap-2 mt-8">
+              <Button
+                onClick={isMember ? handleLeaveClub : handleJoinClub}
+                className={isMember 
+                  ? "w-full border border-white text-white bg-transparent hover:bg-white/10"
+                  : "w-full border border-white bg-white text-black hover:bg-gray-100"}
+                variant="outline"
+                disabled={isJoining}
+              >
+                {isJoining ? "Processing..." : (isMember ? "Leave Club" : "Join Club")}
+              </Button>
+            </div>
           ) : (
             <Button 
               className="w-full mt-8 border border-white bg-white text-black hover:bg-gray-100"
