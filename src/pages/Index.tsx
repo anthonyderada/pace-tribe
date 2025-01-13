@@ -27,12 +27,31 @@ const Index = () => {
   });
 
   const categories = [
-    { name: 'Trails', icon: '🌲' },
-    { name: 'Road', icon: '🛣️', selected: true },
-    { name: 'Track', icon: '🏃' },
-    { name: 'Coaching', icon: '👥' },
-    { name: 'Social', icon: '🤝' },
-    { name: 'Recovery', icon: '🧘' },
+    { 
+      name: 'Trails', 
+      icon: '/lovable-uploads/c596cf57-29a0-4b1c-8f21-b2a6fb30ddc0.png',
+    },
+    { 
+      name: 'Road', 
+      icon: '/lovable-uploads/1b31124b-22da-42e6-858d-510c78d0b217.png',
+      selected: true 
+    },
+    { 
+      name: 'Track', 
+      icon: '/lovable-uploads/01123a50-756a-4253-9c95-d69e4e4cc708.png',
+    },
+    { 
+      name: 'Coaching', 
+      icon: '/lovable-uploads/bf88bf5e-99e3-4cb5-8d87-937c25a5565c.png',
+    },
+    { 
+      name: 'Social', 
+      icon: '/lovable-uploads/1c8bd9e7-705e-4d20-bfaa-26e03df01a0b.png',
+    },
+    { 
+      name: 'Recovery', 
+      icon: '/lovable-uploads/a5d0da7e-9510-49e6-bf84-7bb4337095ad.png',
+    },
   ];
 
   return (
@@ -73,7 +92,13 @@ const Index = () => {
                     category.selected ? 'opacity-100' : 'opacity-50'
                   } hover:opacity-100 transition-opacity`}
                 >
-                  <div className="text-3xl mb-2">{category.icon}</div>
+                  <div className="w-12 h-12 mb-2">
+                    <img 
+                      src={category.icon} 
+                      alt={category.name}
+                      className="w-full h-full object-contain invert" // Invert to make black icons white
+                    />
+                  </div>
                   <span className="text-white text-sm">
                     {category.name}
                   </span>
