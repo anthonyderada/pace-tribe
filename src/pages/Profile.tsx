@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Calendar, Users, Edit2, Save } from "lucide-react";
+import { MapPin, Calendar, Users, Edit2, Save, Trophy } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
+import { Textarea } from "@/components/ui/textarea";
 
 type Profile = {
   username: string | null;
@@ -30,6 +31,10 @@ type Event = {
   };
 };
 
+type Accolades = {
+  personal_bests: string | null;
+};
+
 const Profile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -40,6 +45,9 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
+  const [accolades, setAccolades] = useState<Accolades | null>(null);
+  const [isEditingAccolades, setIsEditingAccolades] = useState(false);
+  const [personalBests, setPersonalBests] = useState("");
 
   useEffect(() => {
     if (!user) {
@@ -61,6 +69,23 @@ const Profile = () => {
         setUsername(data.username || "");
       } catch (error) {
         console.error("Error fetching profile:", error);
+      }
+    }
+
+    async function getAccolades() {
+      try {
+        const { data, error } = await supabase
+          .from("accolades")
+          .select("personal_bests")
+          .eq("user_id", user.id)
+          .single();
+
+        if (error) throw error;
+
+        setAccolades(data);
+        setPersonalBests(data.personal_bests || "");
+      } catch (error) {
+        console.error("Error fetching accolades:", error);
       }
     }
 
@@ -131,6 +156,7 @@ const Profile = () => {
     }
 
     getProfile();
+    getAccolades();
     getJoinedClubs();
     getRegisteredEvents();
 
@@ -193,6 +219,31 @@ const Profile = () => {
       toast({
         title: "Error",
         description: "Failed to update profile. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateAccolades = async () => {
+    try {
+      const { error } = await supabase
+        .from("accolades")
+        .update({ personal_bests: personalBests })
+        .eq("user_id", user?.id);
+
+      if (error) throw error;
+
+      setAccolades(prev => ({ ...prev!, personal_bests: personalBests }));
+      setIsEditingAccolades(false);
+      toast({
+        title: "Personal bests updated",
+        description: "Your personal bests have been updated successfully.",
+      });
+    } catch (error) {
+      console.error("Error updating personal bests:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update personal bests. Please try again.",
         variant: "destructive",
       });
     }
@@ -264,6 +315,58 @@ const Profile = () => {
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Card className="border-0 bg-zinc-900/90">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-zinc-100">
+              <Trophy className="h-5 w-5" />
+              Personal Bests
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isEditingAccolades ? (
+              <div className="space-y-4">
+                <Textarea
+                  value={personalBests}
+                  onChange={(e) => setPersonalBests(e.target.value)}
+                  placeholder="Enter your personal best times..."
+                  className="min-h-[150px]"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleUpdateAccolades}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    Save
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditingAccolades(false);
+                      setPersonalBests(accolades?.personal_bests || "");
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p className="text-zinc-400 whitespace-pre-line mb-4">
+                  {accolades?.personal_bests || "No personal bests recorded yet"}
+                </p>
+                <Button
+                  onClick={() => setIsEditingAccolades(true)}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  <Edit2 className="w-4 h-4 mr-2" />
+                  Edit Personal Bests
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <Card className="border-0 bg-zinc-900/90">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-zinc-100">
