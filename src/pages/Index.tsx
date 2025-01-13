@@ -29,28 +29,28 @@ const Index = () => {
   const categories = [
     { 
       name: 'Trails', 
-      icon: '/lovable-uploads/c596cf57-29a0-4b1c-8f21-b2a6fb30ddc0.png',
+      icon: '/lovable-uploads/172a4cca-8937-40ba-b6bb-f35085b36bb7.png',
     },
     { 
       name: 'Road', 
-      icon: '/lovable-uploads/1b31124b-22da-42e6-858d-510c78d0b217.png',
+      icon: '/lovable-uploads/aaae8bd4-c7f5-4ca1-9fac-fde0a09ac193.png',
       selected: true 
     },
     { 
       name: 'Track', 
-      icon: '/lovable-uploads/01123a50-756a-4253-9c95-d69e4e4cc708.png',
+      icon: '/lovable-uploads/0e9e5ef6-c03a-469d-a897-99700fa12bd0.png',
     },
     { 
       name: 'Coaching', 
-      icon: '/lovable-uploads/bf88bf5e-99e3-4cb5-8d87-937c25a5565c.png',
+      icon: '/lovable-uploads/ef1bf8f5-8d03-4e1b-97de-c32adbc3661f.png',
     },
     { 
       name: 'Social', 
-      icon: '/lovable-uploads/1c8bd9e7-705e-4d20-bfaa-26e03df01a0b.png',
+      icon: '/lovable-uploads/b93e8026-1345-4911-96e9-1b58b8478f90.png',
     },
     { 
       name: 'Recovery', 
-      icon: '/lovable-uploads/a5d0da7e-9510-49e6-bf84-7bb4337095ad.png',
+      icon: '/lovable-uploads/c5a3292f-e28b-4f6d-82c8-6f8784c83570.png',
     },
   ];
 
