@@ -506,7 +506,7 @@ const Profile = () => {
                     value={preferredDistance}
                     onValueChange={setPreferredDistance}
                   >
-                    <SelectTrigger className="bg-zinc-800 border-zinc-700">
+                    <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
                       <SelectValue placeholder="Select preferred distance" />
                     </SelectTrigger>
                     <SelectContent>
@@ -526,7 +526,7 @@ const Profile = () => {
                     value={comfortablePace}
                     onChange={(e) => setComfortablePace(e.target.value)}
                     placeholder="e.g., 8:30 min/mile"
-                    className="bg-zinc-800 border-zinc-700"
+                    className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
                   />
                 </div>
                 <div className="flex gap-2">
@@ -721,4 +721,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
