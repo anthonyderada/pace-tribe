@@ -602,6 +602,13 @@ const Profile = () => {
                       <SelectItem value="Saucony">Saucony</SelectItem>
                       <SelectItem value="Brooks">Brooks</SelectItem>
                       <SelectItem value="Adidas">Adidas</SelectItem>
+                      <SelectItem value="Mizuno">Mizuno</SelectItem>
+                      <SelectItem value="Altra">Altra</SelectItem>
+                      <SelectItem value="New Balance">New Balance</SelectItem>
+                      <SelectItem value="Salomon">Salomon</SelectItem>
+                      <SelectItem value="La Sportiva">La Sportiva</SelectItem>
+                      <SelectItem value="Merrel">Merrel</SelectItem>
+                      <SelectItem value="Topo Athletic">Topo Athletic</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
