@@ -93,7 +93,7 @@ const TimeInput = ({
         value={hours}
         onChange={(e) => handleChange('hours', e.target.value)}
         className="w-20"
-        placeholder="HH"
+        placeholder="hr"
       />
       <span className="text-zinc-400">:</span>
       <Input
@@ -103,7 +103,7 @@ const TimeInput = ({
         value={minutes}
         onChange={(e) => handleChange('minutes', e.target.value)}
         className="w-20"
-        placeholder="MM"
+        placeholder="min"
       />
       <span className="text-zinc-400">:</span>
       <Input
@@ -113,7 +113,7 @@ const TimeInput = ({
         value={seconds}
         onChange={(e) => handleChange('seconds', e.target.value)}
         className="w-20"
-        placeholder="SS"
+        placeholder="sec"
       />
     </div>
   );
