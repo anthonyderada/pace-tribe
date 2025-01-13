@@ -14,6 +14,7 @@ type Profile = {
   username: string | null;
   avatar_url: string | null;
   bio: string | null;
+  location: string | null;
 };
 
 type Club = {
@@ -46,7 +47,7 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
-  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(true);
   const [accolades, setAccolades] = useState<Accolades | null>(null);
   const [isEditingAccolades, setIsEditingAccolades] = useState(false);
@@ -62,7 +63,7 @@ const Profile = () => {
       try {
         const { data, error } = await supabase
           .from("profiles")
-          .select("username, avatar_url, bio")
+          .select("username, avatar_url, bio, location")
           .eq("id", user.id)
           .single();
 
@@ -71,6 +72,7 @@ const Profile = () => {
         setProfile(data);
         setUsername(data.username || "");
         setBio(data.bio || "");
+        setLocation(data.location || "");
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -206,12 +208,21 @@ const Profile = () => {
     try {
       const { error } = await supabase
         .from("profiles")
-        .update({ username })
+        .update({ 
+          username,
+          bio,
+          location
+        })
         .eq("id", user?.id);
 
       if (error) throw error;
 
-      setProfile(prev => ({ ...prev!, username }));
+      setProfile(prev => ({ 
+        ...prev!, 
+        username,
+        bio,
+        location
+      }));
       setIsEditing(false);
       toast({
         title: "Profile updated",
@@ -222,31 +233,6 @@ const Profile = () => {
       toast({
         title: "Error",
         description: "Failed to update profile. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleUpdateBio = async () => {
-    try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ bio })
-        .eq("id", user?.id);
-
-      if (error) throw error;
-
-      setProfile(prev => ({ ...prev!, bio }));
-      setIsEditingBio(false);
-      toast({
-        title: "Bio updated",
-        description: "Your bio has been updated successfully.",
-      });
-    } catch (error) {
-      console.error("Error updating bio:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update bio. Please try again.",
         variant: "destructive",
       });
     }
@@ -300,6 +286,18 @@ const Profile = () => {
                     placeholder="Username"
                     className="max-w-xs"
                   />
+                  <Input
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="Location"
+                    className="max-w-xs"
+                  />
+                  <Textarea
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    placeholder="Tell us about your running goals and ambitions..."
+                    className="min-h-[100px]"
+                  />
                   <div className="flex gap-2 justify-center md:justify-start">
                     <Button
                       onClick={handleUpdateProfile}
@@ -313,6 +311,8 @@ const Profile = () => {
                       onClick={() => {
                         setIsEditing(false);
                         setUsername(profile?.username || "");
+                        setLocation(profile?.location || "");
+                        setBio(profile?.bio || "");
                       }}
                     >
                       Cancel
@@ -326,63 +326,25 @@ const Profile = () => {
                   </h1>
                   <p className="text-zinc-400 flex items-center justify-center md:justify-start gap-2 mb-4">
                     <MapPin className="h-4 w-4" />
-                    Not set
+                    {profile?.location || "Not set"}
                   </p>
-                  <Button
-                    onClick={() => setIsEditing(true)}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                  >
-                    <Edit2 className="w-4 h-4 mr-2" />
-                    Edit Profile
-                  </Button>
+                  <div className="space-y-4">
+                    <p className="text-zinc-400">
+                      {profile?.bio || "No bio added yet"}
+                    </p>
+                    <Button
+                      onClick={() => setIsEditing(true)}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    >
+                      <Edit2 className="w-4 h-4 mr-2" />
+                      Edit Profile
+                    </Button>
+                  </div>
                 </>
               )}
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          {isEditingBio ? (
-            <div className="space-y-4">
-              <Textarea
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                placeholder="Tell us about your running goals and ambitions..."
-                className="min-h-[100px]"
-              />
-              <div className="flex gap-2">
-                <Button
-                  onClick={handleUpdateBio}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Bio
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsEditingBio(false);
-                    setBio(profile?.bio || "");
-                  }}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <p className="text-zinc-400">
-                {profile?.bio || "No bio added yet"}
-              </p>
-              <Button
-                onClick={() => setIsEditingBio(true)}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white"
-              >
-                <Edit2 className="w-4 h-4 mr-2" />
-                {profile?.bio ? "Edit Bio" : "Add Bio"}
-              </Button>
-            </div>
-          )}
-        </CardContent>
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
