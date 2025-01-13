@@ -47,22 +47,6 @@ const Index = () => {
     { 
       name: 'Social', 
       icon: '/lovable-uploads/b93e8026-1345-4911-96e9-1b58b8478f90.png',
-    },
-    { 
-      name: 'Recovery', 
-      icon: '/lovable-uploads/c5a3292f-e28b-4f6d-82c8-6f8784c83570.png',
-    },
-    {
-      name: 'Nutrition',
-      icon: '/lovable-uploads/12df4cdf-f053-47f8-9e42-9a02b17d451d.png',
-    },
-    {
-      name: 'Shoe Store',
-      icon: '/lovable-uploads/a1d393c8-d808-4613-982f-a4a705184f57.png',
-    },
-    {
-      name: 'Cleaning',
-      icon: '/lovable-uploads/e2f4d6b0-e690-4dee-afd7-226ae3eb50b5.png',
     }
   ];
 
