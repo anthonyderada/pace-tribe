@@ -476,17 +476,18 @@ const Profile = () => {
                 </div>
               </div>
             ) : (
-              <div>
+              <div className="relative">
+                <Button
+                  onClick={() => setIsEditingAccolades(true)}
+                  className="absolute top-0 right-0 bg-transparent hover:bg-zinc-800/50 text-zinc-400 hover:text-white"
+                  size="icon"
+                  variant="ghost"
+                >
+                  <Pencil className="h-5 w-5" />
+                </Button>
                 <p className="text-zinc-400 whitespace-pre-line mb-4">
                   {accolades?.personal_bests || "No personal bests recorded yet"}
                 </p>
-                <Button
-                  onClick={() => setIsEditingAccolades(true)}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
-                  <Edit2 className="w-4 h-4 mr-2" />
-                  Edit Personal Bests
-                </Button>
               </div>
             )}
           </CardContent>
