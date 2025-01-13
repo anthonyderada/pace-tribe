@@ -65,13 +65,18 @@ const Profile = () => {
   const [personalBests, setPersonalBests] = useState("");
   const [uploading, setUploading] = useState(false);
   const [preferredDistance, setPreferredDistance] = useState("");
-  const [paceRange, setPaceRange] = useState([8]); // Default to 8 min/mile
+  const [paceRange, setPaceRange] = useState([8, 9]); // Default to 8-9 min/mile range
   const [comfortablePace, setComfortablePace] = useState("");
   const [isEditingPreferences, setIsEditingPreferences] = useState(false);
 
   // Helper function to format pace
   const formatPace = (pace: number) => {
     return `${Math.floor(pace)}:${((pace % 1) * 60).toFixed(0).padStart(2, '0')} min/mile`;
+  };
+
+  // Helper function to format pace range
+  const formatPaceRange = (range: number[]) => {
+    return `${formatPace(range[0])} - ${formatPace(range[1])}`;
   };
 
   useEffect(() => {
@@ -97,13 +102,22 @@ const Profile = () => {
         setPreferredDistance(data.preferred_distance || "");
         setComfortablePace(data.comfortable_pace || "");
         
-        // Parse the pace from the stored format
+        // Parse the pace range from the stored format
         if (data.comfortable_pace) {
-          const paceParts = data.comfortable_pace.split(':');
-          if (paceParts.length === 2) {
-            const minutes = parseInt(paceParts[0]);
-            const seconds = parseInt(paceParts[1]);
-            setPaceRange([minutes + (seconds / 60)]);
+          const rangeParts = data.comfortable_pace.split(' - ');
+          if (rangeParts.length === 2) {
+            const lowPaceParts = rangeParts[0].split(':');
+            const highPaceParts = rangeParts[1].split(':');
+            if (lowPaceParts.length === 2 && highPaceParts.length === 2) {
+              const lowMinutes = parseInt(lowPaceParts[0]);
+              const lowSeconds = parseInt(lowPaceParts[1]);
+              const highMinutes = parseInt(highPaceParts[0]);
+              const highSeconds = parseInt(highPaceParts[1]);
+              setPaceRange([
+                lowMinutes + (lowSeconds / 60),
+                highMinutes + (highSeconds / 60)
+              ]);
+            }
           }
         }
       } catch (error) {
@@ -347,13 +361,13 @@ const Profile = () => {
 
   const handleUpdatePreferences = async () => {
     try {
-      const formattedPace = `${formatPace(paceRange[0])}`;
+      const formattedPaceRange = formatPaceRange(paceRange);
       
       const { error } = await supabase
         .from("profiles")
         .update({ 
           preferred_distance: preferredDistance,
-          comfortable_pace: formattedPace
+          comfortable_pace: formattedPaceRange
         })
         .eq("id", user?.id);
 
@@ -362,7 +376,7 @@ const Profile = () => {
       setProfile(prev => ({ 
         ...prev!, 
         preferred_distance: preferredDistance,
-        comfortable_pace: formattedPace
+        comfortable_pace: formattedPaceRange
       }));
       setIsEditingPreferences(false);
       toast({
@@ -539,7 +553,7 @@ const Profile = () => {
                 </div>
                 <div>
                   <label className="text-sm text-zinc-400 mb-2 block">
-                    Comfortable Pace
+                    Comfortable Pace Range
                   </label>
                   <div className="space-y-2">
                     <Slider
@@ -547,11 +561,11 @@ const Profile = () => {
                       onValueChange={setPaceRange}
                       min={5}
                       max={15}
-                      step={0.1}
+                      step={0.25}
                       className="w-full"
                     />
                     <div className="text-white text-sm">
-                      {formatPace(paceRange[0])}
+                      {formatPaceRange(paceRange)}
                     </div>
                   </div>
                 </div>
