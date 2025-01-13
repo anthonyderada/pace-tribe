@@ -32,6 +32,10 @@ type Profile = {
   seeking_race_pacers: boolean | null;
 };
 
+type Accolades = {
+  personal_bests: string | null;
+};
+
 type Club = {
   id: string;
   name: string;
@@ -846,3 +850,4 @@ const Profile = () => {
 };
 
 export default Profile;
+
