@@ -172,7 +172,7 @@ const EventDetail = () => {
 
         toast({
           title: "Success",
-          description: "You have unregistered from the event",
+          description: "You have cancelled your registration for the event",
         });
       } else {
         // Join event
@@ -262,7 +262,7 @@ const EventDetail = () => {
               }`}
               onClick={handleParticipation}
             >
-              {isParticipant ? "Unregister" : "Register"}
+              {isParticipant ? "Cancel Registration" : "Register"}
             </Button>
           ) : (
             <Button
