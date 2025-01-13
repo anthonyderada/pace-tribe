@@ -78,6 +78,116 @@ const Profile = () => {
   const [seekingRacePacers, setSeekingRacePacers] = useState(false);
   const [preferredShoeBrands, setPreferredShoeBrands] = useState<string[]>([]);
 
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      if (!event.target.files || event.target.files.length === 0) {
+        return;
+      }
+      
+      setUploading(true);
+      const file = event.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user?.id}-${Math.random()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('assets')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('assets')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', user?.id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      setProfile(prev => ({ ...prev!, avatar_url: publicUrl }));
+      toast({
+        title: "Success",
+        description: "Profile picture updated successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update profile picture. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          username,
+          bio,
+          location,
+        })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+
+      setProfile(prev => ({
+        ...prev!,
+        username,
+        bio,
+        location,
+      }));
+      setIsEditing(false);
+      toast({
+        title: "Profile updated",
+        description: "Your profile has been updated successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update profile. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateAccolades = async () => {
+    try {
+      const { error } = await supabase
+        .from('accolades')
+        .update({
+          personal_bests: personalBests,
+        })
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
+
+      setAccolades(prev => ({
+        ...prev!,
+        personal_bests: personalBests,
+      }));
+      setIsEditingAccolades(false);
+      toast({
+        title: "Accolades updated",
+        description: "Your personal bests have been updated successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update personal bests. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const formatPace = (pace: number) => {
     return `${Math.floor(pace)}:${((pace % 1) * 60).toFixed(0).padStart(2, '0')} min/mile`;
   };
@@ -820,3 +930,4 @@ const Profile = () => {
 };
 
 export default Profile;
+
