@@ -419,7 +419,7 @@ const Profile = () => {
     if (profile?.seeking_training_partners) preferences.push("Looking for Training Partners");
     if (profile?.seeking_casual_meetups) preferences.push("Interested in Casual Meetups");
     if (profile?.seeking_race_pacers) preferences.push("Looking for Race Day Pacers");
-    return preferences.length > 0 ? preferences : ["None"];
+    return preferences.length > 0 ? preferences : ["No preference"];
   };
 
   if (loading) {
@@ -861,4 +861,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
