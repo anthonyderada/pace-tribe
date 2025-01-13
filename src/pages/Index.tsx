@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Salad, ShoppingBag, Brush } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -52,6 +52,21 @@ const Index = () => {
       name: 'Recovery', 
       icon: '/lovable-uploads/c5a3292f-e28b-4f6d-82c8-6f8784c83570.png',
     },
+    {
+      name: 'Nutrition',
+      icon: 'lucide',
+      LucideIcon: Salad
+    },
+    {
+      name: 'Shoe Store',
+      icon: 'lucide',
+      LucideIcon: ShoppingBag
+    },
+    {
+      name: 'Cleaning',
+      icon: 'lucide',
+      LucideIcon: Brush
+    }
   ];
 
   return (
@@ -84,22 +99,26 @@ const Index = () => {
             </div>
 
             {/* Categories Row */}
-            <div className="flex justify-center gap-8 mb-16">
+            <div className="flex justify-center gap-8 mb-16 overflow-x-auto px-4">
               {categories.map((category) => (
                 <div 
                   key={category.name}
                   className={`flex flex-col items-center cursor-pointer ${
                     category.selected ? 'opacity-100' : 'opacity-50'
-                  } hover:opacity-100 transition-opacity`}
+                  } hover:opacity-100 transition-opacity flex-shrink-0`}
                 >
                   <div className="w-12 h-12 mb-2">
-                    <img 
-                      src={category.icon} 
-                      alt={category.name}
-                      className="w-full h-full object-contain invert" // Invert to make black icons white
-                    />
+                    {category.icon === 'lucide' && category.LucideIcon ? (
+                      <category.LucideIcon className="w-full h-full text-white" />
+                    ) : (
+                      <img 
+                        src={category.icon} 
+                        alt={category.name}
+                        className="w-full h-full object-contain invert"
+                      />
+                    )}
                   </div>
-                  <span className="text-white text-sm">
+                  <span className="text-white text-sm whitespace-nowrap">
                     {category.name}
                   </span>
                   {category.selected && (
