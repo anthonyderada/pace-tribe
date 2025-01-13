@@ -38,7 +38,6 @@ type Accolades = {
   pb_10k: string | null;
   pb_half_marathon: string | null;
   pb_marathon: string | null;
-  pb_ultra: string | null;
 };
 
 type Club = {
@@ -138,7 +137,6 @@ const Profile = () => {
   const [pb10kTime, setPb10kTime] = useState({ hours: "00", minutes: "00", seconds: "00" });
   const [pbHalfTime, setPbHalfTime] = useState({ hours: "00", minutes: "00", seconds: "00" });
   const [pbMarathonTime, setPbMarathonTime] = useState({ hours: "00", minutes: "00", seconds: "00" });
-  const [pbUltra, setPbUltra] = useState("");
   const [uploading, setUploading] = useState(false);
   const [preferredDistance, setPreferredDistance] = useState("");
   const [paceRange, setPaceRange] = useState([6, 7]);
@@ -253,7 +251,6 @@ const Profile = () => {
           pb_10k: formatTimeToInterval(pb10kTime),
           pb_half_marathon: formatTimeToInterval(pbHalfTime),
           pb_marathon: formatTimeToInterval(pbMarathonTime),
-          pb_ultra: pbUltra,
         })
         .eq("user_id", user?.id);
 
@@ -264,7 +261,6 @@ const Profile = () => {
         pb_10k: formatTimeToInterval(pb10kTime),
         pb_half_marathon: formatTimeToInterval(pbHalfTime),
         pb_marathon: formatTimeToInterval(pbMarathonTime),
-        pb_ultra: pbUltra,
       });
       setIsEditingAccolades(false);
       toast({
@@ -323,7 +319,7 @@ const Profile = () => {
       try {
         const { data, error } = await supabase
           .from("accolades")
-          .select("pb_5k, pb_10k, pb_half_marathon, pb_marathon, pb_ultra")
+          .select("pb_5k, pb_10k, pb_half_marathon, pb_marathon")
           .eq("user_id", user.id)
           .single();
 
@@ -333,14 +329,12 @@ const Profile = () => {
           pb_5k: data.pb_5k,
           pb_10k: data.pb_10k,
           pb_half_marathon: data.pb_half_marathon,
-          pb_marathon: data.pb_marathon,
-          pb_ultra: data.pb_ultra
+          pb_marathon: data.pb_marathon
         });
         setPb5kTime(parseIntervalToTime(data.pb_5k));
         setPb10kTime(parseIntervalToTime(data.pb_10k));
         setPbHalfTime(parseIntervalToTime(data.pb_half_marathon));
         setPbMarathonTime(parseIntervalToTime(data.pb_marathon));
-        setPbUltra(data.pb_ultra || "");
       } catch (error) {
         console.error("Error fetching accolades:", error);
       }
@@ -686,7 +680,6 @@ const Profile = () => {
                       <SelectItem value="10k">10k</SelectItem>
                       <SelectItem value="Half Marathon">Half Marathon</SelectItem>
                       <SelectItem value="Marathon">Marathon</SelectItem>
-                      <SelectItem value="Ultras">Ultras</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -923,15 +916,6 @@ const Profile = () => {
                     onChange={setPbMarathonTime}
                   />
                 </div>
-                <div>
-                  <label className="text-sm text-zinc-400 mb-2 block">Ultra</label>
-                  <Input
-                    type="text"
-                    placeholder="Distance and time"
-                    value={pbUltra}
-                    onChange={(e) => setPbUltra(e.target.value)}
-                  />
-                </div>
                 <div className="flex gap-2">
                   <Button
                     onClick={handleUpdateAccolades}
@@ -949,7 +933,6 @@ const Profile = () => {
                       setPb10kTime(parseIntervalToTime(accolades?.pb_10k));
                       setPbHalfTime(parseIntervalToTime(accolades?.pb_half_marathon));
                       setPbMarathonTime(parseIntervalToTime(accolades?.pb_marathon));
-                      setPbUltra(accolades?.pb_ultra || "");
                     }}
                     className="border border-white text-white bg-transparent"
                   >
@@ -983,10 +966,6 @@ const Profile = () => {
                   <div>
                     <h3 className="text-lg font-semibold text-zinc-100">Marathon</h3>
                     <p className="text-zinc-400">{accolades?.pb_marathon || "Not set"}</p>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-zinc-100">Ultra</h3>
-                    <p className="text-zinc-400">{accolades?.pb_ultra || "Not set"}</p>
                   </div>
                 </div>
               </div>
@@ -1076,4 +1055,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
