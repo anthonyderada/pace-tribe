@@ -63,10 +63,10 @@ const EventDetail = () => {
                 user_id
               )
             ),
-            event_participants!inner (
+            event_participants (
               id,
               user_id,
-              profiles!inner (
+              profiles:profiles!inner (
                 username,
                 avatar_url
               )
@@ -139,10 +139,10 @@ const EventDetail = () => {
                   user_id
                 )
               ),
-              event_participants!inner (
+              event_participants (
                 id,
                 user_id,
-                profiles!inner (
+                profiles:profiles!inner (
                   username,
                   avatar_url
                 )
