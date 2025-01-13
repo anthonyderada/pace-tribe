@@ -10,6 +10,13 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Profile = {
   username: string | null;
@@ -714,3 +721,4 @@ const Profile = () => {
 };
 
 export default Profile;
+
