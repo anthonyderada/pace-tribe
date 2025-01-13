@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -64,8 +65,14 @@ const Profile = () => {
   const [personalBests, setPersonalBests] = useState("");
   const [uploading, setUploading] = useState(false);
   const [preferredDistance, setPreferredDistance] = useState("");
+  const [paceRange, setPaceRange] = useState([8]); // Default to 8 min/mile
   const [comfortablePace, setComfortablePace] = useState("");
   const [isEditingPreferences, setIsEditingPreferences] = useState(false);
+
+  // Helper function to format pace
+  const formatPace = (pace: number) => {
+    return `${Math.floor(pace)}:${((pace % 1) * 60).toFixed(0).padStart(2, '0')} min/mile`;
+  };
 
   useEffect(() => {
     if (!user) {
@@ -89,6 +96,16 @@ const Profile = () => {
         setLocation(data.location || "");
         setPreferredDistance(data.preferred_distance || "");
         setComfortablePace(data.comfortable_pace || "");
+        
+        // Parse the pace from the stored format
+        if (data.comfortable_pace) {
+          const paceParts = data.comfortable_pace.split(':');
+          if (paceParts.length === 2) {
+            const minutes = parseInt(paceParts[0]);
+            const seconds = parseInt(paceParts[1]);
+            setPaceRange([minutes + (seconds / 60)]);
+          }
+        }
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -330,11 +347,13 @@ const Profile = () => {
 
   const handleUpdatePreferences = async () => {
     try {
+      const formattedPace = `${formatPace(paceRange[0])}`;
+      
       const { error } = await supabase
         .from("profiles")
         .update({ 
           preferred_distance: preferredDistance,
-          comfortable_pace: comfortablePace
+          comfortable_pace: formattedPace
         })
         .eq("id", user?.id);
 
@@ -343,7 +362,7 @@ const Profile = () => {
       setProfile(prev => ({ 
         ...prev!, 
         preferred_distance: preferredDistance,
-        comfortable_pace: comfortablePace
+        comfortable_pace: formattedPace
       }));
       setIsEditingPreferences(false);
       toast({
@@ -492,7 +511,7 @@ const Profile = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-zinc-100">
               <Route className="h-5 w-5" />
-              My Running Preferences
+              Running Preferences
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -522,12 +541,19 @@ const Profile = () => {
                   <label className="text-sm text-zinc-400 mb-2 block">
                     Comfortable Pace
                   </label>
-                  <Input
-                    value={comfortablePace}
-                    onChange={(e) => setComfortablePace(e.target.value)}
-                    placeholder="e.g., 8:30 min/mile"
-                    className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
-                  />
+                  <div className="space-y-2">
+                    <Slider
+                      value={paceRange}
+                      onValueChange={setPaceRange}
+                      min={5}
+                      max={15}
+                      step={0.1}
+                      className="w-full"
+                    />
+                    <div className="text-white text-sm">
+                      {formatPace(paceRange[0])}
+                    </div>
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <Button
