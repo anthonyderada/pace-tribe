@@ -30,7 +30,7 @@ type Profile = {
   seeking_training_partners: boolean | null;
   seeking_casual_meetups: boolean | null;
   seeking_race_pacers: boolean | null;
-  preferred_shoe_brand: string | null;
+  preferred_shoe_brand: string[] | null;
 };
 
 type Accolades = {
@@ -76,7 +76,7 @@ const Profile = () => {
   const [seekingTrainingPartners, setSeekingTrainingPartners] = useState(false);
   const [seekingCasualMeetups, setSeekingCasualMeetups] = useState(false);
   const [seekingRacePacers, setSeekingRacePacers] = useState(false);
-  const [preferredShoeBrand, setPreferredShoeBrand] = useState("");
+  const [preferredShoeBrands, setPreferredShoeBrands] = useState<string[]>([]);
 
   const formatPace = (pace: number) => {
     return `${Math.floor(pace)}:${((pace % 1) * 60).toFixed(0).padStart(2, '0')} min/mile`;
@@ -111,7 +111,7 @@ const Profile = () => {
         setSeekingTrainingPartners(data.seeking_training_partners || false);
         setSeekingCasualMeetups(data.seeking_casual_meetups || false);
         setSeekingRacePacers(data.seeking_race_pacers || false);
-        setPreferredShoeBrand(data.preferred_shoe_brand || "");
+        setPreferredShoeBrands(data.preferred_shoe_brand || []);
         
         if (data.comfortable_pace) {
           const rangeParts = data.comfortable_pace.split(' - ');
@@ -273,7 +273,7 @@ const Profile = () => {
           seeking_training_partners: seekingTrainingPartners,
           seeking_casual_meetups: seekingCasualMeetups,
           seeking_race_pacers: seekingRacePacers,
-          preferred_shoe_brand: preferredShoeBrand
+          preferred_shoe_brand: preferredShoeBrands
         })
         .eq("id", user?.id);
 
@@ -286,7 +286,7 @@ const Profile = () => {
         seeking_training_partners: seekingTrainingPartners,
         seeking_casual_meetups: seekingCasualMeetups,
         seeking_race_pacers: seekingRacePacers,
-        preferred_shoe_brand: preferredShoeBrand
+        preferred_shoe_brand: preferredShoeBrands
       }));
       setIsEditingPreferences(false);
       toast({
@@ -303,118 +303,31 @@ const Profile = () => {
     }
   };
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      if (!event.target.files || event.target.files.length === 0) {
-        return;
+  const shoeBrands = [
+    "Nike",
+    "Hoka",
+    "ON",
+    "Asics",
+    "Saucony",
+    "Brooks",
+    "Adidas",
+    "Mizuno",
+    "Altra",
+    "New Balance",
+    "Salomon",
+    "La Sportiva",
+    "Merrel",
+    "Topo Athletic"
+  ];
+
+  const toggleShoeBrand = (brand: string) => {
+    setPreferredShoeBrands(current => {
+      if (current.includes(brand)) {
+        return current.filter(b => b !== brand);
+      } else {
+        return [...current, brand];
       }
-      const file = event.target.files[0];
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${user?.id}-${Math.random()}.${fileExt}`;
-
-      setUploading(true);
-
-      const { error: uploadError } = await supabase.storage
-        .from('assets')
-        .upload(filePath, file);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('assets')
-        .getPublicUrl(filePath);
-
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ avatar_url: publicUrl })
-        .eq('id', user?.id);
-
-      if (updateError) {
-        throw updateError;
-      }
-
-      setProfile(prev => ({ ...prev!, avatar_url: publicUrl }));
-      
-      toast({
-        title: "Success",
-        description: "Profile picture updated successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update profile picture",
-        variant: "destructive",
-      });
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleUpdateProfile = async () => {
-    try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ 
-          username,
-          bio,
-          location,
-          seeking_training_partners: seekingTrainingPartners,
-          seeking_casual_meetups: seekingCasualMeetups,
-          seeking_race_pacers: seekingRacePacers
-        })
-        .eq("id", user?.id);
-
-      if (error) throw error;
-
-      setProfile(prev => ({ 
-        ...prev!, 
-        username,
-        bio,
-        location,
-        seeking_training_partners: seekingTrainingPartners,
-        seeking_casual_meetups: seekingCasualMeetups,
-        seeking_race_pacers: seekingRacePacers
-      }));
-      setIsEditing(false);
-      toast({
-        title: "Profile updated",
-        description: "Your profile has been updated successfully.",
-      });
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleUpdateAccolades = async () => {
-    try {
-      const { error } = await supabase
-        .from("accolades")
-        .update({ personal_bests: personalBests })
-        .eq("user_id", user?.id);
-
-      if (error) throw error;
-
-      setAccolades(prev => ({ ...prev!, personal_bests: personalBests }));
-      setIsEditingAccolades(false);
-      toast({
-        title: "Personal bests updated",
-        description: "Your personal bests have been updated successfully.",
-      });
-    } catch (error) {
-      console.error("Error updating personal bests:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update personal bests. Please try again.",
-        variant: "destructive",
-      });
-    }
+    });
   };
 
   const getConnectionPreferences = () => {
@@ -585,32 +498,26 @@ const Profile = () => {
                 </div>
                 <div>
                   <label className="text-sm text-zinc-400 mb-2 block">
-                    Preferred Shoe Brand
+                    Preferred Shoe Brands
                   </label>
-                  <Select
-                    value={preferredShoeBrand}
-                    onValueChange={setPreferredShoeBrand}
-                  >
-                    <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
-                      <SelectValue placeholder="Select preferred shoe brand" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Nike">Nike</SelectItem>
-                      <SelectItem value="Hoka">Hoka</SelectItem>
-                      <SelectItem value="ON">ON</SelectItem>
-                      <SelectItem value="Asics">Asics</SelectItem>
-                      <SelectItem value="Saucony">Saucony</SelectItem>
-                      <SelectItem value="Brooks">Brooks</SelectItem>
-                      <SelectItem value="Adidas">Adidas</SelectItem>
-                      <SelectItem value="Mizuno">Mizuno</SelectItem>
-                      <SelectItem value="Altra">Altra</SelectItem>
-                      <SelectItem value="New Balance">New Balance</SelectItem>
-                      <SelectItem value="Salomon">Salomon</SelectItem>
-                      <SelectItem value="La Sportiva">La Sportiva</SelectItem>
-                      <SelectItem value="Merrel">Merrel</SelectItem>
-                      <SelectItem value="Topo Athletic">Topo Athletic</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="grid grid-cols-2 gap-2">
+                    {shoeBrands.map((brand) => (
+                      <div key={brand} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`shoe-brand-${brand}`}
+                          checked={preferredShoeBrands.includes(brand)}
+                          onCheckedChange={() => toggleShoeBrand(brand)}
+                          className="border-white data-[state=checked]:bg-white data-[state=checked]:text-black"
+                        />
+                        <label
+                          htmlFor={`shoe-brand-${brand}`}
+                          className="text-sm font-medium leading-none text-white peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {brand}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <label className="text-sm text-zinc-400 mb-2 block">
@@ -703,7 +610,7 @@ const Profile = () => {
                       setSeekingTrainingPartners(profile?.seeking_training_partners || false);
                       setSeekingCasualMeetups(profile?.seeking_casual_meetups || false);
                       setSeekingRacePacers(profile?.seeking_race_pacers || false);
-                      setPreferredShoeBrand(profile?.preferred_shoe_brand || "");
+                      setPreferredShoeBrands(profile?.preferred_shoe_brand || []);
                     }}
                     className="border border-white text-white bg-transparent"
                   >
@@ -732,11 +639,22 @@ const Profile = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-zinc-100 mb-2">
-                      Preferred shoe brand
+                      Preferred shoe brands
                     </h3>
-                    <p className="text-zinc-400">
-                      {profile?.preferred_shoe_brand || "Not set"}
-                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {profile?.preferred_shoe_brand && profile.preferred_shoe_brand.length > 0 ? (
+                        profile.preferred_shoe_brand.map((brand) => (
+                          <span
+                            key={brand}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-800 text-zinc-100"
+                          >
+                            {brand}
+                          </span>
+                        ))
+                      ) : (
+                        <p className="text-zinc-400">No preference</p>
+                      )}
+                    </div>
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-zinc-100 mb-2">
