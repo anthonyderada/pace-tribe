@@ -172,7 +172,7 @@ const EventDetail = () => {
 
         toast({
           title: "Success",
-          description: "You have left the event",
+          description: "You have unfollowed the event",
         });
       } else {
         // Join event
@@ -185,7 +185,7 @@ const EventDetail = () => {
 
         toast({
           title: "Success",
-          description: "You have joined the event",
+          description: "You are now following the event",
         });
       }
     } catch (error) {
@@ -199,6 +199,7 @@ const EventDetail = () => {
   };
 
   if (isLoading || !event) {
+    // ... keep existing code (loading state)
     return (
       <div className="container mx-auto px-4 py-8 space-y-8">
         <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
@@ -256,19 +257,19 @@ const EventDetail = () => {
             <Button
               className={`w-full mt-8 ${
                 isParticipant
-                  ? "bg-red-600 hover:bg-red-700"
-                  : "bg-emerald-600 hover:bg-emerald-700"
-              } text-white`}
+                  ? "border border-white text-white bg-transparent hover:bg-white/10"
+                  : "border border-white bg-white text-black hover:bg-gray-100"
+              }`}
               onClick={handleParticipation}
             >
-              {isParticipant ? "Leave Event" : "Join Event"}
+              {isParticipant ? "Unfollow" : "Follow"}
             </Button>
           ) : (
             <Button
-              className="w-full mt-8 bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="w-full mt-8 border border-white bg-white text-black hover:bg-gray-100"
               onClick={() => navigate("/login")}
             >
-              Login to Register
+              Login to Follow
             </Button>
           )}
         </CardContent>
