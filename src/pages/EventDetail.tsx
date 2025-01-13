@@ -249,7 +249,7 @@ const EventDetail = () => {
               {event.distance && (
                 <div className="flex items-center gap-2">
                   <Route className="h-5 w-5 text-zinc-400" />
-                  <span className="text-zinc-400">{event.distance} km</span>
+                  <span className="text-zinc-400">{(event.distance * 0.621371).toFixed(1)} miles</span>
                 </div>
               )}
               {event.pace && (
