@@ -174,6 +174,7 @@ export type Database = {
           id: string
           location: string | null
           preferred_distance: string | null
+          preferred_shoe_brand: string | null
           seeking_casual_meetups: boolean | null
           seeking_race_pacers: boolean | null
           seeking_training_partners: boolean | null
@@ -188,6 +189,7 @@ export type Database = {
           id: string
           location?: string | null
           preferred_distance?: string | null
+          preferred_shoe_brand?: string | null
           seeking_casual_meetups?: boolean | null
           seeking_race_pacers?: boolean | null
           seeking_training_partners?: boolean | null
@@ -202,6 +204,7 @@ export type Database = {
           id?: string
           location?: string | null
           preferred_distance?: string | null
+          preferred_shoe_brand?: string | null
           seeking_casual_meetups?: boolean | null
           seeking_race_pacers?: boolean | null
           seeking_training_partners?: boolean | null

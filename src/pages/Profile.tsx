@@ -30,6 +30,7 @@ type Profile = {
   seeking_training_partners: boolean | null;
   seeking_casual_meetups: boolean | null;
   seeking_race_pacers: boolean | null;
+  preferred_shoe_brand: string | null;
 };
 
 type Accolades = {
@@ -69,18 +70,18 @@ const Profile = () => {
   const [personalBests, setPersonalBests] = useState("");
   const [uploading, setUploading] = useState(false);
   const [preferredDistance, setPreferredDistance] = useState("");
-  const [paceRange, setPaceRange] = useState([6, 7]); // Default to 6-7 min/mile range
+  const [paceRange, setPaceRange] = useState([6, 7]);
   const [comfortablePace, setComfortablePace] = useState("");
   const [isEditingPreferences, setIsEditingPreferences] = useState(false);
   const [seekingTrainingPartners, setSeekingTrainingPartners] = useState(false);
   const [seekingCasualMeetups, setSeekingCasualMeetups] = useState(false);
   const [seekingRacePacers, setSeekingRacePacers] = useState(false);
+  const [preferredShoeBrand, setPreferredShoeBrand] = useState("");
 
   const formatPace = (pace: number) => {
     return `${Math.floor(pace)}:${((pace % 1) * 60).toFixed(0).padStart(2, '0')} min/mile`;
   };
 
-  // Helper function to format pace range
   const formatPaceRange = (range: number[]) => {
     return `${formatPace(range[0])} - ${formatPace(range[1])}`;
   };
@@ -95,7 +96,7 @@ const Profile = () => {
       try {
         const { data, error } = await supabase
           .from("profiles")
-          .select("username, avatar_url, bio, location, preferred_distance, comfortable_pace, seeking_training_partners, seeking_casual_meetups, seeking_race_pacers")
+          .select("username, avatar_url, bio, location, preferred_distance, comfortable_pace, seeking_training_partners, seeking_casual_meetups, seeking_race_pacers, preferred_shoe_brand")
           .eq("id", user.id)
           .single();
 
@@ -110,8 +111,8 @@ const Profile = () => {
         setSeekingTrainingPartners(data.seeking_training_partners || false);
         setSeekingCasualMeetups(data.seeking_casual_meetups || false);
         setSeekingRacePacers(data.seeking_race_pacers || false);
+        setPreferredShoeBrand(data.preferred_shoe_brand || "");
         
-        // Parse the pace range from the stored format
         if (data.comfortable_pace) {
           const rangeParts = data.comfortable_pace.split(' - ');
           if (rangeParts.length === 2) {
@@ -271,7 +272,8 @@ const Profile = () => {
           comfortable_pace: formattedPaceRange,
           seeking_training_partners: seekingTrainingPartners,
           seeking_casual_meetups: seekingCasualMeetups,
-          seeking_race_pacers: seekingRacePacers
+          seeking_race_pacers: seekingRacePacers,
+          preferred_shoe_brand: preferredShoeBrand
         })
         .eq("id", user?.id);
 
@@ -283,7 +285,8 @@ const Profile = () => {
         comfortable_pace: formattedPaceRange,
         seeking_training_partners: seekingTrainingPartners,
         seeking_casual_meetups: seekingCasualMeetups,
-        seeking_race_pacers: seekingRacePacers
+        seeking_race_pacers: seekingRacePacers,
+        preferred_shoe_brand: preferredShoeBrand
       }));
       setIsEditingPreferences(false);
       toast({
@@ -582,6 +585,28 @@ const Profile = () => {
                 </div>
                 <div>
                   <label className="text-sm text-zinc-400 mb-2 block">
+                    Preferred Shoe Brand
+                  </label>
+                  <Select
+                    value={preferredShoeBrand}
+                    onValueChange={setPreferredShoeBrand}
+                  >
+                    <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                      <SelectValue placeholder="Select preferred shoe brand" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Nike">Nike</SelectItem>
+                      <SelectItem value="Hoka">Hoka</SelectItem>
+                      <SelectItem value="ON">ON</SelectItem>
+                      <SelectItem value="Asics">Asics</SelectItem>
+                      <SelectItem value="Saucony">Saucony</SelectItem>
+                      <SelectItem value="Brooks">Brooks</SelectItem>
+                      <SelectItem value="Adidas">Adidas</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-sm text-zinc-400 mb-2 block">
                     Comfortable Pace Range
                   </label>
                   <div className="space-y-2">
@@ -671,6 +696,7 @@ const Profile = () => {
                       setSeekingTrainingPartners(profile?.seeking_training_partners || false);
                       setSeekingCasualMeetups(profile?.seeking_casual_meetups || false);
                       setSeekingRacePacers(profile?.seeking_race_pacers || false);
+                      setPreferredShoeBrand(profile?.preferred_shoe_brand || "");
                     }}
                     className="border border-white text-white bg-transparent"
                   >
@@ -695,6 +721,14 @@ const Profile = () => {
                     </h3>
                     <p className="text-zinc-400">
                       {profile?.preferred_distance || "Not set"}
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-zinc-100 mb-2">
+                      Preferred shoe brand
+                    </h3>
+                    <p className="text-zinc-400">
+                      {profile?.preferred_shoe_brand || "Not set"}
                     </p>
                   </div>
                   <div>
