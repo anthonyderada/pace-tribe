@@ -333,7 +333,7 @@ const Profile = () => {
             </Button>
           )}
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-            <div className="relative">
+            <div className="relative group">
               <Avatar className="w-32 h-32">
                 <AvatarImage src={profile?.avatar_url || undefined} />
                 <AvatarFallback className="bg-emerald-600 text-4xl text-white">
@@ -341,7 +341,7 @@ const Profile = () => {
                 </AvatarFallback>
               </Avatar>
               {isEditing && (
-                <div className="absolute bottom-0 right-0">
+                <>
                   <Input
                     type="file"
                     accept="image/*"
@@ -352,11 +352,15 @@ const Profile = () => {
                   />
                   <label
                     htmlFor="avatar-upload"
-                    className="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded-full"
+                    className={`absolute inset-0 flex items-center justify-center cursor-pointer transition-opacity ${
+                      profile?.avatar_url 
+                        ? 'bg-black/50 opacity-0 group-hover:opacity-100' 
+                        : 'bg-gray-500/20'
+                    }`}
                   >
-                    <Upload className="w-4 h-4" />
+                    <Upload className={`w-6 h-6 ${profile?.avatar_url ? 'text-white' : 'text-gray-400'}`} />
                   </label>
-                </div>
+                </>
               )}
             </div>
             <div className="flex-1 text-center md:text-left">
