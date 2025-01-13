@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Calendar, Users, Edit2, Save, Trophy, Upload, Pencil } from "lucide-react";
+import { MapPin, Calendar, Users, Edit2, Save, Trophy, Upload, Pencil, Route } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,8 @@ type Profile = {
   avatar_url: string | null;
   bio: string | null;
   location: string | null;
+  preferred_distance: string | null;
+  comfortable_pace: string | null;
 };
 
 type Club = {
@@ -54,6 +56,9 @@ const Profile = () => {
   const [isEditingAccolades, setIsEditingAccolades] = useState(false);
   const [personalBests, setPersonalBests] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [preferredDistance, setPreferredDistance] = useState("");
+  const [comfortablePace, setComfortablePace] = useState("");
+  const [isEditingPreferences, setIsEditingPreferences] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -65,7 +70,7 @@ const Profile = () => {
       try {
         const { data, error } = await supabase
           .from("profiles")
-          .select("username, avatar_url, bio, location")
+          .select("username, avatar_url, bio, location, preferred_distance, comfortable_pace")
           .eq("id", user.id)
           .single();
 
@@ -75,6 +80,8 @@ const Profile = () => {
         setUsername(data.username || "");
         setBio(data.bio || "");
         setLocation(data.location || "");
+        setPreferredDistance(data.preferred_distance || "");
+        setComfortablePace(data.comfortable_pace || "");
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -314,6 +321,38 @@ const Profile = () => {
     }
   };
 
+  const handleUpdatePreferences = async () => {
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ 
+          preferred_distance: preferredDistance,
+          comfortable_pace: comfortablePace
+        })
+        .eq("id", user?.id);
+
+      if (error) throw error;
+
+      setProfile(prev => ({ 
+        ...prev!, 
+        preferred_distance: preferredDistance,
+        comfortable_pace: comfortablePace
+      }));
+      setIsEditingPreferences(false);
+      toast({
+        title: "Preferences updated",
+        description: "Your running preferences have been updated successfully.",
+      });
+    } catch (error) {
+      console.error("Error updating preferences:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update preferences. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return <div className="container mx-auto px-4 py-8">Loading...</div>;
   }
@@ -442,6 +481,93 @@ const Profile = () => {
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Card className="border-0 bg-zinc-900/90">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-zinc-100">
+              <Route className="h-5 w-5" />
+              My Running Preferences
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isEditingPreferences ? (
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm text-zinc-400 mb-2 block">
+                    Preferred Race Distance
+                  </label>
+                  <Input
+                    value={preferredDistance}
+                    onChange={(e) => setPreferredDistance(e.target.value)}
+                    placeholder="e.g., Half Marathon"
+                    className="bg-zinc-800 border-zinc-700"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-zinc-400 mb-2 block">
+                    Comfortable Pace
+                  </label>
+                  <Input
+                    value={comfortablePace}
+                    onChange={(e) => setComfortablePace(e.target.value)}
+                    placeholder="e.g., 8:30 min/mile"
+                    className="bg-zinc-800 border-zinc-700"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleUpdatePreferences}
+                    className="border border-white bg-white text-black"
+                    variant="outline"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    Save
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditingPreferences(false);
+                      setPreferredDistance(profile?.preferred_distance || "");
+                      setComfortablePace(profile?.comfortable_pace || "");
+                    }}
+                    className="border border-white text-white bg-transparent"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="relative">
+                <Button
+                  onClick={() => setIsEditingPreferences(true)}
+                  className="absolute top-0 right-0 bg-transparent text-zinc-400"
+                  size="icon"
+                  variant="ghost"
+                >
+                  <Pencil className="h-5 w-5 md:h-6 md:w-6" />
+                </Button>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-zinc-100 mb-2">
+                      My preferred race distance
+                    </h3>
+                    <p className="text-zinc-400">
+                      {profile?.preferred_distance || "Not set"}
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-zinc-100 mb-2">
+                      My comfortable pace
+                    </h3>
+                    <p className="text-zinc-400">
+                      {profile?.comfortable_pace || "Not set"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <Card className="border-0 bg-zinc-900/90">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-zinc-100">
