@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Calendar, Users, Edit2, Save, Trophy, Upload, Pencil, Route } from "lucide-react";
+import { MapPin, Calendar, Users, Edit2, Save, Trophy, Upload, Pencil, Route, UserPlus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -26,6 +27,9 @@ type Profile = {
   location: string | null;
   preferred_distance: string | null;
   comfortable_pace: string | null;
+  seeking_training_partners: boolean | null;
+  seeking_casual_meetups: boolean | null;
+  seeking_race_pacers: boolean | null;
 };
 
 type Club = {
@@ -42,10 +46,6 @@ type Event = {
   club: {
     name: string;
   };
-};
-
-type Accolades = {
-  personal_bests: string | null;
 };
 
 const Profile = () => {
@@ -68,8 +68,10 @@ const Profile = () => {
   const [paceRange, setPaceRange] = useState([6, 7]); // Default to 6-7 min/mile range
   const [comfortablePace, setComfortablePace] = useState("");
   const [isEditingPreferences, setIsEditingPreferences] = useState(false);
+  const [seekingTrainingPartners, setSeekingTrainingPartners] = useState(false);
+  const [seekingCasualMeetups, setSeekingCasualMeetups] = useState(false);
+  const [seekingRacePacers, setSeekingRacePacers] = useState(false);
 
-  // Helper function to format pace
   const formatPace = (pace: number) => {
     return `${Math.floor(pace)}:${((pace % 1) * 60).toFixed(0).padStart(2, '0')} min/mile`;
   };
@@ -251,6 +253,46 @@ const Profile = () => {
     };
   }, [user, navigate]);
 
+  const handleUpdatePreferences = async () => {
+    try {
+      const formattedPaceRange = formatPaceRange(paceRange);
+      
+      const { error } = await supabase
+        .from("profiles")
+        .update({ 
+          preferred_distance: preferredDistance,
+          comfortable_pace: formattedPaceRange,
+          seeking_training_partners: seekingTrainingPartners,
+          seeking_casual_meetups: seekingCasualMeetups,
+          seeking_race_pacers: seekingRacePacers
+        })
+        .eq("id", user?.id);
+
+      if (error) throw error;
+
+      setProfile(prev => ({ 
+        ...prev!, 
+        preferred_distance: preferredDistance,
+        comfortable_pace: formattedPaceRange,
+        seeking_training_partners: seekingTrainingPartners,
+        seeking_casual_meetups: seekingCasualMeetups,
+        seeking_race_pacers: seekingRacePacers
+      }));
+      setIsEditingPreferences(false);
+      toast({
+        title: "Preferences updated",
+        description: "Your running preferences have been updated successfully.",
+      });
+    } catch (error) {
+      console.error("Error updating preferences:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update preferences. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       if (!event.target.files || event.target.files.length === 0) {
@@ -354,40 +396,6 @@ const Profile = () => {
       toast({
         title: "Error",
         description: "Failed to update personal bests. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleUpdatePreferences = async () => {
-    try {
-      const formattedPaceRange = formatPaceRange(paceRange);
-      
-      const { error } = await supabase
-        .from("profiles")
-        .update({ 
-          preferred_distance: preferredDistance,
-          comfortable_pace: formattedPaceRange
-        })
-        .eq("id", user?.id);
-
-      if (error) throw error;
-
-      setProfile(prev => ({ 
-        ...prev!, 
-        preferred_distance: preferredDistance,
-        comfortable_pace: formattedPaceRange
-      }));
-      setIsEditingPreferences(false);
-      toast({
-        title: "Preferences updated",
-        description: "Your running preferences have been updated successfully.",
-      });
-    } catch (error) {
-      console.error("Error updating preferences:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update preferences. Please try again.",
         variant: "destructive",
       });
     }
@@ -562,10 +570,65 @@ const Profile = () => {
                       min={4.5}
                       max={10}
                       step={0.25}
-                      className="w-full"
+                      className="[&_[role=slider]]:bg-white [&_[role=slider]]:border-white [&_[role=slider]]:shadow-sm [&_[role=slider]]:ring-white [&_[role=slider]]:ring-offset-black [&_[role=slider]]:focus:ring-2 [&_[role=slider]]:focus:ring-white [&_[role=slider]]:focus:ring-offset-2 [&_[role=slider]]:focus:ring-offset-black [&_[role=slider]]:hover:border-white/80 [&_[role=slider]]:active:border-white/70 [&_[role=track]]:bg-zinc-700 [&_[role=range]]:bg-white"
                     />
                     <div className="text-white text-sm">
                       {formatPaceRange(paceRange)}
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <label className="text-sm text-zinc-400 block">
+                    Connection Preferences
+                  </label>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="training-partners"
+                        checked={seekingTrainingPartners}
+                        onCheckedChange={(checked) => 
+                          setSeekingTrainingPartners(checked as boolean)
+                        }
+                        className="border-white data-[state=checked]:bg-white data-[state=checked]:text-black"
+                      />
+                      <label
+                        htmlFor="training-partners"
+                        className="text-sm font-medium leading-none text-white peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Looking for Training Partners
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="casual-meetups"
+                        checked={seekingCasualMeetups}
+                        onCheckedChange={(checked) => 
+                          setSeekingCasualMeetups(checked as boolean)
+                        }
+                        className="border-white data-[state=checked]:bg-white data-[state=checked]:text-black"
+                      />
+                      <label
+                        htmlFor="casual-meetups"
+                        className="text-sm font-medium leading-none text-white peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Interested in Casual Meetups
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="race-pacers"
+                        checked={seekingRacePacers}
+                        onCheckedChange={(checked) => 
+                          setSeekingRacePacers(checked as boolean)
+                        }
+                        className="border-white data-[state=checked]:bg-white data-[state=checked]:text-black"
+                      />
+                      <label
+                        htmlFor="race-pacers"
+                        className="text-sm font-medium leading-none text-white peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Looking for Race Day Pacers
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -584,6 +647,9 @@ const Profile = () => {
                       setIsEditingPreferences(false);
                       setPreferredDistance(profile?.preferred_distance || "");
                       setComfortablePace(profile?.comfortable_pace || "");
+                      setSeekingTrainingPartners(profile?.seeking_training_partners || false);
+                      setSeekingCasualMeetups(profile?.seeking_casual_meetups || false);
+                      setSeekingRacePacers(profile?.seeking_race_pacers || false);
                     }}
                     className="border border-white text-white bg-transparent"
                   >
@@ -617,6 +683,25 @@ const Profile = () => {
                     <p className="text-zinc-400">
                       {profile?.comfortable_pace || "Not set"}
                     </p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-zinc-100 mb-2">
+                      Connection Preferences
+                    </h3>
+                    <div className="space-y-1">
+                      <p className="text-zinc-400 flex items-center gap-2">
+                        <UserPlus className="h-4 w-4" />
+                        {profile?.seeking_training_partners ? "Looking for Training Partners" : "Not seeking Training Partners"}
+                      </p>
+                      <p className="text-zinc-400 flex items-center gap-2">
+                        <UserPlus className="h-4 w-4" />
+                        {profile?.seeking_casual_meetups ? "Interested in Casual Meetups" : "Not interested in Casual Meetups"}
+                      </p>
+                      <p className="text-zinc-400 flex items-center gap-2">
+                        <UserPlus className="h-4 w-4" />
+                        {profile?.seeking_race_pacers ? "Looking for Race Day Pacers" : "Not seeking Race Day Pacers"}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
