@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { PersonalBests } from "@/components/profile/PersonalBests";
 import { RunningPreferences } from "@/components/profile/RunningPreferences";
@@ -48,7 +47,6 @@ type Event = {
 const Profile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [joinedClubs, setJoinedClubs] = useState<Club[]>([]);
   const [registeredEvents, setRegisteredEvents] = useState<Event[]>([]);
@@ -70,7 +68,7 @@ const Profile = () => {
           .single();
 
         if (error) throw error;
-        setProfile(data);
+        setProfile(data as Profile);
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -88,10 +86,10 @@ const Profile = () => {
 
         if (data) {
           setAccolades({
-            pb_5k: data.pb_5k,
-            pb_10k: data.pb_10k,
-            pb_half_marathon: data.pb_half_marathon,
-            pb_marathon: data.pb_marathon
+            pb_5k: data.pb_5k as string | null,
+            pb_10k: data.pb_10k as string | null,
+            pb_half_marathon: data.pb_half_marathon as string | null,
+            pb_marathon: data.pb_marathon as string | null
           });
         }
       } catch (error) {

@@ -12,6 +12,17 @@ type Time = {
   seconds: string;
 };
 
+// Move the helper function before it's used
+const parseIntervalToTime = (interval: string | null): Time => {
+  if (!interval) return { hours: "00", minutes: "00", seconds: "00" };
+  const [hours = "00", minutes = "00", seconds = "00"] = interval.split(':');
+  return {
+    hours: hours.padStart(2, '0'),
+    minutes: minutes.padStart(2, '0'),
+    seconds: seconds.padStart(2, '0')
+  };
+};
+
 type PersonalBestsProps = {
   userId: string;
   accolades: {
@@ -35,16 +46,6 @@ export const PersonalBests = ({ userId, accolades, onAccoladesUpdate }: Personal
   const [pb10kTime, setPb10kTime] = useState<Time>(parseIntervalToTime(accolades?.pb_10k));
   const [pbHalfTime, setPbHalfTime] = useState<Time>(parseIntervalToTime(accolades?.pb_half_marathon));
   const [pbMarathonTime, setPbMarathonTime] = useState<Time>(parseIntervalToTime(accolades?.pb_marathon));
-
-  const parseIntervalToTime = (interval: string | null): Time => {
-    if (!interval) return { hours: "00", minutes: "00", seconds: "00" };
-    const [hours = "00", minutes = "00", seconds = "00"] = interval.split(':');
-    return {
-      hours: hours.padStart(2, '0'),
-      minutes: minutes.padStart(2, '0'),
-      seconds: seconds.padStart(2, '0')
-    };
-  };
 
   const formatTimeToInterval = (time: Time) => {
     return `${time.hours}:${time.minutes}:${time.seconds}`;
