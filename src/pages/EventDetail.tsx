@@ -66,7 +66,7 @@ const EventDetail = () => {
             event_participants (
               id,
               user_id,
-              profiles:profiles (
+              profiles (
                 username,
                 avatar_url
               )
@@ -142,7 +142,7 @@ const EventDetail = () => {
               event_participants (
                 id,
                 user_id,
-                profiles:profiles (
+                profiles (
                   username,
                   avatar_url
                 )
@@ -348,7 +348,7 @@ const EventDetail = () => {
             {event.event_participants.map((participant) => (
               <div
                 key={participant.id}
-                className="flex items-center gap-2 bg-zinc-800/50 rounded-lg p-2"
+                className="flex items-center gap-2 bg-zinc-800/50 rounded-lg p-2 cursor-pointer hover:bg-zinc-800/80 transition-colors"
                 onClick={() => navigate(`/profile/${participant.user_id}`)}
                 role="button"
                 tabIndex={0}
