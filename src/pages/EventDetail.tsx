@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Event = {
   id: string;
@@ -29,6 +30,10 @@ type Event = {
   event_participants: {
     id: string;
     user_id: string;
+    profiles: {
+      username: string | null;
+      avatar_url: string | null;
+    } | null;
   }[];
 };
 
@@ -60,7 +65,11 @@ const EventDetail = () => {
             ),
             event_participants (
               id,
-              user_id
+              user_id,
+              profiles:user_id (
+                username,
+                avatar_url
+              )
             )
           `)
           .eq("id", id)
@@ -132,7 +141,11 @@ const EventDetail = () => {
               ),
               event_participants (
                 id,
-                user_id
+                user_id,
+                profiles:user_id (
+                  username,
+                  avatar_url
+                )
               )
             `)
             .eq("id", id)
@@ -318,6 +331,43 @@ const EventDetail = () => {
               </p>
             </CardContent>
           </Card>
+        </CardContent>
+      </Card>
+
+      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold text-zinc-100">
+            Who is attending
+          </CardTitle>
+          <CardDescription className="text-zinc-400">
+            {event.event_participants.length} participants registered
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-4">
+            {event.event_participants.map((participant) => (
+              <div
+                key={participant.id}
+                className="flex items-center gap-2 bg-zinc-800/50 rounded-lg p-2"
+                onClick={() => navigate(`/profile/${participant.user_id}`)}
+                role="button"
+                tabIndex={0}
+              >
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src={participant.profiles?.avatar_url || ''}
+                    alt={participant.profiles?.username || 'User'}
+                  />
+                  <AvatarFallback>
+                    {(participant.profiles?.username || 'U')[0].toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-zinc-100">
+                  {participant.profiles?.username || 'Anonymous User'}
+                </span>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>
