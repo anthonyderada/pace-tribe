@@ -14,6 +14,7 @@ type Club = {
   description: string | null;
   location: string | null;
   created_at: string;
+  thumbnail_url: string | null;
 };
 
 type Event = {
@@ -229,6 +230,16 @@ const ClubDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
+      {club.thumbnail_url && (
+        <div className="w-full h-64 md:h-96 rounded-2xl overflow-hidden">
+          <img 
+            src={club.thumbnail_url} 
+            alt={club.name}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+      
       <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
         <CardHeader>
           <CardTitle className="text-4xl font-bold text-zinc-100">{club.name}</CardTitle>

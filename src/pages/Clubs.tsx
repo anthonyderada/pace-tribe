@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -47,30 +47,19 @@ const Clubs = () => {
               placeholder="Search clubs..." 
             />
           </div>
-          {/* Temporarily hidden for testing
-          {user && (
-            <Button 
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
-              onClick={() => navigate('/clubs/new')}
-            >
-              Create Club
-            </Button>
-          )}
-          */}
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {isLoading ? (
-          // Loading skeletons
           [...Array(6)].map((_, index) => (
             <Card key={`skeleton-${index}`} className="bg-zinc-800/50 rounded-2xl border-0">
-              <CardHeader>
-                <Skeleton className="h-6 w-2/3 mb-2 bg-zinc-800" />
-                <Skeleton className="h-4 w-1/3 bg-zinc-800" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-20 mb-4 bg-zinc-800" />
+              <CardContent className="p-0">
+                <Skeleton className="h-48 rounded-t-2xl bg-zinc-800" />
+                <div className="p-6">
+                  <Skeleton className="h-6 w-2/3 mb-2 bg-zinc-800" />
+                  <Skeleton className="h-4 w-1/3 bg-zinc-800" />
+                </div>
               </CardContent>
             </Card>
           ))
@@ -78,15 +67,30 @@ const Clubs = () => {
           clubs.map((club) => (
             <Card 
               key={club.id} 
-              className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
+              className="bg-zinc-800/50 rounded-2xl overflow-hidden hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
               onClick={() => navigate(`/clubs/${club.id}`)}
             >
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-xl font-semibold text-white">{club.name}</h3>
-                <span className="text-gray-400 text-sm">{club.club_members?.length || 0} members</span>
-              </div>
-              <p className="text-gray-400 text-sm mb-4">{club.location || 'Location not specified'}</p>
-              <p className="text-gray-400 line-clamp-3">{club.description || 'No description available'}</p>
+              <CardContent className="p-0">
+                {club.thumbnail_url ? (
+                  <img 
+                    src={club.thumbnail_url} 
+                    alt={club.name}
+                    className="w-full h-48 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-48 bg-zinc-700 flex items-center justify-center">
+                    <span className="text-zinc-400">No image</span>
+                  </div>
+                )}
+                <div className="p-6">
+                  <div className="flex justify-between items-start">
+                    <h3 className="text-xl font-semibold text-white">{club.name}</h3>
+                    <span className="text-gray-400 text-sm">{club.club_members?.length || 0} members</span>
+                  </div>
+                  <p className="text-gray-400 text-sm mt-2">{club.location || 'Location not specified'}</p>
+                  <p className="text-gray-400 line-clamp-3 mt-2">{club.description || 'No description available'}</p>
+                </div>
+              </CardContent>
             </Card>
           ))
         ) : (
