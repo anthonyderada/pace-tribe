@@ -49,7 +49,6 @@ const EventDetail = () => {
   useEffect(() => {
     const getEventDetails = async () => {
       try {
-        // Get event details
         const { data: eventData, error: eventError } = await supabase
           .from("events")
           .select(`
@@ -66,7 +65,7 @@ const EventDetail = () => {
             event_participants (
               id,
               user_id,
-              profiles:user_id (
+              profiles (
                 username,
                 avatar_url
               )
@@ -85,9 +84,8 @@ const EventDetail = () => {
           navigate("/events");
           return;
         }
-        setEvent(eventData);
+        setEvent(eventData as Event);
 
-        // Check if user is a participant
         if (user) {
           const { data } = await supabase
             .from("event_participants")
@@ -113,7 +111,6 @@ const EventDetail = () => {
 
     getEventDetails();
 
-    // Set up real-time subscription for participants
     const channel = supabase
       .channel("schema-db-changes")
       .on(
@@ -125,7 +122,6 @@ const EventDetail = () => {
           filter: `event_id=eq.${id}`,
         },
         async () => {
-          // Update event details
           const { data } = await supabase
             .from("events")
             .select(`
@@ -142,7 +138,7 @@ const EventDetail = () => {
               event_participants (
                 id,
                 user_id,
-                profiles:user_id (
+                profiles (
                   username,
                   avatar_url
                 )
@@ -152,7 +148,7 @@ const EventDetail = () => {
             .maybeSingle();
 
           if (data) {
-            setEvent(data);
+            setEvent(data as Event);
             if (user) {
               setIsParticipant(
                 data.event_participants.some((p) => p.user_id === user.id)
@@ -176,7 +172,6 @@ const EventDetail = () => {
 
     try {
       if (isParticipant) {
-        // Leave event
         const { error } = await supabase
           .from("event_participants")
           .delete()
@@ -190,7 +185,6 @@ const EventDetail = () => {
           description: "You have cancelled your registration for the event",
         });
       } else {
-        // Join event
         const { error } = await supabase.from("event_participants").insert({
           event_id: id,
           user_id: user.id,
@@ -262,7 +256,9 @@ const EventDetail = () => {
               {event.distance && (
                 <div className="flex items-center gap-2">
                   <Route className="h-5 w-5 text-zinc-400" />
-                  <span className="text-zinc-400">{(event.distance * 0.621371).toFixed(1)} miles</span>
+                  <span className="text-zinc-400">
+                    {(event.distance * 0.621371).toFixed(1)} miles
+                  </span>
                 </div>
               )}
               {event.pace && (
@@ -322,12 +318,12 @@ const EventDetail = () => {
                 </span>
               </div>
               <CardDescription className="text-gray-400 text-sm">
-                {event.clubs.location || 'Location not specified'}
+                {event.clubs.location || "Location not specified"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-400">
-                {event.clubs.description || 'No description available'}
+                {event.clubs.description || "No description available"}
               </p>
             </CardContent>
           </Card>
@@ -355,15 +351,15 @@ const EventDetail = () => {
               >
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src={participant.profiles?.avatar_url || ''}
-                    alt={participant.profiles?.username || 'User'}
+                    src={participant.profiles?.avatar_url || ""}
+                    alt={participant.profiles?.username || "User"}
                   />
                   <AvatarFallback>
-                    {(participant.profiles?.username || 'U')[0].toUpperCase()}
+                    {(participant.profiles?.username || "U")[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <span className="text-zinc-100">
-                  {participant.profiles?.username || 'Anonymous User'}
+                  {participant.profiles?.username || "Anonymous User"}
                 </span>
               </div>
             ))}
