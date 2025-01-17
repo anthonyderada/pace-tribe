@@ -66,7 +66,7 @@ const EventDetail = () => {
             event_participants (
               id,
               user_id,
-              profiles:user_id (
+              profiles:profiles (
                 username,
                 avatar_url
               )
@@ -142,7 +142,7 @@ const EventDetail = () => {
               event_participants (
                 id,
                 user_id,
-                profiles:user_id (
+                profiles:profiles (
                   username,
                   avatar_url
                 )
