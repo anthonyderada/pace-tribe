@@ -4,14 +4,16 @@ import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const { data: clubs, isLoading } = useQuery({
-    queryKey: ['featuredClubs'],
+    queryKey: ['featuredClubs', selectedCategory],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('clubs')
         .select(`
           *,
@@ -21,6 +23,11 @@ const Index = () => {
         `)
         .order('created_at', { ascending: false });
       
+      if (selectedCategory) {
+        query = query.contains('categories', [selectedCategory]);
+      }
+      
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     },
@@ -34,7 +41,6 @@ const Index = () => {
     { 
       name: 'Road', 
       icon: '/lovable-uploads/aaae8bd4-c7f5-4ca1-9fac-fde0a09ac193.png',
-      selected: true 
     },
     { 
       name: 'Track', 
@@ -85,8 +91,13 @@ const Index = () => {
                 <div 
                   key={category.name}
                   className={`flex flex-col items-center cursor-pointer ${
-                    category.selected ? 'opacity-100' : 'opacity-50'
+                    selectedCategory === category.name.toLowerCase() ? 'opacity-100' : 'opacity-50'
                   } hover:opacity-100 transition-opacity flex-shrink-0`}
+                  onClick={() => setSelectedCategory(
+                    selectedCategory === category.name.toLowerCase() 
+                      ? null 
+                      : category.name.toLowerCase()
+                  )}
                 >
                   <div className="w-12 h-12 mb-2">
                     <img 
@@ -98,7 +109,7 @@ const Index = () => {
                   <span className="text-white text-sm whitespace-nowrap">
                     {category.name}
                   </span>
-                  {category.selected && (
+                  {selectedCategory === category.name.toLowerCase() && (
                     <div className="h-0.5 w-full bg-white mt-2"></div>
                   )}
                 </div>
@@ -112,7 +123,12 @@ const Index = () => {
       <div className="py-16 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-white">Featured Clubs</h2>
+            <h2 className="text-3xl font-bold text-white">
+              {selectedCategory 
+                ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Clubs`
+                : 'Featured Clubs'
+              }
+            </h2>
             <Button 
               variant="link" 
               className="text-emerald-500"
@@ -123,7 +139,6 @@ const Index = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {isLoading ? (
-              // Loading state
               Array(3).fill(0).map((_, i) => (
                 <div key={i} className="bg-zinc-800/50 rounded-2xl overflow-hidden animate-pulse p-6">
                   <div className="h-6 bg-zinc-700 rounded mb-2"></div>
@@ -145,6 +160,18 @@ const Index = () => {
                 </div>
                 <p className="text-gray-400 text-sm mb-4">{club.location || 'Location not specified'}</p>
                 <p className="text-gray-400">{club.description || 'No description available'}</p>
+                {club.categories && club.categories.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {club.categories.map((category) => (
+                      <span 
+                        key={category}
+                        className="px-2 py-1 bg-zinc-700/50 rounded-full text-xs text-zinc-300"
+                      >
+                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
