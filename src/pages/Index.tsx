@@ -146,34 +146,51 @@ const Index = () => {
                   <div className="h-20 bg-zinc-700 rounded mb-4"></div>
                 </div>
               ))
-            ) : clubs?.map((club) => (
-              <div 
-                key={club.id} 
-                className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer"
-                onClick={() => navigate(`/clubs/${club.id}`)}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-semibold text-white">{club.name}</h3>
-                  <span className="text-gray-400 text-sm">
-                    {club.club_members[0]?.count || 0} members
-                  </span>
-                </div>
-                <p className="text-gray-400 text-sm mb-4">{club.location || 'Location not specified'}</p>
-                <p className="text-gray-400">{club.description || 'No description available'}</p>
-                {club.categories && club.categories.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {club.categories.map((category) => (
-                      <span 
-                        key={category}
-                        className="px-2 py-1 bg-zinc-700/50 rounded-full text-xs text-zinc-300"
-                      >
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </span>
-                    ))}
+            ) : clubs && clubs.length > 0 ? (
+              clubs.map((club) => (
+                <div 
+                  key={club.id} 
+                  className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer"
+                  onClick={() => navigate(`/clubs/${club.id}`)}
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-xl font-semibold text-white">{club.name}</h3>
+                    <span className="text-gray-400 text-sm">
+                      {club.club_members[0]?.count || 0} members
+                    </span>
                   </div>
-                )}
+                  <p className="text-gray-400 text-sm mb-4">{club.location || 'Location not specified'}</p>
+                  <p className="text-gray-400">{club.description || 'No description available'}</p>
+                  {club.categories && club.categories.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {club.categories.map((category) => (
+                        <span 
+                          key={category}
+                          className="px-2 py-1 bg-zinc-700/50 rounded-full text-xs text-zinc-300"
+                        >
+                          {category.charAt(0).toUpperCase() + category.slice(1)}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="col-span-3 text-center py-12">
+                <p className="text-gray-400 text-lg">
+                  {selectedCategory 
+                    ? `No clubs found in the ${selectedCategory} category. Why not create one?`
+                    : 'No clubs found. Be the first to create one!'
+                  }
+                </p>
+                <Button 
+                  className="mt-4 bg-white hover:bg-white text-black"
+                  onClick={() => navigate("/clubs")}
+                >
+                  Create a Club
+                </Button>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
