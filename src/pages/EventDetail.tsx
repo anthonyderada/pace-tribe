@@ -30,11 +30,9 @@ type Event = {
   event_participants: {
     id: string;
     user_id: string;
-    user: {
-      profiles: {
-        username: string | null;
-        avatar_url: string | null;
-      } | null;
+    profiles: {
+      username: string | null;
+      avatar_url: string | null;
     } | null;
   }[];
 };
@@ -67,11 +65,9 @@ const EventDetail = () => {
             event_participants (
               id,
               user_id,
-              user:user_id (
-                profiles (
-                  username,
-                  avatar_url
-                )
+              profiles (
+                username,
+                avatar_url
               )
             )
           `)
@@ -142,11 +138,9 @@ const EventDetail = () => {
               event_participants (
                 id,
                 user_id,
-                user:user_id (
-                  profiles (
-                    username,
-                    avatar_url
-                  )
+                profiles (
+                  username,
+                  avatar_url
                 )
               )
             `)
@@ -237,11 +231,11 @@ const EventDetail = () => {
       <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
         <CardHeader>
           <CardTitle className="text-4xl font-bold text-zinc-100">
-            {event?.title}
+            {event.title}
           </CardTitle>
           <CardDescription className="flex items-center gap-2 text-zinc-400">
             <Calendar className="h-4 w-4" />
-            {event?.date && format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
+            {format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -250,16 +244,16 @@ const EventDetail = () => {
               Event Details
             </h3>
             <p className="text-zinc-400 mb-4">
-              {event?.description || "No description available."}
+              {event.description || "No description available."}
             </p>
             <div className="space-y-4">
-              {event?.location && (
+              {event.location && (
                 <div className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-zinc-400" />
                   <span className="text-zinc-400">{event.location}</span>
                 </div>
               )}
-              {event?.distance && (
+              {event.distance && (
                 <div className="flex items-center gap-2">
                   <Route className="h-5 w-5 text-zinc-400" />
                   <span className="text-zinc-400">
@@ -267,7 +261,7 @@ const EventDetail = () => {
                   </span>
                 </div>
               )}
-              {event?.pace && (
+              {event.pace && (
                 <div className="flex items-center gap-2">
                   <Timer className="h-5 w-5 text-zinc-400" />
                   <span className="text-zinc-400">{event.pace}</span>
@@ -276,7 +270,7 @@ const EventDetail = () => {
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-zinc-400" />
                 <span className="text-zinc-400">
-                  {event?.event_participants.length} participants
+                  {event.event_participants.length} participants
                 </span>
               </div>
             </div>
@@ -312,24 +306,24 @@ const EventDetail = () => {
         <CardContent>
           <Card
             className="border border-zinc-800 bg-zinc-800/50 rounded-xl cursor-pointer hover:bg-zinc-800/80 transition-colors"
-            onClick={() => navigate(`/clubs/${event?.club_id}`)}
+            onClick={() => navigate(`/clubs/${event.club_id}`)}
           >
             <CardHeader className="pb-2">
               <div className="flex justify-between items-start mb-2">
                 <CardTitle className="text-xl font-semibold text-white">
-                  {event?.clubs.name}
+                  {event.clubs.name}
                 </CardTitle>
                 <span className="text-gray-400 text-sm">
-                  {event?.clubs.club_members?.length || 0} members
+                  {event.clubs.club_members?.length || 0} members
                 </span>
               </div>
               <CardDescription className="text-gray-400 text-sm">
-                {event?.clubs.location || "Location not specified"}
+                {event.clubs.location || "Location not specified"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-400">
-                {event?.clubs.description || "No description available"}
+                {event.clubs.description || "No description available"}
               </p>
             </CardContent>
           </Card>
@@ -342,12 +336,12 @@ const EventDetail = () => {
             Who is attending
           </CardTitle>
           <CardDescription className="text-zinc-400">
-            {event?.event_participants.length} participants registered
+            {event.event_participants.length} participants registered
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4">
-            {event?.event_participants.map((participant) => (
+            {event.event_participants.map((participant) => (
               <div
                 key={participant.id}
                 className="flex items-center gap-2 bg-zinc-800/50 rounded-lg p-2 cursor-pointer hover:bg-zinc-800/80 transition-colors"
@@ -357,15 +351,15 @@ const EventDetail = () => {
               >
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src={participant.user?.profiles?.avatar_url || ""}
-                    alt={participant.user?.profiles?.username || "User"}
+                    src={participant.profiles?.avatar_url || ""}
+                    alt={participant.profiles?.username || "User"}
                   />
                   <AvatarFallback>
-                    {(participant.user?.profiles?.username || "U")[0].toUpperCase()}
+                    {(participant.profiles?.username || "U")[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <span className="text-zinc-100">
-                  {participant.user?.profiles?.username || "Anonymous User"}
+                  {participant.profiles?.username || "Anonymous User"}
                 </span>
               </div>
             ))}
