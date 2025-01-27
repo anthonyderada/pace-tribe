@@ -6,12 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle2 } from "lucide-react";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -60,12 +62,7 @@ const Register = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Please check your email to verify your account",
-      });
-      
-      navigate("/login");
+      setIsSuccess(true);
     } catch (error: any) {
       const message = error.message || "An error occurred during registration";
       setError(message);
@@ -78,6 +75,32 @@ const Register = () => {
       setLoading(false);
     }
   };
+
+  if (isSuccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black px-4">
+        <Card className="w-full max-w-md border-0 bg-zinc-900/90">
+          <CardContent className="pt-6">
+            <div className="text-center space-y-4">
+              <div className="flex justify-center">
+                <CheckCircle2 className="h-12 w-12 text-emerald-500" />
+              </div>
+              <h2 className="text-2xl font-semibold text-white">Registration Successful!</h2>
+              <p className="text-zinc-400">
+                Please check your email to verify your account, then you can proceed to login.
+              </p>
+              <Button
+                onClick={() => navigate("/login")}
+                className="w-full bg-emerald-500 hover:bg-emerald-600 text-white mt-4"
+              >
+                Go to Login
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black px-4">
