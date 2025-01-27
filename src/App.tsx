@@ -8,6 +8,7 @@ import Events from "./pages/Events";
 import Profile from "./pages/Profile";
 import ClubDetail from "./pages/ClubDetail";
 import EventDetail from "./pages/EventDetail";
+import Onboarding from "./pages/Onboarding";
 import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
             <Route path="/clubs" element={<Clubs />} />
