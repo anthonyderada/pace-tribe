@@ -34,6 +34,7 @@ type Club = {
   id: string;
   name: string;
   location: string | null;
+  description: string | null;
   thumbnail_url: string | null;
 };
 
@@ -42,6 +43,8 @@ type Event = {
   title: string;
   date: string;
   location: string | null;
+  distance: number | null;
+  pace: string | null;
   club: {
     name: string;
   };
@@ -110,6 +113,7 @@ const Profile = () => {
               id,
               name,
               location,
+              description,
               thumbnail_url
             )
           `)
@@ -121,6 +125,7 @@ const Profile = () => {
           id: item.clubs.id,
           name: item.clubs.name,
           location: item.clubs.location,
+          description: item.clubs.description,
           thumbnail_url: item.clubs.thumbnail_url
         }));
 
@@ -141,6 +146,8 @@ const Profile = () => {
               title,
               date,
               location,
+              distance,
+              pace,
               clubs (
                 name
               )
@@ -155,6 +162,8 @@ const Profile = () => {
           title: item.events.title,
           date: item.events.date,
           location: item.events.location,
+          distance: item.events.distance,
+          pace: item.events.pace,
           club: {
             name: item.events.clubs.name
           }
