@@ -160,7 +160,7 @@ const Clubs = () => {
                             <Badge
                               key={assignment.id}
                               variant="secondary"
-                              className="bg-zinc-800 text-zinc-100"
+                              className="bg-zinc-800 text-zinc-100 pointer-events-none"
                             >
                               {assignment.club_labels.name}
                             </Badge>
