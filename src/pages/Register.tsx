@@ -76,28 +76,14 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const { data: { user }, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
       });
 
-      if (error) {
-        // Check if the error indicates the user already exists
-        if (error.message.includes("User already registered")) {
-          toast({
-            title: "Account exists",
-            description: "An account with this email already exists. Redirecting to login...",
-            variant: "default",
-          });
-          setTimeout(() => navigate("/login"), 2000);
-          return;
-        }
-        throw error;
-      }
+      if (error) throw error;
 
-      if (user) {
-        setIsSuccess(true);
-      }
+      setIsSuccess(true);
     } catch (error: any) {
       const message = error.message || "An error occurred during registration";
       setError(message);
