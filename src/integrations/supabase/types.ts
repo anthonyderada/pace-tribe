@@ -9,7 +9,244 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      accolades: {
+        Row: {
+          created_at: string
+          id: string
+          pb_10k: string | null
+          pb_5k: string | null
+          pb_half_marathon: string | null
+          pb_marathon: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          pb_10k?: string | null
+          pb_5k?: string | null
+          pb_half_marathon?: string | null
+          pb_marathon?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          pb_10k?: string | null
+          pb_5k?: string | null
+          pb_half_marathon?: string | null
+          pb_marathon?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accolades_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_members: {
+        Row: {
+          club_id: string | null
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          club_id?: string | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          club_id?: string | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_members_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clubs: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          location: string | null
+          name: string
+          thumbnail_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location?: string | null
+          name: string
+          thumbnail_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          thumbnail_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      event_participants: {
+        Row: {
+          created_at: string
+          event_id: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_participants_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          club_id: string | null
+          created_at: string
+          date: string
+          description: string | null
+          distance: number | null
+          id: string
+          location: string | null
+          pace: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          club_id?: string | null
+          created_at?: string
+          date: string
+          description?: string | null
+          distance?: number | null
+          id?: string
+          location?: string | null
+          pace?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          club_id?: string | null
+          created_at?: string
+          date?: string
+          description?: string | null
+          distance?: number | null
+          id?: string
+          location?: string | null
+          pace?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          comfortable_pace: string | null
+          created_at: string
+          id: string
+          location: string | null
+          preferred_distance: string | null
+          preferred_shoe_brand: string[] | null
+          seeking_casual_meetups: boolean | null
+          seeking_race_pacers: boolean | null
+          seeking_training_partners: boolean | null
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          comfortable_pace?: string | null
+          created_at?: string
+          id: string
+          location?: string | null
+          preferred_distance?: string | null
+          preferred_shoe_brand?: string[] | null
+          seeking_casual_meetups?: boolean | null
+          seeking_race_pacers?: boolean | null
+          seeking_training_partners?: boolean | null
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          comfortable_pace?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          preferred_distance?: string | null
+          preferred_shoe_brand?: string[] | null
+          seeking_casual_meetups?: boolean | null
+          seeking_race_pacers?: boolean | null
+          seeking_training_partners?: boolean | null
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
