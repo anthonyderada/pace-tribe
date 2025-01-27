@@ -251,7 +251,16 @@ const ClubDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
-      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
+      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl overflow-hidden">
+        {club.thumbnail_url && (
+          <div className="w-full h-64 relative">
+            <img
+              src={club.thumbnail_url}
+              alt={club.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
         <CardHeader>
           <CardTitle className="text-4xl font-bold text-zinc-100">
             {club?.name}
@@ -272,14 +281,14 @@ const ClubDetail = () => {
           </div>
 
           {club.club_label_assignments.length > 0 && (
-            <div className="mb-6">
+            <div className="mb-6 pt-6 border-t border-zinc-800">
               <h3 className="text-xl font-semibold mb-2 text-zinc-100">Labels</h3>
               <div className="flex flex-wrap gap-2">
                 {club.club_label_assignments.map((assignment) => (
                   <Badge
                     key={assignment.id}
                     variant="secondary"
-                    className="bg-zinc-800 text-zinc-100"
+                    className="bg-zinc-800 text-zinc-100 pointer-events-none"
                   >
                     {assignment.club_labels.name}
                   </Badge>
