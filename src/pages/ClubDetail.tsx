@@ -78,9 +78,14 @@ const ClubDetail = () => {
         setClub(clubData);
 
         if (user) {
-          setIsMember(
-            clubData.club_members.some((member) => member.user_id === user.id)
-          );
+          const { data: membershipData } = await supabase
+            .from("club_members")
+            .select("*")
+            .eq("club_id", id)
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+          setIsMember(!!membershipData);
         }
 
         setIsLoading(false);
@@ -130,9 +135,14 @@ const ClubDetail = () => {
           if (data) {
             setClub(data);
             if (user) {
-              setIsMember(
-                data.club_members.some((member) => member.user_id === user.id)
-              );
+              const { data: membershipData } = await supabase
+                .from("club_members")
+                .select("*")
+                .eq("club_id", id)
+                .eq("user_id", user.id)
+                .maybeSingle();
+
+              setIsMember(!!membershipData);
             }
           }
         }
@@ -165,13 +175,14 @@ const ClubDetail = () => {
           description: "You have left the club",
         });
       } else {
-        // First check if membership already exists
-        const { data: existingMembership } = await supabase
+        const { data: existingMembership, error: checkError } = await supabase
           .from("club_members")
           .select()
           .eq("club_id", id)
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
+
+        if (checkError) throw checkError;
 
         if (existingMembership) {
           toast({
