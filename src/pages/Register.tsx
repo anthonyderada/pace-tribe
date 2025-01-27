@@ -76,26 +76,6 @@ const Register = () => {
     setLoading(true);
 
     try {
-      // First, check if the email exists
-      const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers({
-        filters: {
-          email: email
-        }
-      });
-
-      if (usersError) throw usersError;
-
-      if (users && users.length > 0) {
-        toast({
-          title: "Account exists",
-          description: "An account with this email already exists. Redirecting to login...",
-          variant: "destructive",
-        });
-        setTimeout(() => navigate("/login"), 2000);
-        return;
-      }
-
-      // If email doesn't exist, proceed with registration
       const { error } = await supabase.auth.signUp({
         email,
         password,
