@@ -165,12 +165,43 @@ const ClubDetail = () => {
           description: "You have left the club",
         });
       } else {
-        const { error } = await supabase.from("club_members").insert({
-          club_id: id,
-          user_id: user.id,
-        });
+        // First check if membership already exists
+        const { data: existingMembership } = await supabase
+          .from("club_members")
+          .select()
+          .eq("club_id", id)
+          .eq("user_id", user.id)
+          .single();
 
-        if (error) throw error;
+        if (existingMembership) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "You are already a member of this club",
+          });
+          setIsMember(true);
+          return;
+        }
+
+        const { error } = await supabase
+          .from("club_members")
+          .insert({
+            club_id: id,
+            user_id: user.id,
+          });
+
+        if (error) {
+          if (error.code === "23505") {
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "You are already a member of this club",
+            });
+            setIsMember(true);
+            return;
+          }
+          throw error;
+        }
 
         toast({
           title: "Success",
