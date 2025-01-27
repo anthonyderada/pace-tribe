@@ -111,7 +111,7 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+    <div className="flex flex-col md:flex-row gap-8 items-center md:items-start relative p-6">
       <div className="relative group">
         <Avatar className="w-32 h-32">
           {isEditing ? (
@@ -154,6 +154,16 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
         )}
       </div>
       <div className="flex-1 text-center md:text-left">
+        {!isEditing && (
+          <Button
+            onClick={() => setIsEditing(true)}
+            className="absolute top-4 right-4 hover:bg-zinc-800/50"
+            size="icon"
+            variant="ghost"
+          >
+            <Pencil className="h-5 w-5 text-zinc-400" />
+          </Button>
+        )}
         {isEditing ? (
           <div className="space-y-4">
             <Input
@@ -201,14 +211,6 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
           </div>
         ) : (
           <>
-            <Button
-              onClick={() => setIsEditing(true)}
-              className="absolute top-4 right-4 bg-transparent text-zinc-400"
-              size="icon"
-              variant="ghost"
-            >
-              <Pencil className="h-5 w-5 md:h-6 md:w-6" />
-            </Button>
             <h1 className="text-3xl font-bold text-zinc-100 mb-2">
               {profile?.username || user?.email}
             </h1>
