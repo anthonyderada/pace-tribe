@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Users, Calendar, Route, Timer } from "lucide-react";
+import { MapPin, Users, Calendar, Route, Timer, Loader2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 type Club = {
   id: string;
@@ -38,121 +39,74 @@ const ClubDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [club, setClub] = useState<Club | null>(null);
-  const [isMember, setIsMember] = useState(false);
+  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const getClubDetails = async () => {
-      try {
-        const { data: clubData, error: clubError } = await supabase
-          .from("clubs")
-          .select(`
+  const { data: club, isLoading: isClubLoading } = useQuery({
+    queryKey: ['club', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("clubs")
+        .select(`
+          *,
+          club_members (
+            id,
+            user_id
+          ),
+          events (
             *,
-            club_members (
+            event_participants (
               id,
               user_id
-            ),
-            events (
-              *,
-              event_participants (
-                id,
-                user_id
-              )
             )
-          `)
-          .eq("id", id)
-          .maybeSingle();
+          )
+        `)
+        .eq("id", id)
+        .maybeSingle();
 
-        if (clubError) throw clubError;
-        if (!clubData) {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Club not found",
-          });
-          navigate("/clubs");
-          return;
-        }
+      if (error) throw error;
+      if (!data) throw new Error("Club not found");
+      return data as Club;
+    },
+  });
 
-        setClub(clubData);
+  const joinEventMutation = useMutation({
+    mutationFn: async (eventId: string) => {
+      const { error } = await supabase
+        .from('event_participants')
+        .insert([{ event_id: eventId, user_id: user?.id }]);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['club', id] });
+      toast.success('Successfully registered for the event!');
+    },
+    onError: (error) => {
+      console.error('Error registering for event:', error);
+      toast.error('Failed to register for the event. Please try again.');
+    }
+  });
 
-        if (user) {
-          const { data: membershipData } = await supabase
-            .from("club_members")
-            .select("*")
-            .eq("club_id", id)
-            .eq("user_id", user.id)
-            .maybeSingle();
-
-          setIsMember(!!membershipData);
-        }
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error:", error);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to load club details",
-        });
-        navigate("/clubs");
-      }
-    };
-
-    getClubDetails();
-
-    const channel = supabase
-      .channel("schema-db-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "club_members",
-          filter: `club_id=eq.${id}`,
-        },
-        async () => {
-          const { data } = await supabase
-            .from("clubs")
-            .select(`
-              *,
-              club_members (
-                id,
-                user_id
-              ),
-              events (
-                *,
-                event_participants (
-                  id,
-                  user_id
-                )
-              )
-            `)
-            .eq("id", id)
-            .maybeSingle();
-
-          if (data) {
-            setClub(data);
-            if (user) {
-              const { data: membershipData } = await supabase
-                .from("club_members")
-                .select("*")
-                .eq("club_id", id)
-                .eq("user_id", user.id)
-                .maybeSingle();
-
-              setIsMember(!!membershipData);
-            }
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [id, user, navigate, toast]);
+  const leaveEventMutation = useMutation({
+    mutationFn: async (eventId: string) => {
+      const { error } = await supabase
+        .from('event_participants')
+        .delete()
+        .eq('event_id', eventId)
+        .eq('user_id', user?.id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['club', id] });
+      toast.success('Successfully unregistered from the event');
+    },
+    onError: (error) => {
+      console.error('Error unregistering from event:', error);
+      toast.error('Failed to unregister from the event. Please try again.');
+    }
+  });
 
   const handleMembership = async () => {
     if (!user) {
@@ -229,7 +183,22 @@ const ClubDetail = () => {
     }
   };
 
-  if (isLoading || !club) {
+  const handleEventParticipation = (eventId: string, isParticipant: boolean, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!user) {
+      toast.error('Please log in to register for events');
+      return;
+    }
+
+    if (isParticipant) {
+      leaveEventMutation.mutate(eventId);
+    } else {
+      joinEventMutation.mutate(eventId);
+    }
+  };
+
+  if (isClubLoading || !club) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
@@ -247,6 +216,8 @@ const ClubDetail = () => {
       </div>
     );
   }
+
+  const isMember = club.club_members?.some(member => member.user_id === user?.id);
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
@@ -317,49 +288,71 @@ const ClubDetail = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {club.events && club.events.length > 0 ? (
-              club.events.map((event) => (
-                <Card
-                  key={event.id}
-                  className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
-                  onClick={() => navigate(`/events/${event.id}`)}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-semibold text-white">
-                      {event.title}
-                    </h3>
-                    <span className="text-gray-400 text-sm">
-                      {event.event_participants?.length || 0} participants
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-                    <Calendar className="h-4 w-4" />
-                    {format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
-                  </div>
-                  {event.location && (
-                    <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-                      <MapPin className="h-4 w-4" />
-                      {event.location}
+              club.events.map((event) => {
+                const isParticipant = event.event_participants?.some(participant => participant.user_id === user?.id);
+                const isLoading = joinEventMutation.isPending || leaveEventMutation.isPending;
+
+                return (
+                  <Card
+                    key={event.id}
+                    className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
+                    onClick={() => navigate(`/events/${event.id}`)}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="text-xl font-semibold text-white">
+                        {event.title}
+                      </h3>
+                      <Button
+                        className={`w-24 ${
+                          isParticipant
+                            ? "border border-white text-white bg-transparent hover:bg-white/10"
+                            : "border border-white bg-white text-black hover:bg-gray-100"
+                        }`}
+                        onClick={(e) => handleEventParticipation(event.id, isParticipant, e)}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : isParticipant ? (
+                          'Leave'
+                        ) : (
+                          'Join'
+                        )}
+                      </Button>
                     </div>
-                  )}
-                  <div className="flex flex-wrap gap-4 mb-3">
-                    {event.distance && (
-                      <div className="flex items-center gap-2 text-gray-400 text-sm">
-                        <Route className="h-4 w-4" />
-                        {(Number(event.distance) * 0.621371).toFixed(1)} miles
+                    <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+                      <Calendar className="h-4 w-4" />
+                      {format(new Date(event.date), "MMM d, yyyy - h:mm a")}
+                    </div>
+                    {event.location && (
+                      <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+                        <MapPin className="h-4 w-4" />
+                        {event.location}
                       </div>
                     )}
-                    {event.pace && (
-                      <div className="flex items-center gap-2 text-gray-400 text-sm">
-                        <Timer className="h-4 w-4" />
-                        {event.pace}
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-gray-400 line-clamp-3">
-                    {event.description || "No description available"}
-                  </p>
-                </Card>
-              ))
+                    <div className="flex flex-wrap gap-4 mb-3">
+                      {event.distance && (
+                        <div className="flex items-center gap-2 text-gray-400 text-sm">
+                          <Route className="h-4 w-4" />
+                          {(Number(event.distance) * 0.621371).toFixed(1)} miles
+                        </div>
+                      )}
+                      {event.pace && (
+                        <div className="flex items-center gap-2 text-gray-400 text-sm">
+                          <Timer className="h-4 w-4" />
+                          {event.pace}
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-gray-400 line-clamp-3">
+                      {event.description || "No description available"}
+                    </p>
+                    <p className="text-gray-400 text-sm mt-4">
+                      {event.event_participants?.length || 0} participants
+                    </p>
+                  </Card>
+                );
+              })
             ) : (
               <div className="col-span-full text-center text-zinc-400">
                 No upcoming events
