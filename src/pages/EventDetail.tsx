@@ -7,7 +7,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Event = {
   id: string;
@@ -30,10 +29,6 @@ type Event = {
   event_participants: {
     id: string;
     user_id: string;
-    profiles: {
-      username: string | null;
-      avatar_url: string | null;
-    } | null;
   }[];
 };
 
@@ -49,6 +44,7 @@ const EventDetail = () => {
   useEffect(() => {
     const getEventDetails = async () => {
       try {
+        // Get event details
         const { data: eventData, error: eventError } = await supabase
           .from("events")
           .select(`
@@ -64,11 +60,7 @@ const EventDetail = () => {
             ),
             event_participants (
               id,
-              user_id,
-              profiles:user_id (
-                username,
-                avatar_url
-              )
+              user_id
             )
           `)
           .eq("id", id)
@@ -84,8 +76,9 @@ const EventDetail = () => {
           navigate("/events");
           return;
         }
-        setEvent(eventData as Event);
+        setEvent(eventData);
 
+        // Check if user is a participant
         if (user) {
           const { data } = await supabase
             .from("event_participants")
@@ -111,6 +104,7 @@ const EventDetail = () => {
 
     getEventDetails();
 
+    // Set up real-time subscription for participants
     const channel = supabase
       .channel("schema-db-changes")
       .on(
@@ -122,6 +116,7 @@ const EventDetail = () => {
           filter: `event_id=eq.${id}`,
         },
         async () => {
+          // Update event details
           const { data } = await supabase
             .from("events")
             .select(`
@@ -137,18 +132,14 @@ const EventDetail = () => {
               ),
               event_participants (
                 id,
-                user_id,
-                profiles:user_id (
-                  username,
-                  avatar_url
-                )
+                user_id
               )
             `)
             .eq("id", id)
             .maybeSingle();
 
           if (data) {
-            setEvent(data as Event);
+            setEvent(data);
             if (user) {
               setIsParticipant(
                 data.event_participants.some((p) => p.user_id === user.id)
@@ -172,6 +163,7 @@ const EventDetail = () => {
 
     try {
       if (isParticipant) {
+        // Leave event
         const { error } = await supabase
           .from("event_participants")
           .delete()
@@ -185,6 +177,7 @@ const EventDetail = () => {
           description: "You have cancelled your registration for the event",
         });
       } else {
+        // Join event
         const { error } = await supabase.from("event_participants").insert({
           event_id: id,
           user_id: user.id,
@@ -256,9 +249,7 @@ const EventDetail = () => {
               {event.distance && (
                 <div className="flex items-center gap-2">
                   <Route className="h-5 w-5 text-zinc-400" />
-                  <span className="text-zinc-400">
-                    {(event.distance * 0.621371).toFixed(1)} miles
-                  </span>
+                  <span className="text-zinc-400">{(event.distance * 0.621371).toFixed(1)} miles</span>
                 </div>
               )}
               {event.pace && (
@@ -318,52 +309,15 @@ const EventDetail = () => {
                 </span>
               </div>
               <CardDescription className="text-gray-400 text-sm">
-                {event.clubs.location || "Location not specified"}
+                {event.clubs.location || 'Location not specified'}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-400">
-                {event.clubs.description || "No description available"}
+                {event.clubs.description || 'No description available'}
               </p>
             </CardContent>
           </Card>
-        </CardContent>
-      </Card>
-
-      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-zinc-100">
-            Who is attending
-          </CardTitle>
-          <CardDescription className="text-zinc-400">
-            {event.event_participants.length} participants registered
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-4">
-            {event.event_participants.map((participant) => (
-              <div
-                key={participant.id}
-                className="flex items-center gap-2 bg-zinc-800/50 rounded-lg p-2 cursor-pointer hover:bg-zinc-800/80 transition-colors"
-                onClick={() => navigate(`/profile/${participant.user_id}`)}
-                role="button"
-                tabIndex={0}
-              >
-                <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src={participant.profiles?.avatar_url || ""}
-                    alt={participant.profiles?.username || "User"}
-                  />
-                  <AvatarFallback>
-                    {(participant.profiles?.username || "U")[0].toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-zinc-100">
-                  {participant.profiles?.username || "Anonymous User"}
-                </span>
-              </div>
-            ))}
-          </div>
         </CardContent>
       </Card>
     </div>

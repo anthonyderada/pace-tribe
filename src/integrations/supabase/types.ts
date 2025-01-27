@@ -76,7 +76,6 @@ export type Database = {
       }
       clubs: {
         Row: {
-          categories: string[] | null
           created_at: string
           created_by: string
           description: string | null
@@ -86,7 +85,6 @@ export type Database = {
           thumbnail_url: string | null
         }
         Insert: {
-          categories?: string[] | null
           created_at?: string
           created_by: string
           description?: string | null
@@ -96,7 +94,6 @@ export type Database = {
           thumbnail_url?: string | null
         }
         Update: {
-          categories?: string[] | null
           created_at?: string
           created_by?: string
           description?: string | null

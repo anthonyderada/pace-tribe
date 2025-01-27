@@ -4,16 +4,14 @@ import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const { data: clubs, isLoading } = useQuery({
-    queryKey: ['featuredClubs', selectedCategory],
+    queryKey: ['featuredClubs'],
     queryFn: async () => {
-      let query = supabase
+      const { data, error } = await supabase
         .from('clubs')
         .select(`
           *,
@@ -23,11 +21,6 @@ const Index = () => {
         `)
         .order('created_at', { ascending: false });
       
-      if (selectedCategory) {
-        query = query.contains('categories', [selectedCategory]);
-      }
-      
-      const { data, error } = await query;
       if (error) throw error;
       return data;
     },
@@ -41,6 +34,7 @@ const Index = () => {
     { 
       name: 'Road', 
       icon: '/lovable-uploads/aaae8bd4-c7f5-4ca1-9fac-fde0a09ac193.png',
+      selected: true 
     },
     { 
       name: 'Track', 
@@ -91,13 +85,8 @@ const Index = () => {
                 <div 
                   key={category.name}
                   className={`flex flex-col items-center cursor-pointer ${
-                    selectedCategory === category.name.toLowerCase() ? 'opacity-100' : 'opacity-50'
+                    category.selected ? 'opacity-100' : 'opacity-50'
                   } hover:opacity-100 transition-opacity flex-shrink-0`}
-                  onClick={() => setSelectedCategory(
-                    selectedCategory === category.name.toLowerCase() 
-                      ? null 
-                      : category.name.toLowerCase()
-                  )}
                 >
                   <div className="w-12 h-12 mb-2">
                     <img 
@@ -109,7 +98,7 @@ const Index = () => {
                   <span className="text-white text-sm whitespace-nowrap">
                     {category.name}
                   </span>
-                  {selectedCategory === category.name.toLowerCase() && (
+                  {category.selected && (
                     <div className="h-0.5 w-full bg-white mt-2"></div>
                   )}
                 </div>
@@ -123,12 +112,7 @@ const Index = () => {
       <div className="py-16 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-white">
-              {selectedCategory 
-                ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Clubs`
-                : 'Featured Clubs'
-              }
-            </h2>
+            <h2 className="text-3xl font-bold text-white">Featured Clubs</h2>
             <Button 
               variant="link" 
               className="text-emerald-500"
@@ -139,6 +123,7 @@ const Index = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {isLoading ? (
+              // Loading state
               Array(3).fill(0).map((_, i) => (
                 <div key={i} className="bg-zinc-800/50 rounded-2xl overflow-hidden animate-pulse p-6">
                   <div className="h-6 bg-zinc-700 rounded mb-2"></div>
@@ -146,51 +131,22 @@ const Index = () => {
                   <div className="h-20 bg-zinc-700 rounded mb-4"></div>
                 </div>
               ))
-            ) : clubs && clubs.length > 0 ? (
-              clubs.map((club) => (
-                <div 
-                  key={club.id} 
-                  className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer"
-                  onClick={() => navigate(`/clubs/${club.id}`)}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-semibold text-white">{club.name}</h3>
-                    <span className="text-gray-400 text-sm">
-                      {club.club_members[0]?.count || 0} members
-                    </span>
-                  </div>
-                  <p className="text-gray-400 text-sm mb-4">{club.location || 'Location not specified'}</p>
-                  <p className="text-gray-400">{club.description || 'No description available'}</p>
-                  {club.categories && club.categories.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {club.categories.map((category) => (
-                        <span 
-                          key={category}
-                          className="px-2 py-1 bg-zinc-700/50 rounded-full text-xs text-zinc-300"
-                        >
-                          {category.charAt(0).toUpperCase() + category.slice(1)}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+            ) : clubs?.map((club) => (
+              <div 
+                key={club.id} 
+                className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer"
+                onClick={() => navigate(`/clubs/${club.id}`)}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-xl font-semibold text-white">{club.name}</h3>
+                  <span className="text-gray-400 text-sm">
+                    {club.club_members[0]?.count || 0} members
+                  </span>
                 </div>
-              ))
-            ) : (
-              <div className="col-span-3 text-center py-12">
-                <p className="text-gray-400 text-lg">
-                  {selectedCategory 
-                    ? `No clubs found in the ${selectedCategory} category. Why not create one?`
-                    : 'No clubs found. Be the first to create one!'
-                  }
-                </p>
-                <Button 
-                  className="mt-4 bg-white hover:bg-white text-black"
-                  onClick={() => navigate("/clubs")}
-                >
-                  Create a Club
-                </Button>
+                <p className="text-gray-400 text-sm mb-4">{club.location || 'Location not specified'}</p>
+                <p className="text-gray-400">{club.description || 'No description available'}</p>
               </div>
-            )}
+            ))}
           </div>
         </div>
       </div>
