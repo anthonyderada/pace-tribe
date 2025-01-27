@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type Event = {
   id: string;
@@ -42,6 +43,60 @@ const EventDetail = () => {
   const [event, setEvent] = useState<Event | null>(null);
   const [isParticipant, setIsParticipant] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
+
+  const registerMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("event_participants")
+        .insert({
+          event_id: id,
+          user_id: user?.id,
+        });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "You are now registered for the event",
+      });
+      queryClient.invalidateQueries({ queryKey: ['event', id] });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to register for the event",
+      });
+      console.error("Error:", error);
+    },
+  });
+
+  const cancelMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("event_participants")
+        .delete()
+        .eq("event_id", id)
+        .eq("user_id", user?.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "You have cancelled your registration for the event",
+      });
+      queryClient.invalidateQueries({ queryKey: ['event', id] });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to cancel registration",
+      });
+      console.error("Error:", error);
+    },
+  });
 
   useEffect(() => {
     const getEventDetails = async () => {
@@ -82,14 +137,10 @@ const EventDetail = () => {
 
         // Check if user is a participant
         if (user) {
-          const { data: participantData } = await supabase
-            .from("event_participants")
-            .select("*")
-            .eq("event_id", id)
-            .eq("user_id", user.id)
-            .maybeSingle();
-
-          setIsParticipant(!!participantData);
+          const isCurrentParticipant = eventData.event_participants.some(
+            (participant) => participant.user_id === user.id
+          );
+          setIsParticipant(isCurrentParticipant);
         }
 
         setIsLoading(false);
@@ -144,14 +195,10 @@ const EventDetail = () => {
           if (data) {
             setEvent(data);
             if (user) {
-              const { data: participantData } = await supabase
-                .from("event_participants")
-                .select("*")
-                .eq("event_id", id)
-                .eq("user_id", user.id)
-                .maybeSingle();
-
-              setIsParticipant(!!participantData);
+              const isCurrentParticipant = data.event_participants.some(
+                (participant) => participant.user_id === user.id
+              );
+              setIsParticipant(isCurrentParticipant);
             }
           }
         }
@@ -169,61 +216,10 @@ const EventDetail = () => {
       return;
     }
 
-    try {
-      if (isParticipant) {
-        // Leave event
-        const { error } = await supabase
-          .from("event_participants")
-          .delete()
-          .eq("event_id", id)
-          .eq("user_id", user.id);
-
-        if (error) throw error;
-
-        toast({
-          title: "Success",
-          description: "You have cancelled your registration for the event",
-        });
-      } else {
-        // Check if already registered
-        const { data: existingRegistration, error: checkError } = await supabase
-          .from("event_participants")
-          .select()
-          .eq("event_id", id)
-          .eq("user_id", user.id)
-          .maybeSingle();
-
-        if (checkError) throw checkError;
-
-        if (existingRegistration) {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "You are already registered for this event",
-          });
-          return;
-        }
-
-        // Join event
-        const { error } = await supabase.from("event_participants").insert({
-          event_id: id,
-          user_id: user.id,
-        });
-
-        if (error) throw error;
-
-        toast({
-          title: "Success",
-          description: "You are now registered for the event",
-        });
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update registration",
-      });
+    if (isParticipant) {
+      cancelMutation.mutate();
+    } else {
+      registerMutation.mutate();
     }
   };
 
@@ -245,6 +241,8 @@ const EventDetail = () => {
       </div>
     );
   }
+
+  // ... keep existing code (JSX for event details)
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
@@ -301,8 +299,13 @@ const EventDetail = () => {
                   : "border border-white bg-white text-black hover:bg-gray-100"
               }`}
               onClick={handleParticipation}
+              disabled={registerMutation.isPending || cancelMutation.isPending}
             >
-              {isParticipant ? "Cancel Registration" : "Register"}
+              {registerMutation.isPending || cancelMutation.isPending
+                ? "Loading..."
+                : isParticipant
+                ? "Cancel Registration"
+                : "Register"}
             </Button>
           ) : (
             <Button
