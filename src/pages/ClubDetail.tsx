@@ -5,9 +5,9 @@ import { MapPin, Users, Calendar, Route, Timer, Loader2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { format } from "date-fns";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { toast } from "sonner";
 
 type Club = {
   id: string;
@@ -38,7 +38,6 @@ const ClubDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useAuth();
-  const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -115,6 +114,7 @@ const ClubDetail = () => {
     }
 
     try {
+      const isMember = club.club_members?.some(member => member.user_id === user?.id);
       if (isMember) {
         const { error } = await supabase
           .from("club_members")
@@ -124,10 +124,7 @@ const ClubDetail = () => {
 
         if (error) throw error;
 
-        toast({
-          title: "Success",
-          description: "You have left the club",
-        });
+        toast.success('You have left the club');
       } else {
         const { data: existingMembership, error: checkError } = await supabase
           .from("club_members")
@@ -139,12 +136,7 @@ const ClubDetail = () => {
         if (checkError) throw checkError;
 
         if (existingMembership) {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "You are already a member of this club",
-          });
-          setIsMember(true);
+          toast.error('You are already a member of this club');
           return;
         }
 
@@ -157,29 +149,17 @@ const ClubDetail = () => {
 
         if (error) {
           if (error.code === "23505") {
-            toast({
-              variant: "destructive",
-              title: "Error",
-              description: "You are already a member of this club",
-            });
-            setIsMember(true);
+            toast.error('You are already a member of this club');
             return;
           }
           throw error;
         }
 
-        toast({
-          title: "Success",
-          description: "You have joined the club",
-        });
+        toast.success('You have joined the club');
       }
     } catch (error) {
       console.error("Error:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update membership",
-      });
+      toast.error('Failed to update membership');
     }
   };
 
