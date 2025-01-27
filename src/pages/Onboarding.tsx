@@ -30,6 +30,7 @@ const Onboarding = () => {
   const [seekingTrainingPartners, setSeekingTrainingPartners] = useState(false);
   const [seekingCasualMeetups, setSeekingCasualMeetups] = useState(false);
   const [seekingRacePacers, setSeekingRacePacers] = useState(false);
+  const [seekingCoach, setSeekingCoach] = useState(false);
   const [preferredShoeBrands, setPreferredShoeBrands] = useState<string[]>([]);
 
   const formatPace = (pace: number) => {
@@ -42,8 +43,7 @@ const Onboarding = () => {
 
   const shoeBrands = [
     "Nike", "Hoka", "ON", "Asics", "Saucony", "Brooks", "Adidas",
-    "Mizuno", "Altra", "New Balance", "Salomon", "La Sportiva",
-    "Merrel", "Topo Athletic"
+    "Mizuno", "Altra", "New Balance"
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,6 +71,7 @@ const Onboarding = () => {
           seeking_training_partners: seekingTrainingPartners,
           seeking_casual_meetups: seekingCasualMeetups,
           seeking_race_pacers: seekingRacePacers,
+          seeking_coach: seekingCoach,
           preferred_shoe_brand: preferredShoeBrands.length > 0 ? preferredShoeBrands : null
         })
         .eq("id", user?.id);
@@ -271,6 +272,22 @@ const Onboarding = () => {
                       className="text-sm font-medium leading-none text-white peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
                       Looking for Race Day Pacers
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="seeking-coach"
+                      checked={seekingCoach}
+                      onCheckedChange={(checked) => 
+                        setSeekingCoach(checked as boolean)
+                      }
+                      className="border-white data-[state=checked]:bg-white data-[state=checked]:text-black"
+                    />
+                    <label
+                      htmlFor="seeking-coach"
+                      className="text-sm font-medium leading-none text-white peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Looking for a Coach
                     </label>
                   </div>
                 </div>

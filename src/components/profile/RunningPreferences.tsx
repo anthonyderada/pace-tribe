@@ -16,6 +16,7 @@ type RunningPreferencesProps = {
     seeking_training_partners: boolean | null;
     seeking_casual_meetups: boolean | null;
     seeking_race_pacers: boolean | null;
+    seeking_coach: boolean | null;
     preferred_shoe_brand: string[] | null;
   } | null;
   onPreferencesUpdate: (preferences: {
@@ -24,6 +25,7 @@ type RunningPreferencesProps = {
     seeking_training_partners: boolean;
     seeking_casual_meetups: boolean;
     seeking_race_pacers: boolean;
+    seeking_coach: boolean;
     preferred_shoe_brand: string[];
   }) => void;
 };
@@ -36,6 +38,7 @@ export const RunningPreferences = ({ userId, profile, onPreferencesUpdate }: Run
   const [seekingTrainingPartners, setSeekingTrainingPartners] = useState(profile?.seeking_training_partners || false);
   const [seekingCasualMeetups, setSeekingCasualMeetups] = useState(profile?.seeking_casual_meetups || false);
   const [seekingRacePacers, setSeekingRacePacers] = useState(profile?.seeking_race_pacers || false);
+  const [seekingCoach, setSeekingCoach] = useState(profile?.seeking_coach || false);
   const [preferredShoeBrands, setPreferredShoeBrands] = useState<string[]>(profile?.preferred_shoe_brand || []);
 
   const formatPace = (pace: number) => {
@@ -48,8 +51,7 @@ export const RunningPreferences = ({ userId, profile, onPreferencesUpdate }: Run
 
   const shoeBrands = [
     "Nike", "Hoka", "ON", "Asics", "Saucony", "Brooks", "Adidas",
-    "Mizuno", "Altra", "New Balance", "Salomon", "La Sportiva",
-    "Merrel", "Topo Athletic"
+    "Mizuno", "Altra", "New Balance"
   ];
 
   const toggleShoeBrand = (brand: string) => {
@@ -74,6 +76,7 @@ export const RunningPreferences = ({ userId, profile, onPreferencesUpdate }: Run
           seeking_training_partners: seekingTrainingPartners,
           seeking_casual_meetups: seekingCasualMeetups,
           seeking_race_pacers: seekingRacePacers,
+          seeking_coach: seekingCoach,
           preferred_shoe_brand: preferredShoeBrands
         })
         .eq("id", userId);
@@ -86,6 +89,7 @@ export const RunningPreferences = ({ userId, profile, onPreferencesUpdate }: Run
         seeking_training_partners: seekingTrainingPartners,
         seeking_casual_meetups: seekingCasualMeetups,
         seeking_race_pacers: seekingRacePacers,
+        seeking_coach: seekingCoach,
         preferred_shoe_brand: preferredShoeBrands
       });
       setIsEditing(false);
@@ -226,6 +230,22 @@ export const RunningPreferences = ({ userId, profile, onPreferencesUpdate }: Run
                     Looking for Race Day Pacers
                   </label>
                 </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="seeking-coach"
+                    checked={seekingCoach}
+                    onCheckedChange={(checked) => 
+                      setSeekingCoach(checked as boolean)
+                    }
+                    className="border-white data-[state=checked]:bg-white data-[state=checked]:text-black"
+                  />
+                  <label
+                    htmlFor="seeking-coach"
+                    className="text-sm font-medium leading-none text-white peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Looking for a Coach
+                  </label>
+                </div>
               </div>
             </div>
             <div className="flex gap-2">
@@ -245,6 +265,7 @@ export const RunningPreferences = ({ userId, profile, onPreferencesUpdate }: Run
                   setSeekingTrainingPartners(profile?.seeking_training_partners || false);
                   setSeekingCasualMeetups(profile?.seeking_casual_meetups || false);
                   setSeekingRacePacers(profile?.seeking_race_pacers || false);
+                  setSeekingCoach(profile?.seeking_coach || false);
                   setPreferredShoeBrands(profile?.preferred_shoe_brand || []);
                 }}
                 className="border border-white text-white bg-transparent"
@@ -300,13 +321,15 @@ export const RunningPreferences = ({ userId, profile, onPreferencesUpdate }: Run
                   {[
                     profile?.seeking_training_partners && "Looking for Training Partners",
                     profile?.seeking_casual_meetups && "Interested in Casual Meetups",
-                    profile?.seeking_race_pacers && "Looking for Race Day Pacers"
+                    profile?.seeking_race_pacers && "Looking for Race Day Pacers",
+                    profile?.seeking_coach && "Looking for a Coach"
                   ].filter(Boolean).map((preference, index) => (
                     <p key={index} className="text-zinc-400">{preference}</p>
                   ))}
                   {!profile?.seeking_training_partners && 
                    !profile?.seeking_casual_meetups && 
-                   !profile?.seeking_race_pacers && (
+                   !profile?.seeking_race_pacers &&
+                   !profile?.seeking_coach && (
                     <p className="text-zinc-400">No preferences set</p>
                   )}
                 </div>
