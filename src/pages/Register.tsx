@@ -76,45 +76,30 @@ const Register = () => {
     setLoading(true);
 
     try {
-      // First check if the user exists
-      const { data: existingUser } = await supabase.auth.signInWithPassword({
-        email,
-        password: "dummy-password-for-check", // We use a dummy password as we just want to check if the email exists
-      });
-
-      if (existingUser.user) {
-        toast({
-          title: "Account exists",
-          description: "An account with this email already exists. Redirecting to login...",
-          variant: "default",
-        });
-        setTimeout(() => navigate("/login"), 2000);
-        return;
-      }
-
-      // If we get here, the user doesn't exist, so proceed with registration
-      const { error } = await supabase.auth.signUp({
+      const { data: { user }, error } = await supabase.auth.signUp({
         email,
         password,
       });
 
-      if (error) throw error;
-
-      setIsSuccess(true);
-    } catch (error: any) {
-      let message = error.message;
-      // Check if the error is about an existing user
-      if (error.message.toLowerCase().includes("user already registered")) {
-        message = "An account with this email already exists";
-        toast({
-          title: "Account exists",
-          description: "An account with this email already exists. Redirecting to login...",
-          variant: "default",
-        });
-        setTimeout(() => navigate("/login"), 2000);
-        return;
+      if (error) {
+        // Check if the error indicates the user already exists
+        if (error.message.includes("User already registered")) {
+          toast({
+            title: "Account exists",
+            description: "An account with this email already exists. Redirecting to login...",
+            variant: "default",
+          });
+          setTimeout(() => navigate("/login"), 2000);
+          return;
+        }
+        throw error;
       }
-      
+
+      if (user) {
+        setIsSuccess(true);
+      }
+    } catch (error: any) {
+      const message = error.message || "An error occurred during registration";
       setError(message);
       toast({
         title: "Error",
