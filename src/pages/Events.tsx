@@ -123,7 +123,7 @@ const Events = () => {
         ) : events && events.length > 0 ? (
           events.map((event) => {
             const isRegistered = event.participants?.some(participant => participant.user_id === user?.id);
-            const isLoading = registerMutation.isPending || unregisterMutation.isPending;
+            const isLoading = registerMutation?.isPending || unregisterMutation?.isPending;
 
             return (
               <Card 
@@ -136,7 +136,7 @@ const Events = () => {
                     <h3 className="text-xl font-semibold text-white">{event.title}</h3>
                     <div className="flex items-center gap-2 text-gray-400 text-sm mt-2">
                       <Calendar className="h-4 w-4" />
-                      {format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
+                      {format(new Date(event.date), "MMM d, yyyy - h:mm a")}
                     </div>
                   </div>
                   <Button
