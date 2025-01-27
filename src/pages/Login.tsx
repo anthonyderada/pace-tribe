@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Chrome } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +24,6 @@ const Login = () => {
         .eq("id", userId)
         .single();
 
-      // If any of these fields are null, redirect to onboarding
       if (!profile?.username || !profile?.bio || !profile?.location) {
         navigate("/onboarding");
       } else {
@@ -31,7 +31,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Error checking profile:", error);
-      navigate("/onboarding"); // Redirect to onboarding on error to be safe
+      navigate("/onboarding");
     }
   };
 
@@ -60,6 +60,26 @@ const Login = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+
+      if (error) throw error;
+    } catch (error: any) {
+      setError(error.message);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -112,6 +132,26 @@ const Login = () => {
               {loading ? "Signing in..." : "Sign in"}
             </Button>
           </form>
+
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-zinc-700" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-zinc-900 px-2 text-zinc-400">Or continue with</span>
+            </div>
+          </div>
+
+          <Button
+            variant="outline"
+            type="button"
+            className="w-full"
+            onClick={handleGoogleLogin}
+          >
+            <Chrome className="mr-2 h-4 w-4" />
+            Google
+          </Button>
+
           <div className="mt-4 text-center text-sm">
             <span className="text-zinc-400">Don't have an account? </span>
             <Button
