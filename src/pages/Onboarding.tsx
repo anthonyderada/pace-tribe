@@ -75,7 +75,10 @@ const Onboarding = () => {
         })
         .eq("id", user?.id);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error("Error updating profile:", updateError);
+        throw updateError;
+      }
 
       toast({
         title: "Profile created",
@@ -84,6 +87,7 @@ const Onboarding = () => {
       
       navigate("/");
     } catch (error: any) {
+      console.error("Full error:", error);
       setError(error.message);
       toast({
         title: "Error",
@@ -119,7 +123,7 @@ const Onboarding = () => {
               <h2 className="text-lg font-semibold text-white">Required Information</h2>
               <div>
                 <Input
-                  placeholder="Username"
+                  placeholder="Name"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-400"
