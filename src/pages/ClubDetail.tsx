@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Club = {
   id: string;
@@ -18,6 +19,10 @@ type Club = {
   club_members: {
     id: string;
     user_id: string;
+    profiles: {
+      username: string | null;
+      avatar_url: string | null;
+    };
   }[];
   events: {
     id: string;
@@ -50,7 +55,11 @@ const ClubDetail = () => {
           *,
           club_members (
             id,
-            user_id
+            user_id,
+            profiles (
+              username,
+              avatar_url
+            )
           ),
           events (
             *,
@@ -254,12 +263,38 @@ const ClubDetail = () => {
               {club?.description || "No description available."}
             </p>
           </div>
+          
+          {/* Members Section */}
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold mb-4 text-zinc-100">Members</h3>
+            <div className="flex flex-wrap gap-4">
+              {club.club_members.map((member) => (
+                <div
+                  key={member.id}
+                  className="flex items-center gap-2 bg-zinc-800/50 p-2 rounded-lg cursor-pointer hover:bg-zinc-800/70 transition-colors"
+                  onClick={() => navigate(`/profile/${member.user_id}`)}
+                >
+                  <Avatar>
+                    <AvatarImage src={member.profiles.avatar_url || undefined} />
+                    <AvatarFallback>
+                      {member.profiles.username?.[0]?.toUpperCase() || '?'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-zinc-200">
+                    {member.profiles.username || 'Anonymous'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="flex items-center gap-2 mb-6">
             <Users className="h-5 w-5 text-zinc-400" />
             <span className="text-zinc-400">
               {club?.club_members?.length} members
             </span>
           </div>
+
           {user ? (
             <Button
               className={`w-full ${
