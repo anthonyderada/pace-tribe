@@ -40,28 +40,12 @@ const Login = () => {
     setError("");
 
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (signInError) {
-        if (signInError.message === "Invalid login credentials") {
-          toast({
-            title: "Login failed",
-            description: "Invalid email or password. Please try again.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: signInError.message,
-            variant: "destructive",
-          });
-        }
-        setError(signInError.message);
-        return;
-      }
+      if (error) throw error;
 
       if (data.user) {
         await checkProfileCompletion(data.user.id);
@@ -87,14 +71,7 @@ const Login = () => {
         }
       });
 
-      if (error) {
-        toast({
-          title: "Google login failed",
-          description: error.message,
-          variant: "destructive",
-        });
-        throw error;
-      }
+      if (error) throw error;
     } catch (error: any) {
       setError(error.message);
       toast({
