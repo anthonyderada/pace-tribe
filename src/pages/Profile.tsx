@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { PersonalBests } from "@/components/profile/PersonalBests";
 import { RunningPreferences } from "@/components/profile/RunningPreferences";
-import { ActivityList } from "@/components/profile/ActivityList";
+import { ClubList } from "@/components/profile/ClubList";
+import { EventList } from "@/components/profile/EventList";
 
 type Profile = {
   username: string | null;
@@ -33,6 +34,7 @@ type Club = {
   id: string;
   name: string;
   location: string | null;
+  thumbnail_url: string | null;
 };
 
 type Event = {
@@ -107,7 +109,8 @@ const Profile = () => {
             clubs (
               id,
               name,
-              location
+              location,
+              thumbnail_url
             )
           `)
           .eq("user_id", user.id);
@@ -117,7 +120,8 @@ const Profile = () => {
         const clubs = data.map(item => ({
           id: item.clubs.id,
           name: item.clubs.name,
-          location: item.clubs.location
+          location: item.clubs.location,
+          thumbnail_url: item.clubs.thumbnail_url
         }));
 
         setJoinedClubs(clubs);
@@ -234,10 +238,8 @@ const Profile = () => {
           onAccoladesUpdate={setAccolades}
         />
 
-        <ActivityList
-          joinedClubs={joinedClubs}
-          registeredEvents={registeredEvents}
-        />
+        <ClubList joinedClubs={joinedClubs} />
+        <EventList registeredEvents={registeredEvents} />
       </div>
     </div>
   );
