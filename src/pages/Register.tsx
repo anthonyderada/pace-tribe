@@ -76,6 +76,26 @@ const Register = () => {
     setLoading(true);
 
     try {
+      // First, check if the email exists
+      const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers({
+        filters: {
+          email: email
+        }
+      });
+
+      if (usersError) throw usersError;
+
+      if (users && users.length > 0) {
+        toast({
+          title: "Account exists",
+          description: "An account with this email already exists. Redirecting to login...",
+          variant: "destructive",
+        });
+        setTimeout(() => navigate("/login"), 2000);
+        return;
+      }
+
+      // If email doesn't exist, proceed with registration
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -85,6 +105,17 @@ const Register = () => {
 
       setIsSuccess(true);
     } catch (error: any) {
+      // Check if the error is about existing user
+      if (error.message.includes("User already registered")) {
+        toast({
+          title: "Account exists",
+          description: "An account with this email already exists. Redirecting to login...",
+          variant: "destructive",
+        });
+        setTimeout(() => navigate("/login"), 2000);
+        return;
+      }
+
       const message = error.message || "An error occurred during registration";
       setError(message);
       toast({
@@ -145,7 +176,7 @@ const Register = () => {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  setError(""); // Clear error when user types
+                  setError("");
                 }}
                 required
                 className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-400"
@@ -158,7 +189,7 @@ const Register = () => {
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  setError(""); // Clear error when user types
+                  setError("");
                 }}
                 required
                 className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-400"
