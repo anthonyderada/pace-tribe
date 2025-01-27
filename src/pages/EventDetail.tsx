@@ -47,6 +47,18 @@ const EventDetail = () => {
 
   const registerMutation = useMutation({
     mutationFn: async () => {
+      // First check if user is already registered
+      const { data: existingRegistration } = await supabase
+        .from("event_participants")
+        .select()
+        .eq("event_id", id)
+        .eq("user_id", user?.id)
+        .maybeSingle();
+
+      if (existingRegistration) {
+        throw new Error("You are already registered for this event");
+      }
+
       const { error } = await supabase
         .from("event_participants")
         .insert({
@@ -61,12 +73,13 @@ const EventDetail = () => {
         description: "You are now registered for the event",
       });
       queryClient.invalidateQueries({ queryKey: ['event', id] });
+      setIsParticipant(true);
     },
     onError: (error) => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to register for the event",
+        description: error instanceof Error ? error.message : "Failed to register for the event",
       });
       console.error("Error:", error);
     },
@@ -87,6 +100,7 @@ const EventDetail = () => {
         description: "You have cancelled your registration for the event",
       });
       queryClient.invalidateQueries({ queryKey: ['event', id] });
+      setIsParticipant(false);
     },
     onError: (error) => {
       toast({
