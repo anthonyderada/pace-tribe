@@ -8,6 +8,8 @@ type Event = {
   title: string;
   date: string;
   location: string | null;
+  distance: number | null;
+  pace: string | null;
   club: {
     name: string;
   };
@@ -48,6 +50,16 @@ export const EventList = ({ registeredEvents }: EventListProps) => {
                       <p className="text-sm text-zinc-400 flex items-center gap-2">
                         <MapPin className="h-4 w-4" />
                         {event.location}
+                      </p>
+                    )}
+                    {event.distance && (
+                      <p className="text-sm text-zinc-400">
+                        Distance: {event.distance} km
+                      </p>
+                    )}
+                    {event.pace && (
+                      <p className="text-sm text-zinc-400">
+                        Target Pace: {event.pace}
                       </p>
                     )}
                     <p className="text-sm text-zinc-400">
