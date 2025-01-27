@@ -155,6 +155,17 @@ const Clubs = () => {
                       <div>
                         <h3 className="text-xl font-semibold text-white">{club.name}</h3>
                         <p className="text-gray-400 text-sm mt-1">{club.location || 'Location not specified'}</p>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {club.club_label_assignments?.map((assignment) => (
+                            <Badge
+                              key={assignment.id}
+                              variant="secondary"
+                              className="bg-zinc-800 text-zinc-100"
+                            >
+                              {assignment.club_labels.name}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                       <Button
                         className={`w-24 ${
@@ -176,20 +187,6 @@ const Clubs = () => {
                     </div>
                     <p className="text-gray-400 line-clamp-3 mt-4">{club.description || 'No description available'}</p>
                     <p className="text-gray-400 text-sm mt-4">{club.club_members?.length || 0} members</p>
-                    <div className="mt-4 pt-4 border-t border-zinc-700">
-                      <h4 className="text-sm font-medium text-zinc-300 mb-2">Labels</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {club.club_label_assignments?.map((assignment) => (
-                          <Badge
-                            key={assignment.id}
-                            variant="secondary"
-                            className="bg-zinc-800 text-zinc-100"
-                          >
-                            {assignment.club_labels.name}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
