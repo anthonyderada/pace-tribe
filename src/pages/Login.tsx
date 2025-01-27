@@ -45,7 +45,15 @@ const Login = () => {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        setError(error.message);
+        toast({
+          title: "Error",
+          description: "Invalid login credentials. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       if (data.user) {
         await checkProfileCompletion(data.user.id);
@@ -67,10 +75,10 @@ const Login = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`
+          redirectTo: `${window.location.origin}/`
         }
       });
-
+      
       if (error) throw error;
     } catch (error: any) {
       setError(error.message);

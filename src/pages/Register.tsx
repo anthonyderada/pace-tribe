@@ -81,7 +81,17 @@ const Register = () => {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes("already registered")) {
+          toast({
+            title: "Account exists",
+            description: "This email is already registered. Please login instead.",
+          });
+          navigate("/login");
+          return;
+        }
+        throw error;
+      }
 
       setIsSuccess(true);
     } catch (error: any) {
