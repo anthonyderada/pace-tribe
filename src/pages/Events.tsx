@@ -1,13 +1,14 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Calendar, Route, Timer } from "lucide-react";
+import { Search, Calendar, Route, Timer, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Events = () => {
   const navigate = useNavigate();
@@ -20,7 +21,11 @@ const Events = () => {
         .from('events')
         .select(`
           *,
-          club:clubs(name),
+          club:clubs(
+            id,
+            name,
+            thumbnail_url
+          ),
           participants:event_participants(user_id)
         `)
         .order('date', { ascending: true });
@@ -101,9 +106,22 @@ const Events = () => {
                   </div>
                 )}
               </div>
-              <p className="text-gray-400 text-sm mb-4">
-                Organized by {event.club?.name}
-              </p>
+              {event.club && (
+                <div className="flex items-center gap-2 mb-4">
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage 
+                      src={event.club.thumbnail_url || ''} 
+                      alt={event.club.name} 
+                    />
+                    <AvatarFallback>
+                      <Users className="h-4 w-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-gray-400 text-sm">
+                    Organized by {event.club.name}
+                  </span>
+                </div>
+              )}
               <p className="text-gray-400 line-clamp-3">
                 {event.description || 'No description available'}
               </p>
