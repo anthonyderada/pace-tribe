@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Users, Route, Timer, Loader2 } from "lucide-react";
+import { MapPin, Calendar, Users, Route, Timer, Building2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -204,6 +204,17 @@ const EventDetail = () => {
               {event.description || "No description available."}
             </p>
             <div className="space-y-4">
+              {event.clubs && (
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-zinc-300 transition-colors"
+                  onClick={() => navigate(`/clubs/${event.club_id}`)}
+                >
+                  <Building2 className="h-5 w-5 text-zinc-400" />
+                  <span className="text-zinc-400">
+                    Organized by {event.clubs.name}
+                  </span>
+                </div>
+              )}
               {event.location && (
                 <div className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-zinc-400" />
@@ -240,9 +251,9 @@ const EventDetail = () => {
                   : "border border-white bg-white text-black hover:bg-gray-100"
               }`}
               onClick={handleParticipation}
-              disabled={registerMutation.isPending || cancelMutation.isPending}
+              disabled={isMutating}
             >
-              {registerMutation.isPending || cancelMutation.isPending
+              {isMutating
                 ? "Loading..."
                 : isParticipant
                 ? "Cancel Registration"
