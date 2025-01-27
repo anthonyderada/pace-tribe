@@ -96,7 +96,7 @@ const Clubs = () => {
         <h1 className="text-4xl font-bold text-zinc-100 mb-4">Running Clubs</h1>
         <div className="flex gap-4 items-center">
           <div className="relative flex-1">
-            <Search2 transform -translate-y-1/2 text-zinc-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400" />
             <Input 
               className="pl-10 bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500" 
               placeholder="Search clubs..." 
