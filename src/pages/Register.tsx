@@ -27,18 +27,20 @@ const Register = () => {
       });
 
       if (error) {
+        // Check specifically for the "User already registered" error
         if (error.message.includes("User already registered")) {
           toast({
             title: "Account exists",
             description: "An account with this email already exists. Please sign in instead.",
             variant: "destructive",
           });
-          setTimeout(() => navigate("/login"), 2000);
-          return;
+          navigate("/login");
+          return; // Important: Return here to prevent further execution
         }
         throw error;
       }
 
+      // Only show success toast and navigate to onboarding if registration was successful
       toast({
         title: "Registration successful",
         description: "Please check your email to verify your account.",
