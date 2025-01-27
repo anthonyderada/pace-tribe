@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 type Event = {
   id: string;
@@ -21,6 +22,7 @@ type Event = {
     name: string;
     location: string | null;
     description: string | null;
+    thumbnail_url: string | null;
     club_members: {
       id: string;
       user_id: string;
@@ -53,6 +55,7 @@ const EventDetail = () => {
               name,
               location,
               description,
+              thumbnail_url,
               club_members (
                 id,
                 user_id
@@ -125,6 +128,7 @@ const EventDetail = () => {
                 name,
                 location,
                 description,
+                thumbnail_url,
                 club_members (
                   id,
                   user_id
@@ -300,17 +304,30 @@ const EventDetail = () => {
             onClick={() => navigate(`/clubs/${event.club_id}`)}
           >
             <CardHeader className="pb-2">
-              <div className="flex justify-between items-start mb-2">
-                <CardTitle className="text-xl font-semibold text-white">
-                  {event.clubs.name}
-                </CardTitle>
-                <span className="text-gray-400 text-sm">
-                  {event.clubs.club_members?.length || 0} members
-                </span>
+              <div className="flex items-start gap-4">
+                <Avatar className="w-12 h-12">
+                  <AvatarImage 
+                    src={event.clubs.thumbnail_url || undefined} 
+                    alt={event.clubs.name}
+                  />
+                  <AvatarFallback className="bg-emerald-600 text-white">
+                    {event.clubs.name?.[0]?.toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start mb-2">
+                    <CardTitle className="text-xl font-semibold text-white">
+                      {event.clubs.name}
+                    </CardTitle>
+                    <span className="text-gray-400 text-sm">
+                      {event.clubs.club_members?.length || 0} members
+                    </span>
+                  </div>
+                  <CardDescription className="text-gray-400 text-sm">
+                    {event.clubs.location || 'Location not specified'}
+                  </CardDescription>
+                </div>
               </div>
-              <CardDescription className="text-gray-400 text-sm">
-                {event.clubs.location || 'Location not specified'}
-              </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-400">
