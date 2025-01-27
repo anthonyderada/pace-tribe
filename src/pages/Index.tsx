@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,7 +54,7 @@ const Index = () => {
     <div className="relative">
       {/* Hero Section */}
       <div className="relative bg-background-dark">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Find Your Running Tribe
@@ -63,9 +62,6 @@ const Index = () => {
             <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
               Connect with local running clubs, join group runs, and become part of a community that shares your passion for running.
             </p>
-
-            {/* Search bar removed */}
-            {/* Categories Row - Hidden for now */}
           </div>
         </div>
       </div>
