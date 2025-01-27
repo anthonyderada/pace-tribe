@@ -9,6 +9,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
 type Club = {
   id: string;
@@ -36,6 +37,14 @@ type Club = {
       id: string;
       user_id: string;
     }[];
+  }[];
+  club_label_assignments: {
+    id: string;
+    label_id: string;
+    club_labels: {
+      id: string;
+      name: string;
+    };
   }[];
 };
 
@@ -66,6 +75,14 @@ const ClubDetail = () => {
             event_participants (
               id,
               user_id
+            )
+          ),
+          club_label_assignments (
+            id,
+            label_id,
+            club_labels (
+              id,
+              name
             )
           )
         `)
@@ -253,6 +270,17 @@ const ClubDetail = () => {
                   {club.location}
                 </CardDescription>
               )}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {club.club_label_assignments.map((assignment) => (
+                  <Badge
+                    key={assignment.id}
+                    variant="secondary"
+                    className="bg-zinc-800 text-zinc-100"
+                  >
+                    {assignment.club_labels.name}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </div>
         </CardHeader>
