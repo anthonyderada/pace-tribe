@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, UserPlus, UserMinus, Loader2 } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -96,7 +96,7 @@ const Clubs = () => {
         <h1 className="text-4xl font-bold text-zinc-100 mb-4">Running Clubs</h1>
         <div className="flex gap-4 items-center">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400" />
+            <Search2 transform -translate-y-1/2 text-zinc-400" />
             <Input 
               className="pl-10 bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500" 
               placeholder="Search clubs..." 
@@ -148,23 +148,20 @@ const Clubs = () => {
                         <p className="text-gray-400 text-sm mt-1">{club.location || 'Location not specified'}</p>
                       </div>
                       <Button
-                        variant={isMember ? "destructive" : "default"}
-                        size="sm"
+                        className={`w-24 ${
+                          isMember
+                            ? "border border-white text-white bg-transparent hover:bg-white/10"
+                            : "border border-white bg-white text-black hover:bg-gray-100"
+                        }`}
                         onClick={(e) => handleJoinLeaveClick(club.id, isMember, e)}
                         disabled={isLoading}
                       >
                         {isLoading ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : isMember ? (
-                          <>
-                            <UserMinus className="h-4 w-4" />
-                            <span>Leave</span>
-                          </>
+                          'Leave'
                         ) : (
-                          <>
-                            <UserPlus className="h-4 w-4" />
-                            <span>Join</span>
-                          </>
+                          'Join'
                         )}
                       </Button>
                     </div>
