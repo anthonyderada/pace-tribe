@@ -28,9 +28,10 @@ type RunningPreferencesProps = {
     seeking_coach: boolean;
     preferred_shoe_brand: string[];
   }) => void;
+  isEditable?: boolean;
 };
 
-export const RunningPreferences = ({ userId, profile, onPreferencesUpdate }: RunningPreferencesProps) => {
+export const RunningPreferences = ({ userId, profile, onPreferencesUpdate, isEditable = true }: RunningPreferencesProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
   const [preferredDistance, setPreferredDistance] = useState(profile?.preferred_distance || "");
@@ -276,14 +277,16 @@ export const RunningPreferences = ({ userId, profile, onPreferencesUpdate }: Run
           </div>
         ) : (
           <div className="relative">
-            <Button
-              onClick={() => setIsEditing(true)}
-              className="absolute top-0 right-0 bg-transparent text-zinc-400"
-              size="icon"
-              variant="ghost"
-            >
-              <Pencil className="h-5 w-5 md:h-6 md:w-6" />
-            </Button>
+            {isEditable && (
+              <Button
+                onClick={() => setIsEditing(true)}
+                className="absolute top-0 right-0 bg-transparent text-zinc-400"
+                size="icon"
+                variant="ghost"
+              >
+                <Pencil className="h-5 w-5 md:h-6 md:w-6" />
+              </Button>
+            )}
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-zinc-100">Preferred race distance</h3>

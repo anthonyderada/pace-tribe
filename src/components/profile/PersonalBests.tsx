@@ -37,9 +37,10 @@ type PersonalBestsProps = {
     pb_half_marathon: string | null;
     pb_marathon: string | null;
   }) => void;
+  isEditable?: boolean;
 };
 
-export const PersonalBests = ({ userId, accolades, onAccoladesUpdate }: PersonalBestsProps) => {
+export const PersonalBests = ({ userId, accolades, onAccoladesUpdate, isEditable = true }: PersonalBestsProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
   const [pb5kTime, setPb5kTime] = useState<Time>(parseIntervalToTime(accolades?.pb_5k));
@@ -158,14 +159,16 @@ export const PersonalBests = ({ userId, accolades, onAccoladesUpdate }: Personal
           </div>
         ) : (
           <div className="relative">
-            <Button
-              onClick={() => setIsEditing(true)}
-              className="absolute top-0 right-0 bg-transparent text-zinc-400"
-              size="icon"
-              variant="ghost"
-            >
-              <Pencil className="h-5 w-5 md:h-6 md:w-6" />
-            </Button>
+            {isEditable && (
+              <Button
+                onClick={() => setIsEditing(true)}
+                className="absolute top-0 right-0 bg-transparent text-zinc-400"
+                size="icon"
+                variant="ghost"
+              >
+                <Pencil className="h-5 w-5 md:h-6 md:w-6" />
+              </Button>
+            )}
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-zinc-100">5K</h3>

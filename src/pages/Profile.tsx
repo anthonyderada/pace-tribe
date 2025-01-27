@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { PersonalBests } from "@/components/profile/PersonalBests";
 import { RunningPreferences } from "@/components/profile/RunningPreferences";
@@ -53,24 +53,30 @@ type Event = {
 const Profile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [joinedClubs, setJoinedClubs] = useState<Club[]>([]);
   const [registeredEvents, setRegisteredEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [accolades, setAccolades] = useState<Accolades | null>(null);
 
+  const isOwnProfile = !id || id === user?.id;
+  const profileId = isOwnProfile ? user?.id : id;
+
   useEffect(() => {
-    if (!user) {
+    if (!user && !id) {
       navigate("/login");
       return;
     }
+
+    if (!profileId) return;
 
     async function getProfile() {
       try {
         const { data, error } = await supabase
           .from("profiles")
-          .select("username, avatar_url, bio, location, preferred_distance, comfortable_pace, seeking_training_partners, seeking_casual_meetups, seeking_race_pacers, preferred_shoe_brand")
-          .eq("id", user.id)
+          .select("username, avatar_url, bio, location, preferred_distance, comfortable_pace, seeking_training_partners, seeking_casual_meetups, seeking_race_pacers, seeking_coach, preferred_shoe_brand")
+          .eq("id", profileId)
           .single();
 
         if (error) throw error;
@@ -85,7 +91,7 @@ const Profile = () => {
         const { data, error } = await supabase
           .from("accolades")
           .select("pb_5k, pb_10k, pb_half_marathon, pb_marathon")
-          .eq("user_id", user.id)
+          .eq("user_id", profileId)
           .single();
 
         if (error) throw error;
@@ -117,7 +123,7 @@ const Profile = () => {
               thumbnail_url
             )
           `)
-          .eq("user_id", user.id);
+          .eq("user_id", profileId);
 
         if (error) throw error;
 
@@ -153,7 +159,7 @@ const Profile = () => {
               )
             )
           `)
-          .eq("user_id", user.id);
+          .eq("user_id", profileId);
 
         if (error) throw error;
 
@@ -190,7 +196,7 @@ const Profile = () => {
           event: '*',
           schema: 'public',
           table: 'club_members',
-          filter: `user_id=eq.${user.id}`
+          filter: `user_id=eq.${profileId}`
         },
         () => {
           getJoinedClubs();
@@ -206,7 +212,7 @@ const Profile = () => {
           event: '*',
           schema: 'public',
           table: 'event_participants',
-          filter: `user_id=eq.${user.id}`
+          filter: `user_id=eq.${profileId}`
         },
         () => {
           getRegisteredEvents();
@@ -218,10 +224,18 @@ const Profile = () => {
       supabase.removeChannel(clubsChannel);
       supabase.removeChannel(eventsChannel);
     };
-  }, [user, navigate]);
+  }, [user, navigate, profileId, id]);
 
   if (loading) {
     return <div className="container mx-auto px-4 py-8">Loading...</div>;
+  }
+
+  if (!profile) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <p className="text-zinc-400">Profile not found</p>
+      </div>
+    );
   }
 
   return (
@@ -229,22 +243,24 @@ const Profile = () => {
       <Card className="mb-8 border-0 bg-zinc-900/90">
         <ProfileHeader
           profile={profile}
-          user={user}
-          onProfileUpdate={(updates) => setProfile(prev => ({ ...prev!, ...updates }))}
+          user={isOwnProfile ? user : null}
+          onProfileUpdate={(updates) => isOwnProfile && setProfile(prev => ({ ...prev!, ...updates }))}
         />
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <RunningPreferences
-          userId={user?.id || ""}
+          userId={profileId || ""}
           profile={profile}
-          onPreferencesUpdate={(preferences) => setProfile(prev => ({ ...prev!, ...preferences }))}
+          onPreferencesUpdate={(preferences) => isOwnProfile && setProfile(prev => ({ ...prev!, ...preferences }))}
+          isEditable={isOwnProfile}
         />
         
         <PersonalBests
-          userId={user?.id || ""}
+          userId={profileId || ""}
           accolades={accolades}
-          onAccoladesUpdate={setAccolades}
+          onAccoladesUpdate={(newAccolades) => isOwnProfile && setAccolades(newAccolades)}
+          isEditable={isOwnProfile}
         />
 
         <ClubList joinedClubs={joinedClubs} />

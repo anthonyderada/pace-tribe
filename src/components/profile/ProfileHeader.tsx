@@ -154,7 +154,7 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
         )}
       </div>
       <div className="flex-1 text-center md:text-left">
-        {!isEditing && (
+        {user && !isEditing && (
           <Button
             onClick={() => setIsEditing(true)}
             className="absolute top-4 right-4 hover:bg-zinc-800/50"
