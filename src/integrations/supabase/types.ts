@@ -210,6 +210,7 @@ export type Database = {
           preferred_distance: string | null
           preferred_shoe_brand: string[] | null
           seeking_casual_meetups: boolean | null
+          seeking_coach: boolean | null
           seeking_race_pacers: boolean | null
           seeking_training_partners: boolean | null
           updated_at: string
@@ -225,6 +226,7 @@ export type Database = {
           preferred_distance?: string | null
           preferred_shoe_brand?: string[] | null
           seeking_casual_meetups?: boolean | null
+          seeking_coach?: boolean | null
           seeking_race_pacers?: boolean | null
           seeking_training_partners?: boolean | null
           updated_at?: string
@@ -240,6 +242,7 @@ export type Database = {
           preferred_distance?: string | null
           preferred_shoe_brand?: string[] | null
           seeking_casual_meetups?: boolean | null
+          seeking_coach?: boolean | null
           seeking_race_pacers?: boolean | null
           seeking_training_partners?: boolean | null
           updated_at?: string

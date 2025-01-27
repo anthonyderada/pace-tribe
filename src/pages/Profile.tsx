@@ -18,6 +18,7 @@ type Profile = {
   seeking_training_partners: boolean | null;
   seeking_casual_meetups: boolean | null;
   seeking_race_pacers: boolean | null;
+  seeking_coach: boolean | null;
   preferred_shoe_brand: string[] | null;
 };
 
