@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Menu } from "lucide-react";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +16,17 @@ export const Navbar = () => {
   const { user } = useAuth();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      // Clear any local state if needed
+      navigate("/");
+      toast.success("Successfully signed out");
+    } catch (error: any) {
+      console.error("Error signing out:", error.message);
+      toast.error("Failed to sign out. Please try again.");
+    }
   };
 
   const NavItems = () => (
