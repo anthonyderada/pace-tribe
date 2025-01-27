@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -123,29 +125,45 @@ const Index = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {isLoading ? (
-              // Loading state
               Array(3).fill(0).map((_, i) => (
-                <div key={i} className="bg-zinc-800/50 rounded-2xl overflow-hidden animate-pulse p-6">
-                  <div className="h-6 bg-zinc-700 rounded mb-2"></div>
-                  <div className="h-4 bg-zinc-700 rounded w-1/3 mb-4"></div>
-                  <div className="h-20 bg-zinc-700 rounded mb-4"></div>
-                </div>
+                <Card key={i} className="bg-zinc-800/50 rounded-2xl border-0">
+                  <CardContent className="p-0">
+                    <Skeleton className="h-48 rounded-t-2xl bg-zinc-800" />
+                    <div className="p-6">
+                      <Skeleton className="h-6 w-2/3 mb-2 bg-zinc-800" />
+                      <Skeleton className="h-4 w-1/3 bg-zinc-800" />
+                    </div>
+                  </CardContent>
+                </Card>
               ))
             ) : clubs?.map((club) => (
-              <div 
+              <Card 
                 key={club.id} 
-                className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer"
+                className="bg-zinc-800/50 rounded-2xl overflow-hidden hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
                 onClick={() => navigate(`/clubs/${club.id}`)}
               >
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-semibold text-white">{club.name}</h3>
-                  <span className="text-gray-400 text-sm">
-                    {club.club_members[0]?.count || 0} members
-                  </span>
-                </div>
-                <p className="text-gray-400 text-sm mb-4">{club.location || 'Location not specified'}</p>
-                <p className="text-gray-400">{club.description || 'No description available'}</p>
-              </div>
+                <CardContent className="p-0">
+                  {club.thumbnail_url ? (
+                    <img 
+                      src={club.thumbnail_url} 
+                      alt={club.name}
+                      className="w-full h-48 object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-48 bg-zinc-700 flex items-center justify-center">
+                      <span className="text-zinc-400">No image</span>
+                    </div>
+                  )}
+                  <div className="p-6">
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-xl font-semibold text-white">{club.name}</h3>
+                      <span className="text-gray-400 text-sm">{club.club_members[0]?.count || 0} members</span>
+                    </div>
+                    <p className="text-gray-400 text-sm mt-2">{club.location || 'Location not specified'}</p>
+                    <p className="text-gray-400 line-clamp-3 mt-2">{club.description || 'No description available'}</p>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
