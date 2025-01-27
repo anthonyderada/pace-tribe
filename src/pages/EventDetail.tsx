@@ -32,6 +32,10 @@ type Event = {
   event_participants: {
     id: string;
     user_id: string;
+    profiles: {
+      username: string | null;
+      avatar_url: string | null;
+    };
   }[];
 };
 
@@ -47,7 +51,6 @@ const EventDetail = () => {
 
   const registerMutation = useMutation({
     mutationFn: async () => {
-      // First check if user is already registered
       const { data: existingRegistration } = await supabase
         .from("event_participants")
         .select()
@@ -131,7 +134,11 @@ const EventDetail = () => {
             ),
             event_participants (
               id,
-              user_id
+              user_id,
+              profiles (
+                username,
+                avatar_url
+              )
             )
           `)
           .eq("id", id)
@@ -149,7 +156,6 @@ const EventDetail = () => {
         }
         setEvent(eventData);
 
-        // Check if user is a participant
         if (user) {
           const isCurrentParticipant = eventData.event_participants.some(
             (participant) => participant.user_id === user.id
@@ -171,7 +177,6 @@ const EventDetail = () => {
 
     getEventDetails();
 
-    // Set up real-time subscription for participants
     const channel = supabase
       .channel("schema-db-changes")
       .on(
@@ -183,7 +188,6 @@ const EventDetail = () => {
           filter: `event_id=eq.${id}`,
         },
         async () => {
-          // Update event details
           const { data } = await supabase
             .from("events")
             .select(`
@@ -200,7 +204,11 @@ const EventDetail = () => {
               ),
               event_participants (
                 id,
-                user_id
+                user_id,
+                profiles (
+                  username,
+                  avatar_url
+                )
               )
             `)
             .eq("id", id)
@@ -256,8 +264,6 @@ const EventDetail = () => {
     );
   }
 
-  // ... keep existing code (JSX for event details)
-
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
@@ -288,7 +294,9 @@ const EventDetail = () => {
               {event.distance && (
                 <div className="flex items-center gap-2">
                   <Route className="h-5 w-5 text-zinc-400" />
-                  <span className="text-zinc-400">{(event.distance * 0.621371).toFixed(1)} miles</span>
+                  <span className="text-zinc-400">
+                    {(event.distance * 0.621371).toFixed(1)} miles
+                  </span>
                 </div>
               )}
               {event.pace && (
@@ -346,8 +354,8 @@ const EventDetail = () => {
             <CardHeader className="pb-2">
               <div className="flex items-start gap-4">
                 <Avatar className="w-12 h-12">
-                  <AvatarImage 
-                    src={event.clubs.thumbnail_url || undefined} 
+                  <AvatarImage
+                    src={event.clubs.thumbnail_url || undefined}
                     alt={event.clubs.name}
                   />
                   <AvatarFallback className="bg-emerald-600 text-white">
@@ -364,17 +372,54 @@ const EventDetail = () => {
                     </span>
                   </div>
                   <CardDescription className="text-gray-400 text-sm">
-                    {event.clubs.location || 'Location not specified'}
+                    {event.clubs.location || "Location not specified"}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-gray-400">
-                {event.clubs.description || 'No description available'}
+                {event.clubs.description || "No description available"}
               </p>
             </CardContent>
           </Card>
+        </CardContent>
+      </Card>
+
+      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold text-zinc-100">
+            Participants ({event.event_participants.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {event.event_participants.length === 0 ? (
+              <p className="text-zinc-400">No participants yet. Be the first to join!</p>
+            ) : (
+              event.event_participants.map((participant) => (
+                <div
+                  key={participant.id}
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-800/50 transition-colors"
+                  onClick={() => navigate(`/profile/${participant.user_id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage
+                      src={participant.profiles.avatar_url || undefined}
+                      alt={participant.profiles.username || "User"}
+                    />
+                    <AvatarFallback className="bg-emerald-600 text-white">
+                      {participant.profiles.username?.[0]?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-zinc-100">
+                    {participant.profiles.username || "Anonymous Runner"}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>
