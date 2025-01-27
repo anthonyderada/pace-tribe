@@ -66,11 +66,7 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
         throw updateError;
       }
 
-      onProfileUpdate({ 
-        id: user?.id as string,
-        avatar_url: publicUrl 
-      });
-      
+      onProfileUpdate({ username, bio, location, avatar_url: publicUrl });
       toast({
         title: "Success",
         description: "Profile picture updated successfully.",
@@ -99,13 +95,7 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
 
       if (error) throw error;
 
-      onProfileUpdate({ 
-        id: user?.id as string,
-        username, 
-        bio, 
-        location 
-      });
-      
+      onProfileUpdate({ username, bio, location });
       setIsEditing(false);
       toast({
         title: "Profile updated",

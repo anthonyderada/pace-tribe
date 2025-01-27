@@ -50,60 +50,6 @@ export type Database = {
           },
         ]
       }
-      club_label_assignments: {
-        Row: {
-          club_id: string | null
-          created_at: string
-          id: string
-          label_id: string | null
-        }
-        Insert: {
-          club_id?: string | null
-          created_at?: string
-          id?: string
-          label_id?: string | null
-        }
-        Update: {
-          club_id?: string | null
-          created_at?: string
-          id?: string
-          label_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "club_label_assignments_club_id_fkey"
-            columns: ["club_id"]
-            isOneToOne: false
-            referencedRelation: "clubs"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "club_label_assignments_label_id_fkey"
-            columns: ["label_id"]
-            isOneToOne: false
-            referencedRelation: "club_labels"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      club_labels: {
-        Row: {
-          created_at: string
-          id: string
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          name: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          name?: string
-        }
-        Relationships: []
-      }
       club_members: {
         Row: {
           club_id: string | null
