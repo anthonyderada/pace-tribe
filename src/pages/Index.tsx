@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -64,23 +63,8 @@ const Index = () => {
             <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
               Connect with local running clubs, join group runs, and become part of a community that shares your passion for running.
             </p>
-            <div className="max-w-md mx-auto mb-12">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input 
-                  type="text"
-                  placeholder="Search clubs by location..."
-                  className="pl-10 w-full bg-zinc-800/50 border-zinc-700"
-                />
-                <Button 
-                  className="absolute right-0 top-0 h-full bg-white hover:bg-white text-black"
-                  onClick={() => navigate("/clubs")}
-                >
-                  Search
-                </Button>
-              </div>
-            </div>
 
+            {/* Search bar removed */}
             {/* Categories Row - Hidden for now */}
           </div>
         </div>
