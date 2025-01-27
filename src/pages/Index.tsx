@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -23,6 +24,14 @@ const Index = () => {
           club_members (
             id,
             user_id
+          ),
+          club_label_assignments (
+            id,
+            label_id,
+            club_labels (
+              id,
+              name
+            )
           )
         `)
         .order('created_at', { ascending: false })
@@ -179,6 +188,17 @@ const Index = () => {
                         <div>
                           <h3 className="text-xl font-semibold text-white">{club.name}</h3>
                           <p className="text-gray-400 text-sm mt-1">{club.location || 'Location not specified'}</p>
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {club.club_label_assignments?.map((assignment) => (
+                              <Badge
+                                key={assignment.id}
+                                variant="secondary"
+                                className="bg-zinc-800 text-zinc-100"
+                              >
+                                {assignment.club_labels.name}
+                              </Badge>
+                            ))}
+                          </div>
                         </div>
                         <Button
                           className={`w-24 ${
