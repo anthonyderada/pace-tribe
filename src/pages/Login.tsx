@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -10,6 +11,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -21,27 +23,22 @@ const Login = () => {
         .eq("id", userId)
         .single();
 
-      // Consider profile incomplete if any of these fields are null
-      const isProfileIncomplete = !profile?.username || !profile?.bio || !profile?.location;
-      
-      if (isProfileIncomplete) {
-        toast({
-          title: "Welcome!",
-          description: "Please complete your profile information.",
-        });
-        navigate("/profile");
+      // If any of these fields are null, redirect to onboarding
+      if (!profile?.username || !profile?.bio || !profile?.location) {
+        navigate("/onboarding");
       } else {
         navigate("/");
       }
     } catch (error) {
       console.error("Error checking profile:", error);
-      navigate("/profile"); // Redirect to profile on error to be safe
+      navigate("/onboarding"); // Redirect to onboarding on error to be safe
     }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -55,9 +52,10 @@ const Login = () => {
         await checkProfileCompletion(data.user.id);
       }
     } catch (error: any) {
+      setError(error.message);
       toast({
         title: "Error",
-        description: error.message || "An error occurred during login",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -74,13 +72,21 @@ const Login = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Input
                 type="email"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setError("");
+                }}
                 required
                 className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-400"
               />
@@ -90,7 +96,10 @@ const Login = () => {
                 type="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError("");
+                }}
                 required
                 className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-400"
               />
