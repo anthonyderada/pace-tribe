@@ -263,30 +263,6 @@ const ClubDetail = () => {
               {club?.description || "No description available."}
             </p>
           </div>
-          
-          {/* Members Section */}
-          <div className="mb-6">
-            <h3 className="text-xl font-semibold mb-4 text-zinc-100">Members</h3>
-            <div className="flex flex-wrap gap-4">
-              {club.club_members.map((member) => (
-                <div
-                  key={member.id}
-                  className="flex items-center gap-2 bg-zinc-800/50 p-2 rounded-lg cursor-pointer hover:bg-zinc-800/70 transition-colors"
-                  onClick={() => navigate(`/profile/${member.user_id}`)}
-                >
-                  <Avatar>
-                    <AvatarImage src={member.profiles.avatar_url || undefined} />
-                    <AvatarFallback>
-                      {member.profiles.username?.[0]?.toUpperCase() || '?'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-zinc-200">
-                    {member.profiles.username || 'Anonymous'}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
 
           <div className="flex items-center gap-2 mb-6">
             <Users className="h-5 w-5 text-zinc-400" />
@@ -321,6 +297,39 @@ const ClubDetail = () => {
               Login to Join
             </Button>
           )}
+        </CardContent>
+      </Card>
+
+      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold text-zinc-100">
+            Members ({club.club_members.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {club.club_members.length === 0 ? (
+              <p className="text-zinc-400 col-span-full">No members yet. Be the first to join!</p>
+            ) : (
+              club.club_members.map((member) => (
+                <div
+                  key={member.id}
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-800/50 transition-colors cursor-pointer"
+                  onClick={() => navigate(`/profile/${member.user_id}`)}
+                >
+                  <Avatar>
+                    <AvatarImage src={member.profiles.avatar_url || undefined} />
+                    <AvatarFallback>
+                      {member.profiles.username?.[0]?.toUpperCase() || '?'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-zinc-200">
+                    {member.profiles.username || 'Anonymous'}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
         </CardContent>
       </Card>
 
