@@ -76,6 +76,23 @@ const Register = () => {
     setLoading(true);
 
     try {
+      // First check if the user exists
+      const { data: existingUser } = await supabase.auth.signInWithPassword({
+        email,
+        password: "dummy-password-for-check", // We use a dummy password as we just want to check if the email exists
+      });
+
+      if (existingUser.user) {
+        toast({
+          title: "Account exists",
+          description: "An account with this email already exists. Redirecting to login...",
+          variant: "default",
+        });
+        setTimeout(() => navigate("/login"), 2000);
+        return;
+      }
+
+      // If we get here, the user doesn't exist, so proceed with registration
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -85,7 +102,19 @@ const Register = () => {
 
       setIsSuccess(true);
     } catch (error: any) {
-      const message = error.message || "An error occurred during registration";
+      let message = error.message;
+      // Check if the error is about an existing user
+      if (error.message.toLowerCase().includes("user already registered")) {
+        message = "An account with this email already exists";
+        toast({
+          title: "Account exists",
+          description: "An account with this email already exists. Redirecting to login...",
+          variant: "default",
+        });
+        setTimeout(() => navigate("/login"), 2000);
+        return;
+      }
+      
       setError(message);
       toast({
         title: "Error",
