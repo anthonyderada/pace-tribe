@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Users, Route, Timer } from "lucide-react";
+import { MapPin, Calendar, Users, Route, Timer, Loader2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 type Event = {
   id: string;
@@ -43,25 +43,68 @@ const EventDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useAuth();
-  const { toast } = useToast();
-  const [event, setEvent] = useState<Event | null>(null);
-  const [isParticipant, setIsParticipant] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const queryClient = useQueryClient();
+
+  const { data: event, isLoading } = useQuery({
+    queryKey: ['event', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("events")
+        .select(`
+          *,
+          clubs (
+            name,
+            location,
+            description,
+            thumbnail_url,
+            club_members (
+              id,
+              user_id
+            )
+          ),
+          event_participants (
+            id,
+            user_id,
+            profiles (
+              username,
+              avatar_url
+            )
+          )
+        `)
+        .eq("id", id)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data) throw new Error("Event not found");
+      return data as Event;
+    },
+  });
+
+  // Add real-time subscription for event participants
+  useEffect(() => {
+    const channel = supabase
+      .channel('event-participants-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'event_participants',
+          filter: `event_id=eq.${id}`
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['event', id] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id, queryClient]);
 
   const registerMutation = useMutation({
     mutationFn: async () => {
-      const { data: existingRegistration } = await supabase
-        .from("event_participants")
-        .select()
-        .eq("event_id", id)
-        .eq("user_id", user?.id)
-        .maybeSingle();
-
-      if (existingRegistration) {
-        throw new Error("You are already registered for this event");
-      }
-
       const { error } = await supabase
         .from("event_participants")
         .insert({
@@ -71,20 +114,12 @@ const EventDetail = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "You are now registered for the event",
-      });
       queryClient.invalidateQueries({ queryKey: ['event', id] });
-      setIsParticipant(true);
+      toast.success("Successfully registered for the event!");
     },
     onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to register for the event",
-      });
       console.error("Error:", error);
+      toast.error("Failed to register for the event");
     },
   });
 
@@ -98,147 +133,24 @@ const EventDetail = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "You have cancelled your registration for the event",
-      });
       queryClient.invalidateQueries({ queryKey: ['event', id] });
-      setIsParticipant(false);
+      toast.success("Successfully cancelled your registration");
     },
     onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to cancel registration",
-      });
       console.error("Error:", error);
+      toast.error("Failed to cancel registration");
     },
   });
-
-  useEffect(() => {
-    const getEventDetails = async () => {
-      try {
-        const { data: eventData, error: eventError } = await supabase
-          .from("events")
-          .select(`
-            *,
-            clubs (
-              name,
-              location,
-              description,
-              thumbnail_url,
-              club_members (
-                id,
-                user_id
-              )
-            ),
-            event_participants (
-              id,
-              user_id,
-              profiles (
-                username,
-                avatar_url
-              )
-            )
-          `)
-          .eq("id", id)
-          .maybeSingle();
-
-        if (eventError) throw eventError;
-        if (!eventData) {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Event not found",
-          });
-          navigate("/events");
-          return;
-        }
-        setEvent(eventData);
-
-        if (user) {
-          const isCurrentParticipant = eventData.event_participants.some(
-            (participant) => participant.user_id === user.id
-          );
-          setIsParticipant(isCurrentParticipant);
-        }
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error:", error);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to load event details",
-        });
-        navigate("/events");
-      }
-    };
-
-    getEventDetails();
-
-    // Subscribe to real-time changes in event_participants
-    const channel = supabase
-      .channel("schema-db-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "event_participants",
-          filter: `event_id=eq.${id}`,
-        },
-        async () => {
-          // Refetch event data when participants change
-          const { data } = await supabase
-            .from("events")
-            .select(`
-              *,
-              clubs (
-                name,
-                location,
-                description,
-                thumbnail_url,
-                club_members (
-                  id,
-                  user_id
-                )
-              ),
-              event_participants (
-                id,
-                user_id,
-                profiles (
-                  username,
-                  avatar_url
-                )
-              )
-            `)
-            .eq("id", id)
-            .maybeSingle();
-
-          if (data) {
-            setEvent(data);
-            if (user) {
-              const isCurrentParticipant = data.event_participants.some(
-                (participant) => participant.user_id === user.id
-              );
-              setIsParticipant(isCurrentParticipant);
-            }
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [id, user, navigate, toast]);
 
   const handleParticipation = async () => {
     if (!user) {
       navigate("/login");
       return;
     }
+
+    const isParticipant = event?.event_participants?.some(
+      (participant) => participant.user_id === user.id
+    );
 
     if (isParticipant) {
       cancelMutation.mutate();
@@ -265,6 +177,11 @@ const EventDetail = () => {
       </div>
     );
   }
+
+  const isParticipant = event.event_participants?.some(
+    (participant) => participant.user_id === user?.id
+  );
+  const isMutating = registerMutation.isPending || cancelMutation.isPending;
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
@@ -339,52 +256,6 @@ const EventDetail = () => {
               Login to Register
             </Button>
           )}
-        </CardContent>
-      </Card>
-
-      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-zinc-100">
-            Organized by
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Card
-            className="border border-zinc-800 bg-zinc-800/50 rounded-xl cursor-pointer hover:bg-zinc-800/80 transition-colors"
-            onClick={() => navigate(`/clubs/${event.club_id}`)}
-          >
-            <CardHeader className="pb-2">
-              <div className="flex items-start gap-4">
-                <Avatar className="w-12 h-12">
-                  <AvatarImage
-                    src={event.clubs.thumbnail_url || undefined}
-                    alt={event.clubs.name}
-                  />
-                  <AvatarFallback className="bg-emerald-600 text-white">
-                    {event.clubs.name?.[0]?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start mb-2">
-                    <CardTitle className="text-xl font-semibold text-white">
-                      {event.clubs.name}
-                    </CardTitle>
-                    <span className="text-gray-400 text-sm">
-                      {event.clubs.club_members?.length || 0} members
-                    </span>
-                  </div>
-                  <CardDescription className="text-gray-400 text-sm">
-                    {event.clubs.location || "Location not specified"}
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-400">
-                {event.clubs.description || "No description available"}
-              </p>
-            </CardContent>
-          </Card>
         </CardContent>
       </Card>
 
