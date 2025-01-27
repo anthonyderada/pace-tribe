@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Calendar, Route, Timer, Users } from "lucide-react";
+import { Search, Calendar, Route, Timer, Users, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -92,6 +92,12 @@ const Events = () => {
                 <Calendar className="h-4 w-4" />
                 {format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
               </div>
+              {event.location && (
+                <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+                  <MapPin className="h-4 w-4" />
+                  {event.location}
+                </div>
+              )}
               <div className="flex flex-wrap gap-4 mb-3">
                 {event.distance && (
                   <div className="flex items-center gap-2 text-gray-400 text-sm">
