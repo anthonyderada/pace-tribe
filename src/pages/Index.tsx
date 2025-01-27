@@ -123,7 +123,7 @@ const Index = () => {
     <div className="relative">
       {/* Hero Section */}
       <div className="relative bg-background-dark">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Find Your Running Tribe
@@ -200,23 +200,25 @@ const Index = () => {
                             ))}
                           </div>
                         </div>
-                        <Button
-                          className={`w-24 ${
-                            isMember
-                              ? "border border-white text-white bg-transparent hover:bg-white/10"
-                              : "border border-white bg-white text-black hover:bg-gray-100"
-                          }`}
-                          onClick={(e) => handleJoinLeaveClick(club.id, isMember, e)}
-                          disabled={isLoading}
-                        >
-                          {isLoading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : isMember ? (
-                            'Leave'
-                          ) : (
-                            'Join'
-                          )}
-                        </Button>
+                        {user && (
+                          <Button
+                            className={`w-24 ${
+                              isMember
+                                ? "border border-white text-white bg-transparent hover:bg-white/10"
+                                : "border border-white bg-white text-black hover:bg-gray-100"
+                            }`}
+                            onClick={(e) => handleJoinLeaveClick(club.id, isMember, e)}
+                            disabled={isLoading}
+                          >
+                            {isLoading ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : isMember ? (
+                              'Leave'
+                            ) : (
+                              'Join'
+                            )}
+                          </Button>
+                        )}
                       </div>
                       <p className="text-gray-400 line-clamp-3 mt-4">{club.description || 'No description available'}</p>
                       <p className="text-gray-400 text-sm mt-4">{club.club_members?.length || 0} members</p>
