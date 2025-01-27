@@ -389,23 +389,25 @@ const ClubDetail = () => {
                       <h3 className="text-xl font-semibold text-white">
                         {event.title}
                       </h3>
-                      <Button
-                        className={`w-24 ${
-                          isParticipant
-                            ? "border border-white text-white bg-transparent hover:bg-white/10"
-                            : "border border-white bg-white text-black hover:bg-gray-100"
-                        }`}
-                        onClick={(e) => handleEventParticipation(event.id, isParticipant, e)}
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : isParticipant ? (
-                          'Leave'
-                        ) : (
-                          'Join'
-                        )}
-                      </Button>
+                      {user && (
+                        <Button
+                          className={`w-24 ${
+                            isParticipant
+                              ? "border border-white text-white bg-transparent hover:bg-white/10"
+                              : "border border-white bg-white text-black hover:bg-gray-100"
+                          }`}
+                          onClick={(e) => handleEventParticipation(event.id, isParticipant, e)}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : isParticipant ? (
+                            'Leave'
+                          ) : (
+                            'Join'
+                          )}
+                        </Button>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
                       <Calendar className="h-4 w-4" />
