@@ -82,7 +82,6 @@ const ClubDetail = () => {
           filter: `club_id=eq.${id}`
         },
         () => {
-          // Refetch club data when club members change
           queryClient.invalidateQueries({ queryKey: ['club', id] });
         }
       )
@@ -92,6 +91,47 @@ const ClubDetail = () => {
       supabase.removeChannel(channel);
     };
   }, [id, queryClient]);
+
+  const joinClubMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("club_members")
+        .insert({
+          club_id: id,
+          user_id: user?.id,
+        });
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['club', id] });
+      toast.success('You have joined the club');
+    },
+    onError: (error) => {
+      console.error('Error joining club:', error);
+      toast.error('Failed to join the club. Please try again.');
+    }
+  });
+
+  const leaveClubMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("club_members")
+        .delete()
+        .eq("club_id", id)
+        .eq("user_id", user?.id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['club', id] });
+      toast.success('You have left the club');
+    },
+    onError: (error) => {
+      console.error('Error leaving club:', error);
+      toast.error('Failed to leave the club. Please try again.');
+    }
+  });
 
   const joinEventMutation = useMutation({
     mutationFn: async (eventId: string) => {
@@ -137,53 +177,11 @@ const ClubDetail = () => {
       return;
     }
 
-    try {
-      const isMember = club?.club_members?.some(member => member.user_id === user?.id);
-      if (isMember) {
-        const { error } = await supabase
-          .from("club_members")
-          .delete()
-          .eq("club_id", id)
-          .eq("user_id", user.id);
-
-        if (error) throw error;
-
-        toast.success('You have left the club');
-      } else {
-        const { data: existingMembership, error: checkError } = await supabase
-          .from("club_members")
-          .select()
-          .eq("club_id", id)
-          .eq("user_id", user.id)
-          .maybeSingle();
-
-        if (checkError) throw checkError;
-
-        if (existingMembership) {
-          toast.error('You are already a member of this club');
-          return;
-        }
-
-        const { error } = await supabase
-          .from("club_members")
-          .insert({
-            club_id: id,
-            user_id: user.id,
-          });
-
-        if (error) {
-          if (error.code === "23505") {
-            toast.error('You are already a member of this club');
-            return;
-          }
-          throw error;
-        }
-
-        toast.success('You have joined the club');
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error('Failed to update membership');
+    const isMember = club?.club_members?.some(member => member.user_id === user?.id);
+    if (isMember) {
+      leaveClubMutation.mutate();
+    } else {
+      joinClubMutation.mutate();
     }
   };
 
@@ -221,14 +219,15 @@ const ClubDetail = () => {
     );
   }
 
-  const isMember = club.club_members?.some(member => member.user_id === user?.id);
+  const isMember = club?.club_members?.some(member => member.user_id === user?.id);
+  const isClubMutating = joinClubMutation.isPending || leaveClubMutation.isPending;
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
         <CardHeader>
           <div className="flex items-center gap-4">
-            {club.thumbnail_url && (
+            {club?.thumbnail_url && (
               <img
                 src={club.thumbnail_url}
                 alt={club.name}
@@ -237,9 +236,9 @@ const ClubDetail = () => {
             )}
             <div>
               <CardTitle className="text-4xl font-bold text-zinc-100">
-                {club.name}
+                {club?.name}
               </CardTitle>
-              {club.location && (
+              {club?.location && (
                 <CardDescription className="flex items-center gap-2 text-zinc-400">
                   <MapPin className="h-4 w-4" />
                   {club.location}
@@ -252,13 +251,13 @@ const ClubDetail = () => {
           <div className="mb-6">
             <h3 className="text-xl font-semibold mb-2 text-zinc-100">About</h3>
             <p className="text-zinc-400">
-              {club.description || "No description available."}
+              {club?.description || "No description available."}
             </p>
           </div>
           <div className="flex items-center gap-2 mb-6">
             <Users className="h-5 w-5 text-zinc-400" />
             <span className="text-zinc-400">
-              {club.club_members.length} members
+              {club?.club_members?.length} members
             </span>
           </div>
           {user ? (
@@ -269,8 +268,15 @@ const ClubDetail = () => {
                   : "border border-white bg-white text-black hover:bg-gray-100"
               }`}
               onClick={handleMembership}
+              disabled={isClubMutating}
             >
-              {isMember ? "Leave Club" : "Join Club"}
+              {isClubMutating ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : isMember ? (
+                "Leave Club"
+              ) : (
+                "Join Club"
+              )}
             </Button>
           ) : (
             <Button
