@@ -84,6 +84,7 @@ export const RunningPreferences = ({ userId, profile, onPreferencesUpdate }: Run
       if (error) throw error;
 
       onPreferencesUpdate({ 
+        id: userId,
         preferred_distance: preferredDistance,
         comfortable_pace: formattedPaceRange,
         seeking_training_partners: seekingTrainingPartners,
@@ -92,6 +93,7 @@ export const RunningPreferences = ({ userId, profile, onPreferencesUpdate }: Run
         seeking_coach: seekingCoach,
         preferred_shoe_brand: preferredShoeBrands
       });
+      
       setIsEditing(false);
       toast({
         title: "Preferences updated",
