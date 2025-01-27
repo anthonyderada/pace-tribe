@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 type Club = {
   id: string;
@@ -252,25 +253,28 @@ const ClubDetail = () => {
     <div className="container mx-auto px-4 py-8 space-y-8">
       <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
         <CardHeader>
-          <div className="flex items-center gap-4">
-            {club?.thumbnail_url && (
-              <img
-                src={club.thumbnail_url}
-                alt={club.name}
-                className="w-24 h-24 rounded-xl object-cover"
-              />
-            )}
-            <div>
-              <CardTitle className="text-4xl font-bold text-zinc-100">
-                {club?.name}
-              </CardTitle>
-              {club?.location && (
-                <CardDescription className="flex items-center gap-2 text-zinc-400">
-                  <MapPin className="h-4 w-4" />
-                  {club.location}
-                </CardDescription>
-              )}
-              <div className="flex flex-wrap gap-2 mt-2">
+          <CardTitle className="text-4xl font-bold text-zinc-100">
+            {club?.name}
+          </CardTitle>
+          {club?.location && (
+            <CardDescription className="flex items-center gap-2 text-zinc-400">
+              <MapPin className="h-4 w-4" />
+              {club.location}
+            </CardDescription>
+          )}
+        </CardHeader>
+        <CardContent>
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold mb-2 text-zinc-100">About</h3>
+            <p className="text-zinc-400">
+              {club?.description || "No description available."}
+            </p>
+          </div>
+
+          {club.club_label_assignments.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold mb-2 text-zinc-100">Labels</h3>
+              <div className="flex flex-wrap gap-2">
                 {club.club_label_assignments.map((assignment) => (
                   <Badge
                     key={assignment.id}
@@ -282,15 +286,7 @@ const ClubDetail = () => {
                 ))}
               </div>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-6">
-            <h3 className="text-xl font-semibold mb-2 text-zinc-100">About</h3>
-            <p className="text-zinc-400">
-              {club?.description || "No description available."}
-            </p>
-          </div>
+          )}
 
           <div className="flex items-center gap-2 mb-6">
             <Users className="h-5 w-5 text-zinc-400" />
