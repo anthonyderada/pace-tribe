@@ -209,7 +209,15 @@ const EventDetail = () => {
                   className="flex items-center gap-2 cursor-pointer hover:text-zinc-300 transition-colors"
                   onClick={() => navigate(`/clubs/${event.club_id}`)}
                 >
-                  <Building2 className="h-5 w-5 text-zinc-400" />
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage
+                      src={event.clubs.thumbnail_url || undefined}
+                      alt={event.clubs.name}
+                    />
+                    <AvatarFallback>
+                      <Building2 className="h-4 w-4 text-zinc-400" />
+                    </AvatarFallback>
+                  </Avatar>
                   <span className="text-zinc-400">
                     Organized by {event.clubs.name}
                   </span>
