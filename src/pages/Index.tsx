@@ -81,31 +81,7 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Categories Row */}
-            <div className="flex justify-center gap-8 mb-16 overflow-x-auto px-4">
-              {categories.map((category) => (
-                <div 
-                  key={category.name}
-                  className={`flex flex-col items-center cursor-pointer ${
-                    category.selected ? 'opacity-100' : 'opacity-50'
-                  } hover:opacity-100 transition-opacity flex-shrink-0`}
-                >
-                  <div className="w-12 h-12 mb-2">
-                    <img 
-                      src={category.icon} 
-                      alt={category.name}
-                      className="w-full h-full object-contain invert"
-                    />
-                  </div>
-                  <span className="text-white text-sm whitespace-nowrap">
-                    {category.name}
-                  </span>
-                  {category.selected && (
-                    <div className="h-0.5 w-full bg-white mt-2"></div>
-                  )}
-                </div>
-              ))}
-            </div>
+            {/* Categories Row - Hidden for now */}
           </div>
         </div>
       </div>
