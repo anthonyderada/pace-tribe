@@ -1,12 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   const { data: clubs, isLoading } = useQuery({
     queryKey: ['featuredClubs'],
@@ -15,16 +20,71 @@ const Index = () => {
         .from('clubs')
         .select(`
           *,
-          club_members!club_members_club_id_fkey (
-            count
+          club_members (
+            id,
+            user_id
           )
         `)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(3);
       
       if (error) throw error;
       return data;
     },
   });
+
+  const joinClubMutation = useMutation({
+    mutationFn: async (clubId: string) => {
+      const { error } = await supabase
+        .from('club_members')
+        .insert([{ club_id: clubId, user_id: user?.id }]);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['featuredClubs'] });
+      toast.success('Successfully joined the club!');
+    },
+    onError: (error) => {
+      console.error('Error joining club:', error);
+      toast.error('Failed to join the club. Please try again.');
+    }
+  });
+
+  const leaveClubMutation = useMutation({
+    mutationFn: async (clubId: string) => {
+      const { error } = await supabase
+        .from('club_members')
+        .delete()
+        .eq('club_id', clubId)
+        .eq('user_id', user?.id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['featuredClubs'] });
+      toast.success('Successfully left the club');
+    },
+    onError: (error) => {
+      console.error('Error leaving club:', error);
+      toast.error('Failed to leave the club. Please try again.');
+    }
+  });
+
+  const handleJoinLeaveClick = (clubId: string, isMember: boolean, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!user) {
+      toast.error('Please log in to join clubs');
+      return;
+    }
+
+    if (isMember) {
+      leaveClubMutation.mutate(clubId);
+    } else {
+      joinClubMutation.mutate(clubId);
+    }
+  };
 
   const categories = [
     { 
@@ -92,35 +152,59 @@ const Index = () => {
                   </CardContent>
                 </Card>
               ))
-            ) : clubs?.map((club) => (
-              <Card 
-                key={club.id} 
-                className="bg-zinc-800/50 rounded-2xl overflow-hidden hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
-                onClick={() => navigate(`/clubs/${club.id}`)}
-              >
-                <CardContent className="p-0">
-                  {club.thumbnail_url ? (
-                    <img 
-                      src={club.thumbnail_url} 
-                      alt={club.name}
-                      className="w-full h-48 object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-48 bg-zinc-700 flex items-center justify-center">
-                      <span className="text-zinc-400">No image</span>
+            ) : clubs?.map((club) => {
+              const isMember = club.club_members?.some(member => member.user_id === user?.id);
+              const isLoading = joinClubMutation.isPending || leaveClubMutation.isPending;
+
+              return (
+                <Card 
+                  key={club.id} 
+                  className="bg-zinc-800/50 rounded-2xl overflow-hidden hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
+                  onClick={() => navigate(`/clubs/${club.id}`)}
+                >
+                  <CardContent className="p-0">
+                    {club.thumbnail_url ? (
+                      <img 
+                        src={club.thumbnail_url} 
+                        alt={club.name}
+                        className="w-full h-48 object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-48 bg-zinc-700 flex items-center justify-center">
+                        <span className="text-zinc-400">No image</span>
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <div className="flex justify-between items-start gap-4">
+                        <div>
+                          <h3 className="text-xl font-semibold text-white">{club.name}</h3>
+                          <p className="text-gray-400 text-sm mt-1">{club.location || 'Location not specified'}</p>
+                        </div>
+                        <Button
+                          className={`w-24 ${
+                            isMember
+                              ? "border border-white text-white bg-transparent hover:bg-white/10"
+                              : "border border-white bg-white text-black hover:bg-gray-100"
+                          }`}
+                          onClick={(e) => handleJoinLeaveClick(club.id, isMember, e)}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : isMember ? (
+                            'Leave'
+                          ) : (
+                            'Join'
+                          )}
+                        </Button>
+                      </div>
+                      <p className="text-gray-400 line-clamp-3 mt-4">{club.description || 'No description available'}</p>
+                      <p className="text-gray-400 text-sm mt-4">{club.club_members?.length || 0} members</p>
                     </div>
-                  )}
-                  <div className="p-6">
-                    <div className="flex justify-between items-start">
-                      <h3 className="text-xl font-semibold text-white">{club.name}</h3>
-                      <span className="text-gray-400 text-sm">{club.club_members[0]?.count || 0} members</span>
-                    </div>
-                    <p className="text-gray-400 text-sm mt-2">{club.location || 'Location not specified'}</p>
-                    <p className="text-gray-400 line-clamp-3 mt-2">{club.description || 'No description available'}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </div>
