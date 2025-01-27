@@ -13,19 +13,47 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const checkProfileCompletion = async (userId: string) => {
+    try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("username, bio, location")
+        .eq("id", userId)
+        .single();
+
+      // Consider profile incomplete if any of these fields are null
+      const isProfileIncomplete = !profile?.username || !profile?.bio || !profile?.location;
+      
+      if (isProfileIncomplete) {
+        toast({
+          title: "Welcome!",
+          description: "Please complete your profile information.",
+        });
+        navigate("/profile");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error checking profile:", error);
+      navigate("/profile"); // Redirect to profile on error to be safe
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
 
-      navigate("/profile");
+      if (data.user) {
+        await checkProfileCompletion(data.user.id);
+      }
     } catch (error: any) {
       toast({
         title: "Error",
