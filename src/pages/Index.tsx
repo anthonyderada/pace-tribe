@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -23,6 +24,13 @@ const Index = () => {
           club_members (
             id,
             user_id
+          ),
+          club_label_assignments (
+            id,
+            club_labels (
+              id,
+              name
+            )
           )
         `)
         .order('created_at', { ascending: false })
@@ -86,30 +94,6 @@ const Index = () => {
     }
   };
 
-  const categories = [
-    { 
-      name: 'Trails', 
-      icon: '/lovable-uploads/172a4cca-8937-40ba-b6bb-f35085b36bb7.png',
-    },
-    { 
-      name: 'Road', 
-      icon: '/lovable-uploads/aaae8bd4-c7f5-4ca1-9fac-fde0a09ac193.png',
-      selected: true 
-    },
-    { 
-      name: 'Track', 
-      icon: '/lovable-uploads/0e9e5ef6-c03a-469d-a897-99700fa12bd0.png',
-    },
-    { 
-      name: 'Performance', 
-      icon: '/lovable-uploads/ef1bf8f5-8d03-4e1b-97de-c32adbc3661f.png',
-    },
-    { 
-      name: 'Social', 
-      icon: '/lovable-uploads/b93e8026-1345-4911-96e9-1b58b8478f90.png',
-    }
-  ];
-
   return (
     <div className="relative">
       {/* Hero Section */}
@@ -155,6 +139,7 @@ const Index = () => {
             ) : clubs?.map((club) => {
               const isMember = club.club_members?.some(member => member.user_id === user?.id);
               const isLoading = joinClubMutation.isPending || leaveClubMutation.isPending;
+              const labels = club.club_label_assignments?.map(assignment => assignment.club_labels) || [];
 
               return (
                 <Card 
@@ -179,6 +164,19 @@ const Index = () => {
                         <div>
                           <h3 className="text-xl font-semibold text-white">{club.name}</h3>
                           <p className="text-gray-400 text-sm mt-1">{club.location || 'Location not specified'}</p>
+                          {labels.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {labels.map((label) => (
+                                <Badge 
+                                  key={label.id}
+                                  variant="secondary" 
+                                  className="bg-zinc-700 text-zinc-100"
+                                >
+                                  {label.name}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
                         </div>
                         <Button
                           className={`w-24 ${
@@ -235,7 +233,7 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Call to Action or Feedback Section */}
+      {/* Call to Action Section */}
       <div className="py-24 bg-black">
         <div className="max-w-3xl mx-auto px-4 text-center">
           {user ? (

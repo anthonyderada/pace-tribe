@@ -237,7 +237,7 @@ export type Database = {
           bio?: string | null
           comfortable_pace?: string | null
           created_at?: string
-          id?: string
+          id: string
           location?: string | null
           preferred_distance?: string | null
           preferred_shoe_brand?: string[] | null
@@ -247,6 +247,60 @@ export type Database = {
           seeking_training_partners?: boolean | null
           updated_at?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      club_label_assignments: {
+        Row: {
+          id: string
+          club_id: string | null
+          label_id: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          club_id?: string | null
+          label_id?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          club_id?: string | null
+          label_id?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_label_assignments_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_label_assignments_label_id_fkey"
+            columns: ["label_id"]
+            isOneToOne: false
+            referencedRelation: "club_labels"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      club_labels: {
+        Row: {
+          id: string
+          name: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          created_at?: string
         }
         Relationships: []
       }
@@ -275,7 +329,7 @@ export type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
