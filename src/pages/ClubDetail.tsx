@@ -281,7 +281,7 @@ const ClubDetail = () => {
           </div>
 
           {club.club_label_assignments.length > 0 && (
-            <div className="mb-6 pt-6 border-t border-zinc-800">
+            <div className="mb-6">
               <h3 className="text-xl font-semibold mb-2 text-zinc-100">Labels</h3>
               <div className="flex flex-wrap gap-2">
                 {club.club_label_assignments.map((assignment) => (
