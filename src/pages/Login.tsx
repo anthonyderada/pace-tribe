@@ -40,12 +40,28 @@ const Login = () => {
     setError("");
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (signInError) {
+        if (signInError.message === "Invalid login credentials") {
+          toast({
+            title: "Login failed",
+            description: "Invalid email or password. Please try again.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: signInError.message,
+            variant: "destructive",
+          });
+        }
+        setError(signInError.message);
+        return;
+      }
 
       if (data.user) {
         await checkProfileCompletion(data.user.id);
