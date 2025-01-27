@@ -177,6 +177,7 @@ const EventDetail = () => {
 
     getEventDetails();
 
+    // Subscribe to real-time changes in event_participants
     const channel = supabase
       .channel("schema-db-changes")
       .on(
@@ -188,6 +189,7 @@ const EventDetail = () => {
           filter: `event_id=eq.${id}`,
         },
         async () => {
+          // Refetch event data when participants change
           const { data } = await supabase
             .from("events")
             .select(`
