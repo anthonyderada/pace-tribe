@@ -46,7 +46,6 @@ const EventDetail = () => {
   useEffect(() => {
     const getEventDetails = async () => {
       try {
-        // Get event details
         const { data: eventData, error: eventError } = await supabase
           .from("events")
           .select(`
@@ -83,14 +82,14 @@ const EventDetail = () => {
 
         // Check if user is a participant
         if (user) {
-          const { data } = await supabase
+          const { data: participantData } = await supabase
             .from("event_participants")
-            .select("id")
+            .select("*")
             .eq("event_id", id)
             .eq("user_id", user.id)
             .maybeSingle();
 
-          setIsParticipant(!!data);
+          setIsParticipant(!!participantData);
         }
 
         setIsLoading(false);
@@ -145,9 +144,14 @@ const EventDetail = () => {
           if (data) {
             setEvent(data);
             if (user) {
-              setIsParticipant(
-                data.event_participants.some((p) => p.user_id === user.id)
-              );
+              const { data: participantData } = await supabase
+                .from("event_participants")
+                .select("*")
+                .eq("event_id", id)
+                .eq("user_id", user.id)
+                .maybeSingle();
+
+              setIsParticipant(!!participantData);
             }
           }
         }
@@ -181,6 +185,25 @@ const EventDetail = () => {
           description: "You have cancelled your registration for the event",
         });
       } else {
+        // Check if already registered
+        const { data: existingRegistration, error: checkError } = await supabase
+          .from("event_participants")
+          .select()
+          .eq("event_id", id)
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (checkError) throw checkError;
+
+        if (existingRegistration) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "You are already registered for this event",
+          });
+          return;
+        }
+
         // Join event
         const { error } = await supabase.from("event_participants").insert({
           event_id: id,
