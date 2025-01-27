@@ -69,6 +69,30 @@ const ClubDetail = () => {
     },
   });
 
+  // Add real-time subscription for club members
+  useEffect(() => {
+    const channel = supabase
+      .channel('club-members-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'club_members',
+          filter: `club_id=eq.${id}`
+        },
+        () => {
+          // Refetch club data when club members change
+          queryClient.invalidateQueries({ queryKey: ['club', id] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id, queryClient]);
+
   const joinEventMutation = useMutation({
     mutationFn: async (eventId: string) => {
       const { error } = await supabase
@@ -114,7 +138,7 @@ const ClubDetail = () => {
     }
 
     try {
-      const isMember = club.club_members?.some(member => member.user_id === user?.id);
+      const isMember = club?.club_members?.some(member => member.user_id === user?.id);
       if (isMember) {
         const { error } = await supabase
           .from("club_members")
