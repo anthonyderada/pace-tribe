@@ -87,7 +87,14 @@ const Login = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        toast({
+          title: "Google login failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
+      }
     } catch (error: any) {
       setError(error.message);
       toast({

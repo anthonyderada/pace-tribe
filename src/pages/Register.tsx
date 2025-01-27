@@ -30,7 +30,7 @@ const Register = () => {
         if (error.message.includes("User already registered")) {
           toast({
             title: "Account exists",
-            description: "An account with this email already exists. Redirecting to login...",
+            description: "An account with this email already exists. Please sign in instead.",
             variant: "destructive",
           });
           setTimeout(() => navigate("/login"), 2000);
@@ -65,7 +65,14 @@ const Register = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        toast({
+          title: "Google sign up failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
+      }
     } catch (error: any) {
       setError(error.message);
       toast({
