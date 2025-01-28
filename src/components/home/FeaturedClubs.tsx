@@ -98,9 +98,26 @@ const FeaturedClubs = () => {
   return (
     <div className="py-8">
       <div 
-        className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 backdrop-blur-sm bg-black/20 rounded-3xl p-8 shadow-2xl"
+        className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 rounded-3xl p-8 shadow-2xl"
         style={{
-          background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5))',
+          background: `
+            linear-gradient(to bottom, 
+              rgba(0, 0, 0, 0.4),
+              rgba(0, 0, 0, 0.6)
+            ),
+            repeating-linear-gradient(
+              45deg,
+              rgba(255, 255, 255, 0.015) 0px,
+              rgba(255, 255, 255, 0.015) 1px,
+              transparent 1px,
+              transparent 4px
+            )
+          `,
+          boxShadow: `
+            0 0 0 1px rgba(255, 255, 255, 0.05),
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06)
+          `
         }}
       >
         <div className="flex justify-between items-center mb-8">
@@ -133,7 +150,7 @@ const FeaturedClubs = () => {
             return (
               <Card 
                 key={club.id} 
-                className="bg-black/50 backdrop-blur-sm rounded-2xl overflow-hidden hover:bg-black/60 transition-colors cursor-pointer border-0 transform hover:scale-[1.02] transition-all duration-300"
+                className="bg-black/50 rounded-2xl overflow-hidden hover:bg-black/60 transition-colors cursor-pointer border-0 transform hover:scale-[1.02] transition-all duration-300"
                 onClick={() => navigate(`/clubs/${club.id}`)}
               >
                 <CardContent className="p-0">

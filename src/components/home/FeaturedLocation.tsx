@@ -3,11 +3,23 @@ import { MapPin } from "lucide-react";
 const FeaturedLocation = () => {
   return (
     <div className="relative">
-      {/* Gradient overlay */}
+      {/* Paper-like background overlay */}
       <div 
         className="absolute inset-0 w-full h-[600px] -z-10"
         style={{
-          background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%)',
+          background: `
+            linear-gradient(to bottom, 
+              rgba(255, 255, 255, 0.02) 0%,
+              rgba(255, 255, 255, 0.05) 100%
+            ),
+            repeating-linear-gradient(
+              45deg,
+              rgba(255, 255, 255, 0.01) 0px,
+              rgba(255, 255, 255, 0.01) 1px,
+              transparent 1px,
+              transparent 4px
+            )
+          `,
           maskImage: 'linear-gradient(to bottom, transparent, black)',
           WebkitMaskImage: 'linear-gradient(to bottom, transparent, black)',
         }}
