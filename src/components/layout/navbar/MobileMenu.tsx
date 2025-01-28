@@ -20,8 +20,12 @@ export const MobileMenu = ({ onSignOut }: MobileMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-white">
-          <Menu className="h-6 w-6" />
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="text-white focus:ring-0 focus:ring-offset-0"
+        >
+          <Menu className="h-8 w-8" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48 bg-black/80 backdrop-blur-sm border-white/20">
