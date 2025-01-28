@@ -2,7 +2,7 @@ const VideoBackground = () => {
   return (
     <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden bg-black">
       {/* Base video overlay */}
-      <div className="absolute inset-0 bg-black/95" />
+      <div className="absolute inset-0 bg-black/90" />
       
       {/* Paper texture overlay using repeating gradients */}
       <div 
@@ -11,8 +11,8 @@ const VideoBackground = () => {
           background: `
             linear-gradient(
               to bottom, 
-              rgba(255, 255, 255, 0.02) 0%,
-              rgba(255, 255, 255, 0.05) 100%
+              rgba(0, 0, 0, 0.7) 0%,
+              rgba(0, 0, 0, 0.7) 100%
             ),
             repeating-linear-gradient(
               45deg,
@@ -22,8 +22,6 @@ const VideoBackground = () => {
               transparent 4px
             )
           `,
-          maskImage: 'linear-gradient(to bottom, transparent, black)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent, black)',
         }}
       />
       
@@ -51,14 +49,6 @@ const VideoBackground = () => {
         style={{
           background: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
           opacity: 0.02,
-        }}
-      />
-
-      {/* Top vignette */}
-      <div 
-        className="absolute top-0 left-0 w-full h-16 z-10"
-        style={{
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%)'
         }}
       />
 
