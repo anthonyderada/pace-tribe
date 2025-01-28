@@ -96,13 +96,13 @@ const FeaturedClubs = () => {
   };
 
   return (
-    <div className="py-8 bg-black">
+    <div className="py-8 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold text-white">Featured Clubs</h2>
           <Button 
             variant="link" 
-            className="text-emerald-500"
+            className="text-emerald-400 hover:text-emerald-300"
             onClick={() => navigate("/clubs")}
           >
             View All Clubs
