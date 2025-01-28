@@ -73,7 +73,7 @@ export const Navbar = () => {
           </Button>
           <Button 
             onClick={() => navigate("/register")} 
-            className="bg-transparent text-white border border-white hover:bg-white hover:text-black transition-all duration-200"
+            className="bg-white text-black border border-white hover:bg-transparent hover:text-white transition-all duration-200"
           >
             Join Now
           </Button>
@@ -131,7 +131,7 @@ export const Navbar = () => {
                     <DropdownMenuItem onClick={() => navigate("/login")} className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800">
                       Login
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/register")} className="bg-transparent text-white border border-white hover:bg-white hover:text-black transition-all duration-200">
+                    <DropdownMenuItem onClick={() => navigate("/register")} className="bg-white text-black border border-white hover:bg-transparent hover:text-white transition-all duration-200">
                       Join Now
                     </DropdownMenuItem>
                   </>
