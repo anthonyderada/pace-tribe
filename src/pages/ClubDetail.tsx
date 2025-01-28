@@ -257,11 +257,7 @@ const ClubDetail = () => {
             <img
               src={club.thumbnail_url}
               alt={club.name}
-              className={`w-full h-full object-cover ${
-                id === "1e10421d-0a26-4f8b-9e03-7dfb456c1e3b" 
-                  ? "object-[center_65%]" 
-                  : "object-center"
-              }`}
+              className="w-full h-full object-cover"
             />
           </div>
         )}
