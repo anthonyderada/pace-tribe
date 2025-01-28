@@ -3,7 +3,7 @@ const HeroSection = () => {
     <div className="relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-4">
         <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Find Your Running Tribe
           </h1>
           <p className="text-lg md:text-2xl font-light text-gray-200 mb-8 max-w-2xl mx-auto">
