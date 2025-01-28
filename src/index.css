@@ -95,9 +95,9 @@ input[type=number] {
 }
 
 .supabase-button {
-  @apply w-full bg-black hover:bg-black/90 text-white font-medium py-2 px-4 rounded-md transition-colors;
+  @apply w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-md transition-colors;
 }
 
 .supabase-input {
-  @apply w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-400 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent;
+  @apply w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-400 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent;
 }
