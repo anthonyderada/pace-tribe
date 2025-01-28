@@ -32,9 +32,9 @@ export default {
           dark: "#F5F5F5",
         },
         accent: {
-          primary: "#10B981",
-          light: "#D1FAE5",
-          dark: "#059669",
+          primary: "#FFFFFF",
+          light: "#F5F5F5",
+          dark: "#000000",
         },
         gray: {
           light: "#F3F4F6",
@@ -43,7 +43,7 @@ export default {
         },
         status: {
           error: "#EF4444",
-          success: "#10B981",
+          success: "#FFFFFF",
           warning: "#F59E0B",
         },
         border: "hsl(var(--border))",
