@@ -13,6 +13,20 @@ const VideoBackground = () => {
           opacity: 0.15,
         }}
       />
+      {/* Top vignette */}
+      <div 
+        className="absolute top-0 left-0 w-full h-48 z-10"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%)'
+        }}
+      />
+      {/* Bottom vignette */}
+      <div 
+        className="absolute bottom-0 left-0 w-full h-48 z-10"
+        style={{
+          background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)'
+        }}
+      />
       <div className="relative w-full h-full">
         <iframe
           src="https://player.vimeo.com/video/1051222940?background=1&autoplay=1&loop=1&byline=0&title=0&transparent=1&controls=0&muted=1"
@@ -29,7 +43,7 @@ const VideoBackground = () => {
             height: 'auto',
             aspectRatio: '16/9',
             opacity: '0.75',
-            filter: 'grayscale(100%) brightness(35%)',
+            filter: 'grayscale(100%) brightness(30%)',
           }}
         />
       </div>
