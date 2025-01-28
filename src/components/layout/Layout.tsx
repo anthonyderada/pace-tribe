@@ -4,9 +4,9 @@ import VideoBackground from "./VideoBackground";
 
 export const Layout = () => {
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen">
       <VideoBackground />
-      <div className="relative">
+      <div className="relative z-10">
         <Navbar />
         <main>
           <Outlet />
