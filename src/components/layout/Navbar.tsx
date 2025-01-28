@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Menu } from "lucide-react";
@@ -14,8 +14,6 @@ import {
 export const Navbar = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const location = useLocation();
-  const isHomePage = location.pathname === "/";
 
   const handleSignOut = async () => {
     try {
@@ -35,14 +33,14 @@ export const Navbar = () => {
       <Button 
         variant="ghost" 
         onClick={() => navigate("/clubs")}
-        className="text-base text-white hover:text-white hover:bg-white/10 px-4 py-2"
+        className="text-base text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2"
       >
         Clubs
       </Button>
       <Button 
         variant="ghost" 
         onClick={() => navigate("/events")}
-        className="text-base text-white hover:text-white hover:bg-white/10 px-4 py-2"
+        className="text-base text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2"
       >
         Events
       </Button>
@@ -51,14 +49,14 @@ export const Navbar = () => {
           <Button 
             variant="ghost" 
             onClick={() => navigate("/profile")}
-            className="text-base text-white hover:text-white hover:bg-white/10 px-4 py-2"
+            className="text-base text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2"
           >
             Profile
           </Button>
           <Button 
             onClick={handleSignOut}
             variant="ghost" 
-            className="text-base text-white hover:text-white hover:bg-white/10 px-4 py-2"
+            className="text-base text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2"
           >
             Sign Out
           </Button>
@@ -68,7 +66,7 @@ export const Navbar = () => {
           <Button 
             variant="ghost" 
             onClick={() => navigate("/login")}
-            className="text-base text-white hover:text-white hover:bg-white/10 px-4 py-2"
+            className="text-base text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2"
           >
             Login
           </Button>
@@ -84,7 +82,7 @@ export const Navbar = () => {
   );
 
   return (
-    <nav className={`${isHomePage ? 'bg-transparent' : 'bg-black'} sticky top-0 z-50`}>
+    <nav className="bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
           <div className="flex">
@@ -107,29 +105,29 @@ export const Navbar = () => {
           <div className="flex md:hidden items-center">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white">
+                <Button variant="ghost" size="icon" className="text-gray-300">
                   <Menu className="h-6 w-6" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-black/95">
-                <DropdownMenuItem onClick={() => navigate("/clubs")} className="text-base text-white hover:text-white focus:text-white focus:bg-white/10 py-2">
+              <DropdownMenuContent align="end" className="w-48 bg-black">
+                <DropdownMenuItem onClick={() => navigate("/clubs")} className="text-base text-gray-300 hover:text-white focus:text-white focus:bg-gray-800 py-2">
                   Clubs
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/events")} className="text-base text-white hover:text-white focus:text-white focus:bg-white/10 py-2">
+                <DropdownMenuItem onClick={() => navigate("/events")} className="text-base text-gray-300 hover:text-white focus:text-white focus:bg-gray-800 py-2">
                   Events
                 </DropdownMenuItem>
                 {user ? (
                   <>
-                    <DropdownMenuItem onClick={() => navigate("/profile")} className="text-base text-white hover:text-white focus:text-white focus:bg-white/10 py-2">
+                    <DropdownMenuItem onClick={() => navigate("/profile")} className="text-base text-gray-300 hover:text-white focus:text-white focus:bg-gray-800 py-2">
                       Profile
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleSignOut} className="text-base text-white hover:text-white focus:text-white focus:bg-white/10 py-2">
+                    <DropdownMenuItem onClick={handleSignOut} className="text-base text-gray-300 hover:text-white focus:text-white focus:bg-gray-800 py-2">
                       Sign Out
                     </DropdownMenuItem>
                   </>
                 ) : (
                   <>
-                    <DropdownMenuItem onClick={() => navigate("/login")} className="text-base text-white hover:text-white focus:text-white focus:bg-white/10 py-2">
+                    <DropdownMenuItem onClick={() => navigate("/login")} className="text-base text-gray-300 hover:text-white focus:text-white focus:bg-gray-800 py-2">
                       Login
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/register")} className="text-white hover:text-black hover:bg-white focus:text-black focus:bg-white transition-colors py-2 text-base">
