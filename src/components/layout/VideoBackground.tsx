@@ -1,6 +1,6 @@
 const VideoBackground = () => {
   return (
-    <div className="absolute top-0 left-0 right-0 bottom-0 h-[200vh] -z-10 overflow-hidden bg-black">
+    <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden bg-black">
       {/* Base video overlay */}
       <div className="absolute inset-0 bg-black/80" />
       
@@ -18,22 +18,19 @@ const VideoBackground = () => {
         }}
       />
 
-      {/* Video container */}
-      <div className="absolute inset-0">
+      {/* Video container with fixed positioning */}
+      <div className="fixed inset-0 w-full h-full">
         <iframe
           src="https://player.vimeo.com/video/1051222940?background=1&autoplay=1&loop=1&byline=0&title=0&transparent=1&controls=0&muted=1"
-          allow="autoplay; fullscreen"
           className="w-full h-full"
+          allow="autoplay; fullscreen"
           style={{
-            position: 'absolute',
-            top: '-50%',
-            left: '-50%',
-            width: '200%',
-            height: '200%',
+            position: 'fixed',
+            width: '100%',
+            height: '100%',
             objectFit: 'cover',
             opacity: '0.75',
             filter: 'grayscale(100%) brightness(30%)',
-            transform: 'scale(1.5)',
           }}
         />
       </div>
