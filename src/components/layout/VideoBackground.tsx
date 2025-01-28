@@ -1,16 +1,16 @@
 const VideoBackground = () => {
   return (
-    <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-black/90" />
+    <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden bg-black">
+      <div className="absolute inset-0 bg-black/95" />
       <div 
         className="absolute inset-0 bg-transparent" 
         style={{
           backgroundImage: `
-            linear-gradient(rgb(45, 45, 45) 1px, transparent 1px),
-            linear-gradient(90deg, rgb(45, 45, 45) 1px, transparent 1px)
+            linear-gradient(rgba(0, 0, 0, 0.9) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 0, 0, 0.9) 1px, transparent 1px)
           `,
           backgroundSize: '7px 7px',
-          opacity: 0.2,
+          opacity: 0.15,
         }}
       />
       <div className="relative w-full h-full">
@@ -28,8 +28,8 @@ const VideoBackground = () => {
             width: 'auto',
             height: 'auto',
             aspectRatio: '16/9',
-            opacity: '0.5',
-            filter: 'grayscale(100%) brightness(15%)',
+            opacity: '0.4',
+            filter: 'grayscale(100%) brightness(10%)',
           }}
         />
       </div>
