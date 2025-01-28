@@ -3,10 +3,10 @@ const VideoBackground = () => {
     <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden">
       <div className="absolute inset-0 bg-black/80" />
       <div 
-        className="absolute inset-0 bg-black opacity-70" 
+        className="absolute inset-0 bg-black opacity-90" 
         style={{
-          backgroundImage: 'radial-gradient(rgba(0, 0, 0, 0.8) 6px, transparent 6px)', // Increased dot size to 6px and opacity
-          backgroundSize: '12px 12px' // Increased spacing to 12px
+          backgroundImage: 'radial-gradient(rgb(0, 0, 0) 8px, transparent 8px)', // Increased dot size to 8px and made pure black
+          backgroundSize: '24px 24px' // Increased spacing to create a more grid-like pattern
         }}
       />
       <div className="relative w-full h-full">
