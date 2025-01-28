@@ -8,7 +8,7 @@ export const Logo = () => {
       <img 
         src="/lovable-uploads/3ebe28ba-92cf-406c-9111-8d73785be588.png"
         alt="Logo"
-        className="h-8 md:h-12 w-auto cursor-pointer" 
+        className="h-10 md:h-12 w-auto cursor-pointer" 
         onClick={() => navigate("/")}
       />
     </div>

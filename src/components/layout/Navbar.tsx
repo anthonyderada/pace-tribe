@@ -39,7 +39,7 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Navigation */}
-          <div className="flex md:hidden items-center pr-2">
+          <div className="flex md:hidden items-center pr-4">
             {user ? (
               <MobileMenu onSignOut={handleSignOut} />
             ) : (
