@@ -9,7 +9,7 @@ const VideoBackground = () => {
             linear-gradient(rgb(75, 75, 75) 1px, transparent 1px),
             linear-gradient(90deg, rgb(75, 75, 75) 1px, transparent 1px)
           `,
-          backgroundSize: '24px 24px',
+          backgroundSize: '7px 7px',
           opacity: 0.3,
         }}
       />
@@ -29,7 +29,7 @@ const VideoBackground = () => {
             height: 'auto',
             aspectRatio: '16/9',
             opacity: '0.5',
-            filter: 'grayscale(100%) brightness(40%)',
+            filter: 'grayscale(100%) brightness(25%)',
           }}
         />
       </div>
