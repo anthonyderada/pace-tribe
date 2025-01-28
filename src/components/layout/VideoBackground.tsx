@@ -6,32 +6,24 @@ const VideoBackground = () => {
       
       {/* Paper texture overlay using repeating gradients */}
       <div 
-        className="absolute inset-0 bg-transparent" 
+        className="absolute inset-0"
         style={{
           background: `
             linear-gradient(
-              to right,
+              to bottom, 
+              rgba(255, 255, 255, 0.02) 0%,
+              rgba(255, 255, 255, 0.05) 100%
+            ),
+            repeating-linear-gradient(
+              45deg,
+              rgba(255, 255, 255, 0.01) 0px,
               rgba(255, 255, 255, 0.01) 1px,
-              transparent 1px
-            ),
-            linear-gradient(
-              to bottom,
-              rgba(255, 255, 255, 0.01) 1px,
-              transparent 1px
-            ),
-            linear-gradient(
-              to right,
-              rgba(255, 255, 255, 0.02) 4px,
-              transparent 4px
-            ),
-            linear-gradient(
-              to bottom,
-              rgba(255, 255, 255, 0.02) 4px,
+              transparent 1px,
               transparent 4px
             )
           `,
-          backgroundSize: '15px 15px, 15px 15px, 90px 90px, 90px 90px',
-          opacity: 0.15,
+          maskImage: 'linear-gradient(to bottom, transparent, black)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent, black)',
         }}
       />
       
