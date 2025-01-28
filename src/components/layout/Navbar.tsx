@@ -1,29 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import { NavItems } from "./navbar/NavItems";
 import { MobileMenu } from "./navbar/MobileMenu";
 import { Logo } from "./navbar/Logo";
-import { Button } from "../ui/button";
-import { UserCircle2 } from "lucide-react";
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      navigate("/");
-      toast.success("Successfully signed out");
-    } catch (error: any) {
-      console.error("Error signing out:", error.message);
-      toast.error("Failed to sign out. Please try again.");
-    }
-  };
 
   return (
     <nav>
@@ -40,19 +23,7 @@ export const Navbar = () => {
 
           {/* Mobile Navigation */}
           <div className="flex md:hidden items-center">
-            {user ? (
-              <MobileMenu onSignOut={handleSignOut} />
-            ) : (
-              <Button
-                onClick={() => navigate("/login")}
-                variant="ghost"
-                size="lg"
-                className="text-white hover:bg-white/10 focus:ring-0 focus:ring-offset-0 scale-123 -mt-5 -mr-4"
-              >
-                <UserCircle2 className="h-7 w-7" />
-                <span className="ml-2 text-base">Login</span>
-              </Button>
-            )}
+            <MobileMenu />
           </div>
         </div>
       </div>
