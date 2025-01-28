@@ -28,7 +28,7 @@ export const Navbar = () => {
   return (
     <nav>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 md:h-20">
+        <div className="flex justify-between h-16 md:h-20 pt-4 md:pt-0">
           <div className="flex">
             <Logo />
           </div>
@@ -47,7 +47,7 @@ export const Navbar = () => {
                 onClick={() => navigate("/login")}
                 variant="ghost"
                 size="lg"
-                className="text-white hover:bg-white/10 focus:ring-0 focus:ring-offset-0 scale-120 -mt-2.5 mr-2.5"
+                className="text-white hover:bg-white/10 focus:ring-0 focus:ring-offset-0 scale-120 -mt-2.5 -mr-4"
               >
                 <UserCircle2 className="h-7 w-7" />
                 <span className="ml-2 text-base">Login</span>
