@@ -122,7 +122,7 @@ const Index = () => {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <div className="relative bg-background-dark">
+      <div className="relative bg-[#1d1e20]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -136,7 +136,7 @@ const Index = () => {
       </div>
 
       {/* Featured Clubs Section */}
-      <div className="py-16 bg-black">
+      <div className="py-16 bg-[#1d1e20]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-3xl font-bold text-white">Featured Clubs</h2>
@@ -232,7 +232,7 @@ const Index = () => {
       </div>
 
       {/* Features Section */}
-      <div className="py-24 bg-black">
+      <div className="py-24 bg-[#1d1e20]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="text-center">
@@ -258,7 +258,7 @@ const Index = () => {
       </div>
 
       {/* Call to Action or Feedback Section */}
-      <div className="py-24 bg-black">
+      <div className="py-24 bg-[#1d1e20]">
         <div className="max-w-3xl mx-auto px-4 text-center">
           {user ? (
             <>
