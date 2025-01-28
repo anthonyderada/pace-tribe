@@ -28,7 +28,7 @@ export const Navbar = () => {
   return (
     <nav>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-20">
+        <div className="flex justify-between h-16 md:h-20">
           <div className="flex">
             <Logo />
           </div>
@@ -39,7 +39,7 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Navigation */}
-          <div className="flex md:hidden items-center">
+          <div className="flex md:hidden items-center pr-2">
             {user ? (
               <MobileMenu onSignOut={handleSignOut} />
             ) : (
@@ -49,8 +49,8 @@ export const Navbar = () => {
                 size="lg"
                 className="text-white hover:bg-white/10 focus:ring-0 focus:ring-offset-0"
               >
-                <UserCircle2 className="h-7 w-7" />
-                <span className="ml-2 text-base">Login</span>
+                <UserCircle2 className="h-6 w-6" />
+                <span className="ml-2 text-sm">Login</span>
               </Button>
             )}
           </div>
