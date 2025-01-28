@@ -6,7 +6,7 @@ const FeaturedLocation = () => {
       <div className="flex items-center gap-2 text-zinc-400">
         <MapPin className="h-5 w-5" />
         <span className="text-lg">Currently Featuring Clubs in</span>
-        <span className="text-white font-medium">Miami</span>
+        <span className="text-white font-medium">Miami, FL</span>
       </div>
     </div>
   );
