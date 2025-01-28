@@ -15,7 +15,7 @@ const VideoBackground = () => {
       />
       {/* Top vignette */}
       <div 
-        className="absolute top-0 left-0 w-full h-48 z-10"
+        className="absolute top-0 left-0 w-full h-28 z-10"
         style={{
           background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%)'
         }}
