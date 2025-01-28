@@ -96,13 +96,13 @@ const FeaturedClubs = () => {
   };
 
   return (
-    <div className="py-8">
+    <div className="py-8 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-white drop-shadow-lg">Featured Clubs</h2>
+          <h2 className="text-3xl font-bold text-white">Featured Clubs</h2>
           <Button 
             variant="link" 
-            className="text-emerald-400 hover:text-emerald-300"
+            className="text-emerald-500"
             onClick={() => navigate("/clubs")}
           >
             View All Clubs
@@ -111,12 +111,12 @@ const FeaturedClubs = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {isLoading ? (
             Array(3).fill(0).map((_, i) => (
-              <Card key={i} className="bg-black/50 backdrop-blur-sm rounded-2xl border-0">
+              <Card key={i} className="bg-zinc-800/50 rounded-2xl border-0">
                 <CardContent className="p-0">
-                  <Skeleton className="h-48 rounded-t-2xl bg-zinc-800/50" />
+                  <Skeleton className="h-48 rounded-t-2xl bg-zinc-800" />
                   <div className="p-6">
-                    <Skeleton className="h-6 w-2/3 mb-2 bg-zinc-800/50" />
-                    <Skeleton className="h-4 w-1/3 bg-zinc-800/50" />
+                    <Skeleton className="h-6 w-2/3 mb-2 bg-zinc-800" />
+                    <Skeleton className="h-4 w-1/3 bg-zinc-800" />
                   </div>
                 </CardContent>
               </Card>
@@ -128,7 +128,7 @@ const FeaturedClubs = () => {
             return (
               <Card 
                 key={club.id} 
-                className="bg-black/50 backdrop-blur-sm rounded-2xl overflow-hidden hover:bg-black/70 transition-colors cursor-pointer border-0"
+                className="bg-zinc-800/50 rounded-2xl overflow-hidden hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
                 onClick={() => navigate(`/clubs/${club.id}`)}
               >
                 <CardContent className="p-0">
@@ -139,7 +139,7 @@ const FeaturedClubs = () => {
                       className="w-full h-48 object-cover"
                     />
                   ) : (
-                    <div className="w-full h-48 bg-zinc-700/50 flex items-center justify-center">
+                    <div className="w-full h-48 bg-zinc-700 flex items-center justify-center">
                       <span className="text-zinc-400">No image</span>
                     </div>
                   )}
@@ -147,13 +147,13 @@ const FeaturedClubs = () => {
                     <div className="flex justify-between items-start gap-4">
                       <div>
                         <h3 className="text-xl font-semibold text-white">{club.name}</h3>
-                        <p className="text-gray-300 text-sm mt-1">{club.location || 'Location not specified'}</p>
+                        <p className="text-gray-400 text-sm mt-1">{club.location || 'Location not specified'}</p>
                         <div className="flex flex-wrap gap-2 mt-2">
                           {club.club_label_assignments?.map((assignment) => (
                             <Badge
                               key={assignment.id}
                               variant="secondary"
-                              className="bg-white/10 text-gray-200 pointer-events-none backdrop-blur-sm"
+                              className="bg-zinc-800 text-zinc-100 pointer-events-none"
                             >
                               {assignment.club_labels.name}
                             </Badge>
@@ -164,8 +164,8 @@ const FeaturedClubs = () => {
                         <Button
                           className={`w-24 ${
                             isMember
-                              ? "border border-white/20 text-white bg-transparent hover:bg-white/10 backdrop-blur-sm"
-                              : "border border-white/20 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
+                              ? "border border-white text-white bg-transparent hover:bg-white/10"
+                              : "border border-white bg-white text-black hover:bg-gray-100"
                           }`}
                           onClick={(e) => handleJoinLeaveClick(club.id, isMember, e)}
                           disabled={isLoading}
@@ -180,8 +180,8 @@ const FeaturedClubs = () => {
                         </Button>
                       )}
                     </div>
-                    <p className="text-gray-300 line-clamp-3 mt-4">{club.description || 'No description available'}</p>
-                    <p className="text-gray-300 text-sm mt-4">{club.club_members?.length || 0} members</p>
+                    <p className="text-gray-400 line-clamp-3 mt-4">{club.description || 'No description available'}</p>
+                    <p className="text-gray-400 text-sm mt-4">{club.club_members?.length || 0} members</p>
                   </div>
                 </CardContent>
               </Card>
