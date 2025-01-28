@@ -39,7 +39,7 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Navigation */}
-          <div className="flex md:hidden items-center pr-4">
+          <div className="flex md:hidden items-center">
             {user ? (
               <MobileMenu onSignOut={handleSignOut} />
             ) : (
@@ -47,10 +47,10 @@ export const Navbar = () => {
                 onClick={() => navigate("/login")}
                 variant="ghost"
                 size="lg"
-                className="text-white hover:bg-white/10 focus:ring-0 focus:ring-offset-0"
+                className="text-white hover:bg-white/10 focus:ring-0 focus:ring-offset-0 scale-120 -mt-2.5 mr-2.5"
               >
-                <UserCircle2 className="h-6 w-6" />
-                <span className="ml-2 text-sm">Login</span>
+                <UserCircle2 className="h-7 w-7" />
+                <span className="ml-2 text-base">Login</span>
               </Button>
             )}
           </div>
