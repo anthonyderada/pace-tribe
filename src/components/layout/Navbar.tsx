@@ -73,7 +73,7 @@ export const Navbar = () => {
           </Button>
           <Button 
             onClick={() => navigate("/register")} 
-            className="bg-emerald-500 hover:bg-emerald-600 text-white"
+            className="bg-white text-black border border-white hover:bg-transparent hover:text-white transition-colors"
           >
             Join Now
           </Button>
@@ -83,15 +83,15 @@ export const Navbar = () => {
   );
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
+    <nav className="bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between h-20">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <img 
                 src="/lovable-uploads/3ebe28ba-92cf-406c-9111-8d73785be588.png"
                 alt="Logo"
-                className="h-8 w-auto cursor-pointer" 
+                className="h-12 w-auto cursor-pointer" 
                 onClick={() => navigate("/")}
               />
             </div>
@@ -110,7 +110,7 @@ export const Navbar = () => {
                   <Menu className="h-6 w-6" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-black border border-gray-800">
+              <DropdownMenuContent align="end" className="w-48 bg-black">
                 <DropdownMenuItem onClick={() => navigate("/clubs")} className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800">
                   Clubs
                 </DropdownMenuItem>
@@ -131,7 +131,7 @@ export const Navbar = () => {
                     <DropdownMenuItem onClick={() => navigate("/login")} className="text-gray-300 hover:text-white focus:text-white focus:bg-gray-800">
                       Login
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/register")} className="text-emerald-500 hover:text-emerald-400 focus:text-emerald-400 focus:bg-gray-800">
+                    <DropdownMenuItem onClick={() => navigate("/register")} className="text-white hover:text-black hover:bg-white focus:text-black focus:bg-white transition-colors">
                       Join Now
                     </DropdownMenuItem>
                   </>
