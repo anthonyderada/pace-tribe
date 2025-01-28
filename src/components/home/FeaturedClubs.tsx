@@ -97,7 +97,12 @@ const FeaturedClubs = () => {
 
   return (
     <div className="py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div 
+        className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 backdrop-blur-sm bg-black/20 rounded-3xl p-8 shadow-2xl"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5))',
+        }}
+      >
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-white">Featured Clubs</h2>
           <Button 
@@ -128,7 +133,7 @@ const FeaturedClubs = () => {
             return (
               <Card 
                 key={club.id} 
-                className="bg-black/50 backdrop-blur-sm rounded-2xl overflow-hidden hover:bg-black/60 transition-colors cursor-pointer border-0"
+                className="bg-black/50 backdrop-blur-sm rounded-2xl overflow-hidden hover:bg-black/60 transition-colors cursor-pointer border-0 transform hover:scale-[1.02] transition-all duration-300"
                 onClick={() => navigate(`/clubs/${club.id}`)}
               >
                 <CardContent className="p-0">
