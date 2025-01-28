@@ -23,34 +23,63 @@ export const MobileMenu = ({ onSignOut }: MobileMenuProps) => {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="text-white focus:ring-0 focus:ring-offset-0"
+          className="text-white focus:ring-0 focus:ring-offset-0 relative overflow-hidden group"
         >
-          <Menu className="h-8 w-8" />
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <Menu className="h-8 w-8 transform transition-transform duration-200 ease-out group-hover:scale-110" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48 bg-black/80 backdrop-blur-sm border-white/20">
-        <DropdownMenuItem onClick={() => navigate("/clubs")} className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-2">
-          Clubs
+      <DropdownMenuContent 
+        align="end" 
+        className="w-56 bg-black/80 backdrop-blur-md border-white/20 animate-in slide-in-from-right-2 duration-200"
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 to-blue-500/10 pointer-events-none" />
+        <DropdownMenuItem 
+          onClick={() => navigate("/clubs")} 
+          className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-3 px-4 transition-all duration-200 relative overflow-hidden group"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
+          <span className="relative">Clubs</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate("/events")} className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-2">
-          Events
+        <DropdownMenuItem 
+          onClick={() => navigate("/events")} 
+          className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-3 px-4 transition-all duration-200 relative overflow-hidden group"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
+          <span className="relative">Events</span>
         </DropdownMenuItem>
         {user ? (
           <>
-            <DropdownMenuItem onClick={() => navigate("/profile")} className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-2">
-              Profile
+            <DropdownMenuItem 
+              onClick={() => navigate("/profile")} 
+              className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-3 px-4 transition-all duration-200 relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
+              <span className="relative">Profile</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onSignOut} className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-2">
-              Sign Out
+            <DropdownMenuItem 
+              onClick={onSignOut} 
+              className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-3 px-4 transition-all duration-200 relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
+              <span className="relative">Sign Out</span>
             </DropdownMenuItem>
           </>
         ) : (
           <>
-            <DropdownMenuItem onClick={() => navigate("/login")} className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-2">
-              Login
+            <DropdownMenuItem 
+              onClick={() => navigate("/login")} 
+              className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-3 px-4 transition-all duration-200 relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
+              <span className="relative">Login</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/register")} className="text-white hover:bg-white/20 focus:bg-white/20 transition-colors py-2 text-base">
-              Join Now
+            <DropdownMenuItem 
+              onClick={() => navigate("/register")} 
+              className="text-base text-white hover:bg-white/20 focus:bg-white/20 py-3 px-4 transition-all duration-200 relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
+              <span className="relative">Join Now</span>
             </DropdownMenuItem>
           </>
         )}
