@@ -62,14 +62,6 @@ const VideoBackground = () => {
         }}
       />
 
-      {/* Bottom vignette */}
-      <div 
-        className="absolute bottom-0 left-0 w-full h-48 z-10"
-        style={{
-          background: 'linear-gradient(to top, rgba(0,0,0,0.7) -30%, transparent 100%)'
-        }}
-      />
-
       {/* Video iframe */}
       <div className="relative w-full h-full">
         <iframe
