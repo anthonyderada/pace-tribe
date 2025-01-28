@@ -26,13 +26,14 @@ const VideoBackground = () => {
           className="w-full h-full"
           style={{
             position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
+            top: '-50%',
+            left: '-50%',
+            width: '200%',
+            height: '200%',
             objectFit: 'cover',
             opacity: '0.75',
             filter: 'grayscale(100%) brightness(30%)',
+            transform: 'scale(1.5)',
           }}
         />
       </div>
