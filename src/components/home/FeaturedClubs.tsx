@@ -39,29 +39,7 @@ const FeaturedClubs = () => {
 
   return (
     <div className="py-8">
-      <div 
-        className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 rounded-3xl p-8 shadow-2xl"
-        style={{
-          background: `
-            linear-gradient(to bottom, 
-              rgba(0, 0, 0, 0.4),
-              rgba(0, 0, 0, 0.6)
-            ),
-            repeating-linear-gradient(
-              45deg,
-              rgba(255, 255, 255, 0.015) 0px,
-              rgba(255, 255, 255, 0.015) 1px,
-              transparent 1px,
-              transparent 4px
-            )
-          `,
-          boxShadow: `
-            0 0 0 1px rgba(255, 255, 255, 0.05),
-            0 4px 6px -1px rgba(0, 0, 0, 0.1),
-            0 2px 4px -1px rgba(0, 0, 0, 0.06)
-          `
-        }}
-      >
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 rounded-3xl p-8">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-white">Featured Clubs</h2>
           <Button 
