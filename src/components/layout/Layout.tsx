@@ -4,11 +4,11 @@ import VideoBackground from "./VideoBackground";
 
 export const Layout = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-black">
       <VideoBackground />
       <div className="relative z-10">
         <Navbar />
-        <main>
+        <main className="bg-transparent">
           <Outlet />
         </main>
       </div>

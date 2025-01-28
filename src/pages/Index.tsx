@@ -6,7 +6,7 @@ import FeaturedLocation from "@/components/home/FeaturedLocation";
 
 const Index = () => {
   return (
-    <div className="relative">
+    <div className="relative bg-transparent">
       <HeroSection />
       <FeaturedLocation />
       <FeaturedClubs />
