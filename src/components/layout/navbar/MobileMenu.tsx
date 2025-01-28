@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { UserCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -22,11 +22,11 @@ export const MobileMenu = ({ onSignOut }: MobileMenuProps) => {
       <DropdownMenuTrigger asChild>
         <Button 
           variant="ghost" 
-          size="icon" 
-          className="text-white focus:ring-0 focus:ring-offset-0 relative overflow-hidden group"
+          size="lg"
+          className="text-white hover:bg-white/10 focus:ring-0 focus:ring-offset-0 relative overflow-hidden group"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <Menu className="h-8 w-8 transform transition-transform duration-200 ease-out group-hover:scale-110" />
+          <UserCircle2 className="h-7 w-7" />
+          <span className="ml-2 text-base">Menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
@@ -48,7 +48,7 @@ export const MobileMenu = ({ onSignOut }: MobileMenuProps) => {
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
           <span className="relative">Events</span>
         </DropdownMenuItem>
-        {user ? (
+        {user && (
           <>
             <DropdownMenuItem 
               onClick={() => navigate("/profile")} 
@@ -63,23 +63,6 @@ export const MobileMenu = ({ onSignOut }: MobileMenuProps) => {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
               <span className="relative">Sign Out</span>
-            </DropdownMenuItem>
-          </>
-        ) : (
-          <>
-            <DropdownMenuItem 
-              onClick={() => navigate("/login")} 
-              className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-3 px-4 transition-all duration-200 relative overflow-hidden group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
-              <span className="relative">Login</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={() => navigate("/register")} 
-              className="text-base text-white hover:bg-white/20 focus:bg-white/20 py-3 px-4 transition-all duration-200 relative overflow-hidden group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
-              <span className="relative">Join Now</span>
             </DropdownMenuItem>
           </>
         )}

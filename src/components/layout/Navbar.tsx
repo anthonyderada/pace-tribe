@@ -5,9 +5,12 @@ import { toast } from "sonner";
 import { NavItems } from "./navbar/NavItems";
 import { MobileMenu } from "./navbar/MobileMenu";
 import { Logo } from "./navbar/Logo";
+import { Button } from "../ui/button";
+import { UserCircle2 } from "lucide-react";
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleSignOut = async () => {
     try {
@@ -37,7 +40,19 @@ export const Navbar = () => {
 
           {/* Mobile Navigation */}
           <div className="flex md:hidden items-center">
-            <MobileMenu onSignOut={handleSignOut} />
+            {user ? (
+              <MobileMenu onSignOut={handleSignOut} />
+            ) : (
+              <Button
+                onClick={() => navigate("/login")}
+                variant="ghost"
+                size="lg"
+                className="text-white hover:bg-white/10 focus:ring-0 focus:ring-offset-0"
+              >
+                <UserCircle2 className="h-7 w-7" />
+                <span className="ml-2 text-base">Login</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>
