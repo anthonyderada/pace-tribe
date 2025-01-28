@@ -24,7 +24,7 @@ const VideoBackground = () => {
             width: 'auto',
             height: 'auto',
             aspectRatio: '16/9',
-            opacity: '0.2',
+            opacity: '0.4',
             filter: 'grayscale(100%) brightness(40%)',
           }}
         />
