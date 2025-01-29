@@ -80,21 +80,6 @@ const Clubs = () => {
     }
   });
 
-  const handleJoinLeaveClick = (clubId: string, isMember: boolean, e: React.MouseEvent) => {
-    e.stopPropagation();
-    
-    if (!user) {
-      toast.error('Please log in to join clubs');
-      return;
-    }
-
-    if (isMember) {
-      leaveClubMutation.mutate(clubId);
-    } else {
-      joinClubMutation.mutate(clubId);
-    }
-  };
-
   const filteredClubs = clubs?.filter(club => 
     club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     club.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -131,8 +116,6 @@ const Clubs = () => {
               key={club.id}
               club={club}
               userId={user?.id}
-              onJoinLeave={handleJoinLeaveClick}
-              isLoading={joinClubMutation.isPending || leaveClubMutation.isPending}
             />
           ))
         ) : (
