@@ -68,6 +68,7 @@ export const MemberAvatarGroup = ({
         remainingCount={remainingCount}
         totalCount={members.length}
         isOpen={isOpen}
+        clubId={clubId}
       />
       <CollapsibleContent className="mt-2">
         <CollapsibleMemberList 

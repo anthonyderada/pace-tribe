@@ -1,48 +1,54 @@
-import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
 import { CollapsibleTrigger } from "@/components/ui/collapsible";
-import { CollapsedMemberView } from "./CollapsedMemberView";
-
-type Member = {
-  id: string;
-  profiles: {
-    username: string | null;
-    avatar_url: string | null;
-  };
-};
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MembersSheet } from "./MembersSheet";
 
 interface CollapsibleTriggerButtonProps {
-  visibleMembers: Member[];
+  visibleMembers: {
+    profiles: {
+      username: string | null;
+      avatar_url: string | null;
+    };
+  }[];
   remainingCount: number;
   totalCount: number;
   isOpen: boolean;
+  clubId: string;
 }
 
-export const CollapsibleTriggerButton = ({ 
-  visibleMembers, 
-  remainingCount, 
+export const CollapsibleTriggerButton = ({
+  visibleMembers,
+  remainingCount,
   totalCount,
-  isOpen 
+  isOpen,
+  clubId,
 }: CollapsibleTriggerButtonProps) => {
   return (
-    <CollapsibleTrigger asChild>
-      <Button
-        variant="ghost"
-        className="w-full p-2 hover:bg-zinc-800/50 rounded-lg transition-colors"
-      >
-        <div className="flex items-center justify-between w-full">
-          <CollapsedMemberView 
-            visibleMembers={visibleMembers}
-            remainingCount={remainingCount}
-            totalCount={totalCount}
-          />
-          <ChevronDown 
-            className={`h-4 w-4 text-zinc-400 transition-transform duration-200 ${
-              isOpen ? 'transform rotate-180' : ''
-            }`} 
-          />
-        </div>
-      </Button>
-    </CollapsibleTrigger>
+    <div className="flex items-center gap-2">
+      <div className="flex -space-x-2">
+        {visibleMembers.map((member, index) => (
+          <Avatar key={index} className="h-6 w-6 border-2 border-background">
+            <AvatarImage src={member.profiles.avatar_url || undefined} />
+            <AvatarFallback>
+              {member.profiles.username?.[0]?.toUpperCase() || '?'}
+            </AvatarFallback>
+          </Avatar>
+        ))}
+      </div>
+      <CollapsibleTrigger asChild>
+        <Button variant="ghost" size="sm" className="h-auto p-0">
+          <span className="text-xs text-muted-foreground mr-1">
+            {isOpen ? 'Show less' : `+${remainingCount} more`}
+          </span>
+          {isOpen ? (
+            <ChevronUp className="h-3 w-3" />
+          ) : (
+            <ChevronDown className="h-3 w-3" />
+          )}
+        </Button>
+      </CollapsibleTrigger>
+      {!isOpen && <MembersSheet clubId={clubId} totalCount={totalCount} />}
+    </div>
   );
 };
