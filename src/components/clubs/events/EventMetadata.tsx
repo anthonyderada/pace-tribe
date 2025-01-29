@@ -1,6 +1,7 @@
 import { Calendar, MapPin, Route, Timer, Repeat } from "lucide-react";
 import { format } from "date-fns";
 import { EventMetadataProps } from "./types";
+import { Badge } from "@/components/ui/badge";
 
 export const EventMetadata = ({ 
   date, 
@@ -18,10 +19,10 @@ export const EventMetadata = ({
       </div>
       {is_recurring && recurrence_schedule && (
         <div className="flex items-center gap-2 mb-2">
-          <Repeat className="h-4 w-4 text-emerald-400" />
-          <span className="text-sm font-medium text-emerald-400">
+          <Badge variant="secondary" className="bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 whitespace-nowrap">
+            <Repeat className="h-3 w-3 mr-1" />
             {recurrence_schedule}
-          </span>
+          </Badge>
         </div>
       )}
       {location && (
