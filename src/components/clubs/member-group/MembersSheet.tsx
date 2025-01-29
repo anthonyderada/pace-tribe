@@ -9,6 +9,7 @@ import { FollowButton } from "@/components/profile/FollowButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { CaptainBadge } from "./CaptainBadge";
 
 interface MembersSheetProps {
   clubId: string;
@@ -119,20 +120,20 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4 flex-grow min-w-0">
                       <MemberProfileLink userId={member.user_id}>
-                        <Avatar className="h-20 w-20">
-                          <AvatarImage src={member.profiles.avatar_url || undefined} />
-                          <AvatarFallback>
-                            {member.profiles.username?.[0]?.toUpperCase() || '?'}
-                          </AvatarFallback>
-                        </Avatar>
+                        <div className="relative">
+                          <Avatar className="h-20 w-20">
+                            <AvatarImage src={member.profiles.avatar_url || undefined} />
+                            <AvatarFallback>
+                              {member.profiles.username?.[0]?.toUpperCase() || '?'}
+                            </AvatarFallback>
+                          </Avatar>
+                          {member.role === 'captain' && <CaptainBadge />}
+                        </div>
                       </MemberProfileLink>
                       <div className="flex-grow min-w-0">
                         <MemberProfileLink userId={member.user_id}>
                           <h3 className="text-sm font-medium text-zinc-100 truncate">
                             {member.profiles.username || 'Anonymous'}
-                            {member.role === 'captain' && (
-                              <span className="ml-2 text-xs text-emerald-400">Captain</span>
-                            )}
                           </h3>
                         </MemberProfileLink>
                         {member.profiles.location && (
