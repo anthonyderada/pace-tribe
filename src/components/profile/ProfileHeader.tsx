@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Pencil, Save, Upload } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { FollowButton } from "./FollowButton";
-import { ChatRoom } from "../messages/ChatRoom";
+import { ProfileAvatar } from "./header/ProfileAvatar";
+import { ProfileEditForm } from "./header/ProfileEditForm";
+import { ProfileInfo } from "./header/ProfileInfo";
 
 type ProfileHeaderProps = {
   profile: {
@@ -39,7 +36,6 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
 
-  // Fetch captain roles
   const { data: captainRoles } = useQuery({
     queryKey: ['captainRoles', user?.id],
     queryFn: async () => {
@@ -139,47 +135,13 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
 
   return (
     <div className="flex flex-col md:flex-row gap-8 items-center md:items-start relative p-6">
-      <div className="relative group">
-        <Avatar className="w-32 h-32">
-          {isEditing ? (
-            <>
-              <AvatarImage src={profile?.avatar_url || undefined} />
-              <AvatarFallback className="bg-gray-500/20 flex items-center justify-center">
-                <Upload className="w-8 h-8 text-gray-400" />
-              </AvatarFallback>
-            </>
-          ) : (
-            <>
-              <AvatarImage src={profile?.avatar_url || undefined} />
-              <AvatarFallback className="bg-emerald-600 text-4xl text-white">
-                {profile?.username?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase()}
-              </AvatarFallback>
-            </>
-          )}
-        </Avatar>
-        {isEditing && (
-          <>
-            <Input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              id="avatar-upload"
-              onChange={handleImageUpload}
-              disabled={uploading}
-            />
-            <label
-              htmlFor="avatar-upload"
-              className={`absolute inset-0 flex items-center justify-center cursor-pointer transition-opacity rounded-full ${
-                profile?.avatar_url 
-                  ? 'bg-black/50 opacity-0 group-hover:opacity-100' 
-                  : ''
-              }`}
-            >
-              {profile?.avatar_url && <Upload className="w-6 h-6 text-white" />}
-            </label>
-          </>
-        )}
-      </div>
+      <ProfileAvatar
+        isEditing={isEditing}
+        uploading={uploading}
+        profile={profile}
+        userEmail={user?.email}
+        onImageUpload={handleImageUpload}
+      />
       <div className="flex-1 text-center md:text-left">
         {user && !isEditing && (
           <Button
@@ -192,95 +154,30 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
           </Button>
         )}
         {isEditing ? (
-          <div className="space-y-4">
-            <Input
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
-              className="max-w-xs"
-            />
-            <Input
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Location"
-              className="max-w-xs"
-            />
-            <Textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              placeholder="Tell us about your running goals and ambitions..."
-              className="min-h-[100px]"
-            />
-            <div className="flex gap-2 justify-center md:justify-start">
-              <Button
-                onClick={handleUpdateProfile}
-                className="border border-white bg-white text-black"
-                variant="outline"
-                disabled={uploading}
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsEditing(false);
-                  setUsername(profile?.username || "");
-                  setLocation(profile?.location || "");
-                  setBio(profile?.bio || "");
-                }}
-                disabled={uploading}
-                className="border border-white text-white bg-transparent"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
+          <ProfileEditForm
+            username={username}
+            location={location}
+            bio={bio}
+            uploading={uploading}
+            onUsernameChange={setUsername}
+            onLocationChange={setLocation}
+            onBioChange={setBio}
+            onSave={handleUpdateProfile}
+            onCancel={() => {
+              setIsEditing(false);
+              setUsername(profile?.username || "");
+              setLocation(profile?.location || "");
+              setBio(profile?.bio || "");
+            }}
+          />
         ) : (
-          <>
-            <div className="flex flex-col items-center md:items-start gap-2">
-              <div className="flex items-center gap-4">
-                <h1 className="text-3xl font-bold text-zinc-100">
-                  {profile?.username || user?.email}
-                </h1>
-                {user?.id !== profile?.id && profile?.id && (
-                  <div className="flex items-center gap-2">
-                    <FollowButton 
-                      userId={profile.id} 
-                      initialIsFollowing={false} // We'll need to implement this properly
-                    />
-                    <ChatRoom 
-                      recipientId={profile.id} 
-                      recipientName={profile.username || "User"}
-                      recipientAvatar={profile.avatar_url}
-                    />
-                  </div>
-                )}
-              </div>
-              {captainRoles && captainRoles.length > 0 && (
-                <div className="flex flex-col items-center md:items-start gap-2">
-                  {captainRoles.map((role, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-                        Captain
-                      </Badge>
-                      <span className="text-zinc-400">
-                        of {role.clubs?.name}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <p className="text-zinc-400 flex items-center justify-center md:justify-start gap-2">
-                {profile?.location || "Not set"}
-              </p>
-              <div className="space-y-4">
-                <p className="text-zinc-400">
-                  {profile?.bio || "No bio added yet"}
-                </p>
-              </div>
-            </div>
-          </>
+          profile && (
+            <ProfileInfo
+              profile={profile}
+              captainRoles={captainRoles}
+              isOwnProfile={user?.id === profile.id}
+            />
+          )
         )}
       </div>
     </div>
