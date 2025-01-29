@@ -12,6 +12,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { CollapsedMemberView } from "./member-group/CollapsedMemberView";
 import { MemberRow } from "./member-group/MemberRow";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import Members from "@/pages/Members";
 
 type Member = {
   id: string;
@@ -30,7 +38,6 @@ interface MemberAvatarGroupProps {
 }
 
 export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAvatarGroupProps) => {
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
   const [followingMap, setFollowingMap] = useState<Record<string, boolean>>({});
@@ -96,13 +103,24 @@ export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAva
               ))}
             </div>
           </ScrollArea>
-          <Button
-            variant="ghost"
-            className="w-full mt-2 text-zinc-400 hover:text-zinc-200"
-            onClick={() => navigate(`/clubs/${clubId}/members`)}
-          >
-            View all members
-          </Button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                className="w-full mt-2 text-zinc-400 hover:text-zinc-200"
+              >
+                View all members
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full sm:max-w-xl bg-zinc-900 border-zinc-800">
+              <SheetHeader>
+                <SheetTitle className="text-white">All Members</SheetTitle>
+              </SheetHeader>
+              <div className="mt-4">
+                <Members />
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </CollapsibleContent>
     </Collapsible>
