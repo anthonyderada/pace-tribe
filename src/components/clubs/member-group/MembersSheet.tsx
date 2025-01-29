@@ -116,10 +116,10 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
                 className="bg-zinc-800/50 hover:bg-zinc-800/70 transition-colors duration-200 border-0"
               >
                 <CardContent className="p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 flex-grow">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 flex-grow min-w-0">
                       <MemberProfileLink userId={member.user_id}>
-                        <Avatar className="h-12 w-12">
+                        <Avatar className="h-16 w-16">
                           <AvatarImage src={member.profiles.avatar_url || undefined} />
                           <AvatarFallback>
                             {member.profiles.username?.[0]?.toUpperCase() || '?'}
@@ -130,6 +130,9 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
                         <MemberProfileLink userId={member.user_id}>
                           <h3 className="text-sm font-medium text-zinc-100 truncate">
                             {member.profiles.username || 'Anonymous'}
+                            {member.role === 'captain' && (
+                              <span className="ml-2 text-xs text-emerald-400">Captain</span>
+                            )}
                           </h3>
                         </MemberProfileLink>
                         {member.profiles.location && (
