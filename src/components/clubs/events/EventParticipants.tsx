@@ -37,7 +37,7 @@ export const EventParticipants = ({
         )}
       </div>
       <span className="text-gray-400 text-sm whitespace-nowrap">
-        {participantCount} participants
+        {participantCount} going
       </span>
     </div>
   );
