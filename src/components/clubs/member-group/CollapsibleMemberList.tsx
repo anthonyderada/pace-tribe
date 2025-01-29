@@ -1,6 +1,5 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MemberRow } from "./MemberRow";
-import { MembersSheet } from "./MembersSheet";
 
 type Member = {
   id: string;
@@ -22,8 +21,6 @@ interface CollapsibleMemberListProps {
 export const CollapsibleMemberList = ({ 
   members, 
   followingMap,
-  clubId,
-  totalCount 
 }: CollapsibleMemberListProps) => {
   return (
     <div className="p-2 bg-zinc-800/20 rounded-lg">
@@ -38,7 +35,6 @@ export const CollapsibleMemberList = ({
           ))}
         </div>
       </ScrollArea>
-      <MembersSheet clubId={clubId} totalCount={totalCount} />
     </div>
   );
 };
