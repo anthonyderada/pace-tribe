@@ -38,9 +38,9 @@ export const CollapsibleTriggerButton = ({
       </div>
       {remainingCount > 0 && (
         <CollapsibleTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-auto p-0">
+          <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
             <span className="text-xs text-muted-foreground mr-1">
-              {isOpen ? 'Show less' : `+${remainingCount} more`}
+              {isOpen ? 'Show less' : `Show ${remainingCount} more`}
             </span>
             {isOpen ? (
               <ChevronUp className="h-3 w-3" />
