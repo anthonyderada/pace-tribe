@@ -6,6 +6,7 @@ import { ProfileHeader } from "./ProfileHeader";
 import { User } from "@supabase/supabase-js";
 
 type Profile = {
+  id: string;  // Added this line to fix the type error
   username: string | null;
   avatar_url: string | null;
   bio: string | null;
