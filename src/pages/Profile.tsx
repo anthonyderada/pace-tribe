@@ -4,9 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { ProfileContainer } from "@/components/profile/ProfileContainer";
 import { ProfileContent } from "@/components/profile/ProfileContent";
+import { useToast } from "@/components/ui/use-toast";
 
 type Profile = {
-  id: string;  // Added this line to fix the type error
+  id: string;
   username: string | null;
   avatar_url: string | null;
   bio: string | null;
@@ -56,7 +57,9 @@ const Profile = () => {
   const [joinedClubs, setJoinedClubs] = useState<Club[]>([]);
   const [registeredEvents, setRegisteredEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [accolades, setAccolades] = useState<Accolades | null>(null);
+  const { toast } = useToast();
 
   const isOwnProfile = !id || id === user?.id;
   const profileId = isOwnProfile ? user?.id : id;
@@ -72,6 +75,9 @@ const Profile = () => {
 
     const fetchProfileData = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         const [profileData, accoladesData, clubsData, eventsData] = await Promise.all([
           supabase
             .from("profiles")
@@ -115,8 +121,12 @@ const Profile = () => {
             .eq("user_id", profileId),
         ]);
 
-        if (profileData.error) throw profileData.error;
-        setProfile({ ...profileData.data, id: profileId }); // Ensure id is included
+        if (profileData.error) {
+          console.error("Error fetching profile:", profileData.error);
+          throw new Error("Failed to load profile data");
+        }
+
+        setProfile({ ...profileData.data, id: profileId });
 
         if (accoladesData.data) {
           setAccolades(accoladesData.data);
@@ -147,24 +157,36 @@ const Profile = () => {
           }));
           setRegisteredEvents(events);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching profile data:", error);
+        setError(error.message);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to load profile data. Please try again.",
+        });
       } finally {
         setLoading(false);
       }
     };
 
     fetchProfileData();
-  }, [user, navigate, profileId, id]);
+  }, [user, navigate, profileId, id, toast]);
 
   if (loading) {
-    return <div className="container mx-auto px-4 py-8">Loading...</div>;
-  }
-
-  if (!profile) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <p className="text-zinc-400">Profile not found</p>
+        <div className="text-zinc-400">Loading profile...</div>
+      </div>
+    );
+  }
+
+  if (error || !profile) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-zinc-400">
+          {error || "Profile not found"}
+        </div>
       </div>
     );
   }
