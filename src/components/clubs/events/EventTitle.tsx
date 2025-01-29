@@ -5,10 +5,11 @@ interface EventTitleProps {
   id: string;
   title: string;
   isRecurring?: boolean;
+  isFree?: boolean;
   className?: string;
 }
 
-export const EventTitle = ({ id, title, isRecurring, className = "" }: EventTitleProps) => {
+export const EventTitle = ({ id, title, isRecurring, isFree, className = "" }: EventTitleProps) => {
   const navigate = useNavigate();
 
   return (
@@ -22,9 +23,14 @@ export const EventTitle = ({ id, title, isRecurring, className = "" }: EventTitl
       >
         {title}
       </h4>
-      {isRecurring && (
-        <Repeat className="h-5 w-5 text-white" strokeWidth={2.5} />
-      )}
+      <div className="flex items-center gap-2">
+        {isFree && (
+          <span className="text-sm text-zinc-400">FREE</span>
+        )}
+        {isRecurring && (
+          <Repeat className="h-4 w-4 text-white" strokeWidth={1.5} />
+        )}
+      </div>
     </div>
   );
 };

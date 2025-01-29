@@ -8,6 +8,7 @@ export interface Event {
   pace: string | null;
   club_id?: string;
   is_recurring?: boolean;
+  is_free?: boolean;
   recurrence_schedule?: string | null;
   clubs?: {
     name: string;

@@ -5,7 +5,6 @@ import { EventMetadata } from "./EventMetadata";
 import { EventRSVPButton } from "./EventRSVPButton";
 import { EventDescription } from "./EventDescription";
 import { EventCardProps } from "./types";
-import { Badge } from "@/components/ui/badge";
 
 export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCardProps) => {
   const navigate = useNavigate();
@@ -34,6 +33,7 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
             id={event.id} 
             title={event.title} 
             isRecurring={event.is_recurring}
+            isFree={event.is_free}
           />
         </div>
         {userId && (
