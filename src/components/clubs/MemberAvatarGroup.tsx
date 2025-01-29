@@ -1,13 +1,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, Users } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { 
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { FollowButton } from "@/components/profile/FollowButton";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 type Member = {
   id: string;
@@ -27,8 +30,35 @@ interface MemberAvatarGroupProps {
 export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAvatarGroupProps) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useAuth();
+  const [followingMap, setFollowingMap] = useState<Record<string, boolean>>({});
   const visibleMembers = members.slice(0, maxVisible);
   const remainingCount = Math.max(0, members.length - maxVisible);
+
+  useEffect(() => {
+    const fetchFollowStatus = async () => {
+      if (!user) return;
+      
+      const { data, error } = await supabase
+        .from('follows')
+        .select('following_id')
+        .eq('follower_id', user.id);
+
+      if (error) {
+        console.error('Error fetching follow status:', error);
+        return;
+      }
+
+      const followingSet = new Set(data.map(f => f.following_id));
+      const newFollowingMap: Record<string, boolean> = {};
+      members.forEach(member => {
+        newFollowingMap[member.user_id] = followingSet.has(member.user_id);
+      });
+      setFollowingMap(newFollowingMap);
+    };
+
+    fetchFollowStatus();
+  }, [members, user]);
 
   return (
     <Collapsible
@@ -79,6 +109,10 @@ export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAva
               <span className="text-sm text-zinc-300">
                 {member.profiles.username || 'Anonymous'}
               </span>
+              <FollowButton
+                userId={member.user_id}
+                initialIsFollowing={followingMap[member.user_id] || false}
+              />
             </div>
           ))}
           <Button
