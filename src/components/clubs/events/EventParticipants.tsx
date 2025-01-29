@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { User } from "lucide-react";
 
 interface EventParticipantsProps {
   participantCount: number;
@@ -25,7 +26,7 @@ export const EventParticipants = ({
               alt={participant.profiles?.username || 'Participant'} 
             />
             <AvatarFallback className="bg-zinc-700 text-xs">
-              {participant.profiles?.username?.[0]?.toUpperCase() || 'U'}
+              {participant.profiles?.username?.[0]?.toUpperCase() || <User className="h-3 w-3" />}
             </AvatarFallback>
           </Avatar>
         ))}
