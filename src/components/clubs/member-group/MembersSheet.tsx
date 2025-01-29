@@ -21,6 +21,7 @@ type Member = {
   avatar_url: string | null;
   location: string | null;
   shared_events_count?: number;
+  role?: string;
 };
 
 export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
@@ -30,11 +31,11 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
   const { data: members, isLoading } = useQuery({
     queryKey: ['club-members', clubId],
     queryFn: async () => {
-      // First get all club members
       const { data: membersData, error: membersError } = await supabase
         .from('club_members')
         .select(`
           user_id,
+          role,
           profiles (
             id,
             username,
@@ -52,46 +53,26 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
         username: member.profiles.username,
         avatar_url: member.profiles.avatar_url,
         location: member.profiles.location,
-        shared_events_count: 0
+        shared_events_count: 0,
+        role: member.role
       }));
 
-      // If user is logged in, get shared events count for each member
-      if (user) {
-        const { data: userEvents, error: eventsError } = await supabase
-          .from('event_participants')
-          .select('event_id')
-          .eq('user_id', user.id);
-
-        if (eventsError) throw eventsError;
-
-        const userEventIds = userEvents.map(e => e.event_id);
-
-        // For each member, count shared events
-        const membersWithSharedEvents = await Promise.all(
-          transformedMembers.map(async (member) => {
-            if (member.id === user.id) {
-              return { ...member, shared_events_count: 0 };
-            }
-
-            const { data: memberEvents, error: memberEventsError } = await supabase
-              .from('event_participants')
-              .select('event_id')
-              .eq('user_id', member.id)
-              .in('event_id', userEventIds);
-
-            if (memberEventsError) throw memberEventsError;
-
-            return {
-              ...member,
-              shared_events_count: memberEvents.length
-            };
-          })
-        );
-
-        return membersWithSharedEvents;
-      }
-
-      return transformedMembers;
+      // Separate captains and regular members
+      const captains = transformedMembers.filter(member => member.role === 'captain');
+      const regularMembers = transformedMembers.filter(member => member.role !== 'captain');
+      
+      // Randomize regular members
+      const shuffledRegularMembers = [...regularMembers].sort(() => Math.random() - 0.5);
+      
+      // Sort captains by username
+      const sortedCaptains = [...captains].sort((a, b) => {
+        const usernameA = a.username?.toLowerCase() || '';
+        const usernameB = b.username?.toLowerCase() || '';
+        return usernameA.localeCompare(usernameB);
+      });
+      
+      // Combine the arrays: captains first, then randomized regular members
+      return [...sortedCaptains, ...shuffledRegularMembers];
     },
   });
 
@@ -132,15 +113,8 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
         </Button>
       </SheetTrigger>
       <SheetContent 
-        className="w-full sm:max-w-xl bg-zinc-900/95 border-zinc-800 transition-opacity duration-200"
+        className="w-full sm:max-w-xl bg-zinc-900/95 border-zinc-800"
         side="right"
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onInteractOutside={(e) => {
-          const target = e.target as HTMLElement;
-          if (!target.closest('.sheet-content')) {
-            e.currentTarget.dispatchEvent(new Event('close'));
-          }
-        }}
       >
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2 text-zinc-100">

@@ -25,17 +25,22 @@ export const CollapsibleMemberList = ({
   clubId,
   totalCount,
 }: CollapsibleMemberListProps) => {
-  // Sort members: captains first, then alphabetically by username within each group
-  const sortedMembers = [...members].sort((a, b) => {
-    // First, sort by role (captains first)
-    if (a.role === 'captain' && b.role !== 'captain') return -1;
-    if (a.role !== 'captain' && b.role === 'captain') return 1;
-    
-    // Then, sort alphabetically by username within each group
+  // First, separate captains and regular members
+  const captains = members.filter(member => member.role === 'captain');
+  const regularMembers = members.filter(member => member.role !== 'captain');
+  
+  // Randomize regular members
+  const shuffledRegularMembers = [...regularMembers].sort(() => Math.random() - 0.5);
+  
+  // Sort captains by username
+  const sortedCaptains = [...captains].sort((a, b) => {
     const usernameA = a.profiles.username?.toLowerCase() || '';
     const usernameB = b.profiles.username?.toLowerCase() || '';
     return usernameA.localeCompare(usernameB);
   });
+  
+  // Combine the arrays: captains first, then randomized regular members
+  const sortedMembers = [...sortedCaptains, ...shuffledRegularMembers];
 
   return (
     <div className="p-2 bg-zinc-800/20 rounded-lg">
