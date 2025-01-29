@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { PersonalBests } from "@/components/profile/PersonalBests";
 import { RunningPreferences } from "@/components/profile/RunningPreferences";
 import { ClubList } from "@/components/profile/ClubList";
 import { EventList } from "@/components/profile/EventList";
+import { ArrowLeft } from "lucide-react";
 
 type Profile = {
   username: string | null;
@@ -53,6 +55,7 @@ type Event = {
 const Profile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [joinedClubs, setJoinedClubs] = useState<Club[]>([]);
@@ -62,6 +65,7 @@ const Profile = () => {
 
   const isOwnProfile = !id || id === user?.id;
   const profileId = isOwnProfile ? user?.id : id;
+  const fromClubId = location.state?.fromClubId;
 
   useEffect(() => {
     if (!user && !id) {
@@ -240,6 +244,17 @@ const Profile = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {fromClubId && (
+        <Button
+          variant="ghost"
+          className="mb-4 text-zinc-400 hover:text-zinc-100"
+          onClick={() => navigate(`/clubs/${fromClubId}`)}
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Club
+        </Button>
+      )}
+
       <Card className="mb-8 border-0 bg-zinc-900/90">
         <ProfileHeader
           profile={profile}
