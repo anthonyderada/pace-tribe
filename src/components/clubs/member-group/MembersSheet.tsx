@@ -119,7 +119,7 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4 flex-grow min-w-0">
                       <MemberProfileLink userId={member.user_id}>
-                        <Avatar className="h-16 w-16">
+                        <Avatar className="h-20 w-20">
                           <AvatarImage src={member.profiles.avatar_url || undefined} />
                           <AvatarFallback>
                             {member.profiles.username?.[0]?.toUpperCase() || '?'}
