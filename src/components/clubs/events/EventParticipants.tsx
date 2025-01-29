@@ -17,7 +17,7 @@ export const EventParticipants = ({ participantCount, participants = [] }: Event
   const remainingCount = participantCount - displayedParticipants.length;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 shrink-0">
       <div className="flex -space-x-2">
         {displayedParticipants.map((participant, index) => (
           <Avatar key={participant.user_id} className="h-6 w-6 border-2 border-zinc-900">
@@ -31,7 +31,7 @@ export const EventParticipants = ({ participantCount, participants = [] }: Event
           </Avatar>
         ))}
       </div>
-      <span className="text-sm text-zinc-400">
+      <span className="text-sm text-zinc-400 whitespace-nowrap">
         {participantCount} going
       </span>
     </div>

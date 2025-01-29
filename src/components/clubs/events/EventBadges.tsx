@@ -17,7 +17,7 @@ export const EventBadges = ({ isFree = true }: EventBadgesProps) => {
         Social
       </Badge>
       {isFree && (
-        <Badge variant="secondary" className="bg-emerald-900/50 text-emerald-300 hover:bg-emerald-900/70 whitespace-nowrap">
+        <Badge variant="secondary" className="bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700/70 whitespace-nowrap">
           Free
         </Badge>
       )}
