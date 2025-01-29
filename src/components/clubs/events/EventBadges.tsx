@@ -1,11 +1,7 @@
 import { MapPin, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-interface EventBadgesProps {
-  isFree?: boolean;
-}
-
-export const EventBadges = ({ isFree = true }: EventBadgesProps) => {
+export const EventBadges = () => {
   return (
     <div className="flex items-center gap-2 flex-wrap">
       <Badge variant="secondary" className="bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700/70 whitespace-nowrap">
@@ -16,11 +12,6 @@ export const EventBadges = ({ isFree = true }: EventBadgesProps) => {
         <Users className="h-3 w-3 mr-1" />
         Social
       </Badge>
-      {isFree && (
-        <Badge variant="secondary" className="bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700/70 whitespace-nowrap">
-          Free
-        </Badge>
-      )}
     </div>
   );
 };
