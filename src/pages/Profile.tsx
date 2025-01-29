@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { ProfileContainer } from "@/components/profile/ProfileContainer";
 import { ProfileContent } from "@/components/profile/ProfileContent";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 type Profile = {
   id: string;
@@ -63,7 +63,6 @@ const Profile = () => {
 
   const isOwnProfile = !id || id === user?.id;
   const profileId = isOwnProfile ? user?.id : id;
-  const fromClubId = location.state?.fromClubId;
 
   useEffect(() => {
     // If not logged in and trying to access own profile, redirect to login
@@ -84,7 +83,7 @@ const Profile = () => {
         setLoading(true);
         setError(null);
 
-        // Fetch profile data
+        // Fetch profile data first
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select("*")
@@ -102,10 +101,10 @@ const Profile = () => {
           return;
         }
 
-        setProfile({ ...profileData, id: profileId });
+        setProfile(profileData);
 
-        // Fetch remaining data in parallel
-        const [accoladesData, clubsData, eventsData] = await Promise.all([
+        // Only fetch additional data if we have a valid profile
+        const [accoladesResponse, clubsResponse, eventsResponse] = await Promise.all([
           supabase
             .from("accolades")
             .select("*")
@@ -114,7 +113,6 @@ const Profile = () => {
           supabase
             .from("club_members")
             .select(`
-              club_id,
               clubs (
                 id,
                 name,
@@ -127,7 +125,6 @@ const Profile = () => {
           supabase
             .from("event_participants")
             .select(`
-              event_id,
               events (
                 id,
                 title,
@@ -143,12 +140,12 @@ const Profile = () => {
             .eq("user_id", profileId),
         ]);
 
-        if (accoladesData.data) {
-          setAccolades(accoladesData.data);
+        if (accoladesResponse.data) {
+          setAccolades(accoladesResponse.data);
         }
 
-        if (clubsData.data) {
-          const clubs = clubsData.data.map(item => ({
+        if (clubsResponse.data) {
+          const clubs = clubsResponse.data.map(item => ({
             id: item.clubs.id,
             name: item.clubs.name,
             location: item.clubs.location,
@@ -158,8 +155,8 @@ const Profile = () => {
           setJoinedClubs(clubs);
         }
 
-        if (eventsData.data) {
-          const events = eventsData.data.map(item => ({
+        if (eventsResponse.data) {
+          const events = eventsResponse.data.map(item => ({
             id: item.events.id,
             title: item.events.title,
             date: item.events.date,
