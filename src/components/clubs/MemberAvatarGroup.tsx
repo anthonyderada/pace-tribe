@@ -19,6 +19,7 @@ type Member = {
   profiles: {
     username: string | null;
     avatar_url: string | null;
+    location: string | null;
   };
 };
 
