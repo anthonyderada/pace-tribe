@@ -134,6 +134,13 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
       <SheetContent 
         className="w-full sm:max-w-xl bg-zinc-900/95 border-zinc-800 transition-opacity duration-200"
         side="right"
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => {
+          const target = e.target as HTMLElement;
+          if (!target.closest('.sheet-content')) {
+            e.currentTarget.dispatchEvent(new Event('close'));
+          }
+        }}
       >
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2 text-zinc-100">

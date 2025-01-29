@@ -19,7 +19,7 @@ export const MemberRow = ({ member, isFollowing }: MemberRowProps) => {
   return (
     <div className="flex items-center gap-2 p-2 hover:bg-zinc-800/30 rounded-lg transition-colors">
       <MemberProfileLink userId={member.user_id}>
-        <Avatar className="w-12 h-12 border-2 border-zinc-900 cursor-pointer">
+        <Avatar className="w-12 h-12 cursor-pointer">
           <AvatarImage src={member.profiles.avatar_url || undefined} />
           <AvatarFallback>
             {member.profiles.username?.[0]?.toUpperCase() || '?'}

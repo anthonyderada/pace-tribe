@@ -28,7 +28,7 @@ export const CollapsibleTriggerButton = ({
     <div className="flex items-center gap-2">
       <div className="flex -space-x-2">
         {visibleMembers.map((member, index) => (
-          <Avatar key={index} className="h-6 w-6 border-2 border-background">
+          <Avatar key={index} className="h-6 w-6">
             <AvatarImage src={member.profiles.avatar_url || undefined} />
             <AvatarFallback>
               {member.profiles.username?.[0]?.toUpperCase() || '?'}
