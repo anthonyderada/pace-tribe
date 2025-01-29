@@ -1,7 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FollowButton } from "@/components/profile/FollowButton";
 import { MemberProfileLink } from "./MemberProfileLink";
-import { MapPin } from "lucide-react";
 
 interface MemberRowProps {
   member: {
@@ -36,8 +35,7 @@ export const MemberRow = ({ member, isFollowing }: MemberRowProps) => {
             {member.profiles.username || 'Anonymous'}
           </span>
           {member.profiles.location && (
-            <span className="text-xs text-zinc-400 flex items-center gap-1">
-              <MapPin className="h-3 w-3" />
+            <span className="text-xs text-zinc-400">
               {member.profiles.location}
             </span>
           )}
