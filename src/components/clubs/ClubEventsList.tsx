@@ -4,7 +4,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Event } from "./events/types";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ClubEventsListProps {
   events: Event[];
@@ -86,35 +85,30 @@ export const ClubEventsList = ({ events, clubId, userId }: ClubEventsListProps) 
   );
 
   return (
-    <div className="pt-4">
-      <Tabs defaultValue="upcoming" className="w-full">
-        <TabsList className="mb-6">
-          <TabsTrigger value="upcoming" className="flex items-center gap-2">
-            Upcoming Events
-            {upcomingEvents.length > 0 && (
-              <span className="bg-zinc-800 text-white px-2 py-0.5 rounded-full text-xs">
-                {upcomingEvents.length}
-              </span>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="past" className="flex items-center gap-2">
-            Past Events
-            {pastEvents.length > 0 && (
-              <span className="bg-zinc-800 text-white px-2 py-0.5 rounded-full text-xs">
-                {pastEvents.length}
-              </span>
-            )}
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="upcoming" className="mt-0">
-          {renderEventGrid(upcomingEvents)}
-        </TabsContent>
-        
-        <TabsContent value="past" className="mt-0">
-          {renderEventGrid(pastEvents)}
-        </TabsContent>
-      </Tabs>
+    <div className="space-y-12">
+      <section>
+        <div className="flex items-center gap-2 mb-6">
+          <h2 className="text-2xl font-bold text-white">Upcoming Events</h2>
+          {upcomingEvents.length > 0 && (
+            <span className="bg-zinc-800 text-white px-2 py-0.5 rounded-full text-sm">
+              {upcomingEvents.length}
+            </span>
+          )}
+        </div>
+        {renderEventGrid(upcomingEvents)}
+      </section>
+
+      <section>
+        <div className="flex items-center gap-2 mb-6">
+          <h2 className="text-2xl font-bold text-white">Past Events</h2>
+          {pastEvents.length > 0 && (
+            <span className="bg-zinc-800 text-white px-2 py-0.5 rounded-full text-sm">
+              {pastEvents.length}
+            </span>
+          )}
+        </div>
+        {renderEventGrid(pastEvents)}
+      </section>
     </div>
   );
 };
