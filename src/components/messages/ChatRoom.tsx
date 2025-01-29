@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { MessageCircle, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,7 +25,6 @@ interface Message {
 export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRoomProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -41,7 +39,7 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
   }, [messages]);
 
   useEffect(() => {
-    if (!isOpen || !user) return;
+    if (!user) return;
 
     // Fetch existing messages
     const fetchMessages = async () => {
@@ -81,7 +79,7 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [isOpen, user, recipientId]);
+  }, [user, recipientId]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !user) return;
@@ -118,64 +116,57 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <Button variant="outline" size="sm" className="gap-2" onClick={() => setIsOpen(true)}>
-        <MessageCircle className="h-4 w-4" />
-        Message
-      </Button>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={recipientAvatar || undefined} />
-              <AvatarFallback>{recipientName[0]}</AvatarFallback>
-            </Avatar>
-            {recipientName}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col h-[400px]">
-          <ScrollArea className="flex-1 p-4">
-            <div className="space-y-4">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.sender_id === user?.id ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                      message.sender_id === user?.id
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
-                    }`}
-                  >
-                    {message.content}
-                  </div>
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-          </ScrollArea>
-          <div className="p-4 border-t">
-            <div className="flex gap-2">
-              <Textarea
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Type your message..."
-                className="min-h-[44px] resize-none"
-                rows={1}
-              />
-              <Button
-                size="icon"
-                onClick={handleSendMessage}
-                disabled={!newMessage.trim() || isSending || !user}
+    <div className="flex flex-col h-full">
+      <div className="p-4 border-b border-zinc-800 flex items-center gap-2">
+        <Avatar className="h-8 w-8">
+          <AvatarImage src={recipientAvatar || undefined} />
+          <AvatarFallback>{recipientName[0]}</AvatarFallback>
+        </Avatar>
+        <span className="font-medium text-zinc-100">{recipientName}</span>
+      </div>
+      
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex ${message.sender_id === user?.id ? 'justify-end' : 'justify-start'}`}
+            >
+              <div
+                className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                  message.sender_id === user?.id
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-zinc-800 text-zinc-100'
+                }`}
               >
-                <Send className="h-4 w-4" />
-              </Button>
+                {message.content}
+              </div>
             </div>
-          </div>
+          ))}
+          <div ref={messagesEndRef} />
         </div>
-      </DialogContent>
-    </Dialog>
+      </ScrollArea>
+
+      <div className="p-4 border-t border-zinc-800">
+        <div className="flex gap-2">
+          <Textarea
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Type your message..."
+            className="min-h-[44px] resize-none bg-zinc-800 border-zinc-700 text-zinc-100"
+            rows={1}
+          />
+          <Button
+            size="icon"
+            onClick={handleSendMessage}
+            disabled={!newMessage.trim() || isSending || !user}
+            className="bg-emerald-600 hover:bg-emerald-700"
+          >
+            <Send className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
