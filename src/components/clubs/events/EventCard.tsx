@@ -28,11 +28,11 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
       className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
       onClick={() => navigate(`/events/${event.id}`)}
     >
-      <div className="flex justify-between items-start mb-2">
-        <div className="flex items-start gap-2">
+      <div className="flex justify-between items-start mb-1">
+        <div>
           <EventTitle id={event.id} title={event.title} />
           {event.is_recurring && event.recurrence_schedule && (
-            <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 hover:bg-zinc-600 whitespace-nowrap">
+            <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 hover:bg-zinc-600 whitespace-nowrap mt-2">
               {event.recurrence_schedule}
             </Badge>
           )}
