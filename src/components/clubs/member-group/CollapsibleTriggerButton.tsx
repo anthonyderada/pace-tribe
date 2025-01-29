@@ -23,11 +23,16 @@ export const CollapsibleTriggerButton = ({
   remainingCount,
   isOpen,
 }: CollapsibleTriggerButtonProps) => {
-  // Sort visible members to show captains first
+  // Sort visible members: captains first, then alphabetically by username within each group
   const sortedVisibleMembers = [...visibleMembers].sort((a, b) => {
+    // First, sort by role (captains first)
     if (a.role === 'captain' && b.role !== 'captain') return -1;
     if (a.role !== 'captain' && b.role === 'captain') return 1;
-    return (a.profiles.username || '').localeCompare(b.profiles.username || '');
+    
+    // Then, sort alphabetically by username within each group
+    const usernameA = a.profiles.username?.toLowerCase() || '';
+    const usernameB = b.profiles.username?.toLowerCase() || '';
+    return usernameA.localeCompare(usernameB);
   });
 
   return (

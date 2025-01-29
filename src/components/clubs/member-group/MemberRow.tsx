@@ -33,7 +33,7 @@ export const MemberRow = ({ member, isFollowing }: MemberRowProps) => {
               {member.profiles.username || 'Anonymous'}
             </span>
             {isCaptain && (
-              <Badge variant="secondary" className="bg-amber-500/20 text-amber-500 border-amber-500/30">
+              <Badge variant="secondary" className="bg-amber-500/20 text-amber-500 border-amber-500/30 text-[10px] px-2 py-0">
                 Captain
               </Badge>
             )}
