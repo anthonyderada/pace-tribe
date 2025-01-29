@@ -29,7 +29,7 @@ export const CollapsibleMemberList = ({
   const sortedMembers = [...members].sort((a, b) => {
     if (a.role === 'captain' && b.role !== 'captain') return -1;
     if (a.role !== 'captain' && b.role === 'captain') return 1;
-    return 0;
+    return (a.profiles.username || '').localeCompare(b.profiles.username || '');
   });
 
   return (

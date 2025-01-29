@@ -27,7 +27,7 @@ export const CollapsibleTriggerButton = ({
   const sortedVisibleMembers = [...visibleMembers].sort((a, b) => {
     if (a.role === 'captain' && b.role !== 'captain') return -1;
     if (a.role !== 'captain' && b.role === 'captain') return 1;
-    return 0;
+    return (a.profiles.username || '').localeCompare(b.profiles.username || '');
   });
 
   return (

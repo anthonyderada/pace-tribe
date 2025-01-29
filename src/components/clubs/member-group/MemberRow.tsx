@@ -1,7 +1,7 @@
 import { FollowButton } from "@/components/profile/FollowButton";
 import { MemberProfileLink } from "./MemberProfileLink";
 import { MemberAvatar } from "./MemberAvatar";
-import { Crown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface MemberRowProps {
   member: {
@@ -22,14 +22,7 @@ export const MemberRow = ({ member, isFollowing }: MemberRowProps) => {
 
   return (
     <div className="flex items-center gap-2 p-2 hover:bg-zinc-800/30 rounded-lg transition-colors">
-      <div className="relative">
-        <MemberAvatar member={member} />
-        {isCaptain && (
-          <div className="absolute -bottom-1 -left-1 bg-amber-500 rounded-full p-0.5" title="Club Captain">
-            <Crown className="h-3 w-3 text-zinc-900" />
-          </div>
-        )}
-      </div>
+      <MemberAvatar member={member} />
       <MemberProfileLink 
         userId={member.user_id}
         className="flex-grow"
@@ -40,7 +33,9 @@ export const MemberRow = ({ member, isFollowing }: MemberRowProps) => {
               {member.profiles.username || 'Anonymous'}
             </span>
             {isCaptain && (
-              <span className="text-xs text-amber-500">Captain</span>
+              <Badge variant="secondary" className="bg-amber-500/20 text-amber-500 border-amber-500/30">
+                Captain
+              </Badge>
             )}
           </div>
           {member.profiles.location && (

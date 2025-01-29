@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CaptainBadge } from "./CaptainBadge";
 import { MemberProfileLink } from "./MemberProfileLink";
 
 interface MemberAvatarProps {
@@ -16,20 +15,16 @@ interface MemberAvatarProps {
 }
 
 export const MemberAvatar = ({ member, size = "md", className = "" }: MemberAvatarProps) => {
-  const isCaptain = member.role === 'captain';
   const avatarSize = size === "sm" ? "h-8 w-8" : "h-12 w-12";
 
   return (
-    <div className="relative">
-      <MemberProfileLink userId={member.user_id}>
-        <Avatar className={`${avatarSize} cursor-pointer ${className}`}>
-          <AvatarImage src={member.profiles.avatar_url || undefined} />
-          <AvatarFallback>
-            {member.profiles.username?.[0]?.toUpperCase() || '?'}
-          </AvatarFallback>
-        </Avatar>
-      </MemberProfileLink>
-      {isCaptain && <CaptainBadge size={size === "sm" ? "sm" : "md"} />}
-    </div>
+    <MemberProfileLink userId={member.user_id}>
+      <Avatar className={`${avatarSize} cursor-pointer ${className}`}>
+        <AvatarImage src={member.profiles.avatar_url || undefined} />
+        <AvatarFallback>
+          {member.profiles.username?.[0]?.toUpperCase() || '?'}
+        </AvatarFallback>
+      </Avatar>
+    </MemberProfileLink>
   );
 };
