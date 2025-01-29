@@ -95,13 +95,15 @@ export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAva
               ))}
             </div>
           </ScrollArea>
-          <Button
-            variant="ghost"
-            className="w-full mt-2 text-zinc-400 hover:text-zinc-200"
-            onClick={() => navigate(`/clubs/${clubId}/members`)}
-          >
-            View all members
-          </Button>
+
+<Button
+  variant="ghost"
+  className="w-full mt-2 text-zinc-400 hover:text-zinc-200"
+  onClick={() => navigate(`/clubs/${clubId}/members`)}
+>
+  View all members
+</Button>
+
         </div>
       </CollapsibleContent>
     </Collapsible>
