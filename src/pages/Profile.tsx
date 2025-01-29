@@ -9,6 +9,7 @@ import { PersonalBests } from "@/components/profile/PersonalBests";
 import { RunningPreferences } from "@/components/profile/RunningPreferences";
 import { ClubList } from "@/components/profile/ClubList";
 import { EventList } from "@/components/profile/EventList";
+import { FollowersSection } from "@/components/profile/FollowersSection";
 import { ArrowLeft } from "lucide-react";
 
 type Profile = {
@@ -277,6 +278,8 @@ const Profile = () => {
           onAccoladesUpdate={(newAccolades) => isOwnProfile && setAccolades(newAccolades)}
           isEditable={isOwnProfile}
         />
+
+        <FollowersSection userId={profileId || ""} />
 
         <ClubList joinedClubs={joinedClubs} />
         <EventList registeredEvents={registeredEvents} />
