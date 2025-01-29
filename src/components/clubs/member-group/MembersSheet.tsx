@@ -131,9 +131,12 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
           </span>
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-xl">
+      <SheetContent 
+        className="w-full sm:max-w-xl bg-zinc-900/95 border-zinc-800 transition-opacity duration-200"
+        side="right"
+      >
         <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
+          <SheetTitle className="flex items-center gap-2 text-zinc-100">
             <Users className="h-5 w-5" />
             Club Members ({members?.length || 0})
           </SheetTitle>
@@ -153,7 +156,7 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
             members?.map((member) => (
               <Card
                 key={member.id}
-                className="bg-zinc-800/50 hover:bg-zinc-800/70 transition-colors border-0"
+                className="bg-zinc-800/50 hover:bg-zinc-800/70 transition-colors duration-200 border-0"
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
