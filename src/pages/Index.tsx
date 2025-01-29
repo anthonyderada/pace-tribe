@@ -4,9 +4,9 @@ import FeaturesSection from "@/components/home/FeaturesSection";
 import CallToAction from "@/components/home/CallToAction";
 import FeaturedLocation from "@/components/home/FeaturedLocation";
 
-const Home = () => {
+const Index = () => {
   return (
-    <div>
+    <div className="relative">
       <HeroSection />
       <FeaturedLocation />
       <FeaturedClubs />
@@ -16,4 +16,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Index;
