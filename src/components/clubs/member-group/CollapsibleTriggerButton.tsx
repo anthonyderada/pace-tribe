@@ -23,9 +23,9 @@ export const CollapsibleTriggerButton = ({
 }: CollapsibleTriggerButtonProps) => {
   return (
     <div className="flex items-center gap-2">
-      <div className="flex -space-x-2">
+      <div className="flex -space-x-3">
         {visibleMembers.map((member, index) => (
-          <Avatar key={index} className="h-6 w-6">
+          <Avatar key={index} className="h-6 w-6 ring-2 ring-zinc-900">
             <AvatarImage src={member.profiles.avatar_url || undefined} />
             <AvatarFallback>
               {member.profiles.username?.[0]?.toUpperCase() || '?'}
@@ -33,18 +33,20 @@ export const CollapsibleTriggerButton = ({
           </Avatar>
         ))}
       </div>
-      <CollapsibleTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-auto p-0">
-          <span className="text-xs text-muted-foreground mr-1">
-            {isOpen ? 'Show less' : `+${remainingCount} more`}
-          </span>
-          {isOpen ? (
-            <ChevronUp className="h-3 w-3" />
-          ) : (
-            <ChevronDown className="h-3 w-3" />
-          )}
-        </Button>
-      </CollapsibleTrigger>
+      {remainingCount > 0 && (
+        <CollapsibleTrigger asChild>
+          <Button variant="ghost" size="sm" className="h-auto p-0">
+            <span className="text-xs text-muted-foreground mr-1">
+              {isOpen ? 'Show less' : `+${remainingCount} more`}
+            </span>
+            {isOpen ? (
+              <ChevronUp className="h-3 w-3" />
+            ) : (
+              <ChevronDown className="h-3 w-3" />
+            )}
+          </Button>
+        </CollapsibleTrigger>
+      )}
     </div>
   );
 };
