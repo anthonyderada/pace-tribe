@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Users, Route, Trophy } from "lucide-react";
-import { Loader2 } from "lucide-react";
+import { MapPin, Users, Route, Trophy, Loader2 } from "lucide-react";
 import { Club } from "./types";
 import { useClubActions } from "./useClubActions";
 

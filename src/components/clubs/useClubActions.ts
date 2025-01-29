@@ -1,24 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { Club } from "./types";
 
 export const useClubActions = (club: Club, userId?: string) => {
+  const [isMember, setIsMember] = useState(false);
   const queryClient = useQueryClient();
-  const isMember = club.club_members?.some(member => member.user_id === userId);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userId && club.club_members) {
+      setIsMember(club.club_members.some((member) => member.user_id === userId));
+    }
+  }, [club.club_members, userId]);
 
   const joinClubMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase
-        .from('club_members')
-        .insert([{ club_id: club.id, user_id: userId }]);
+        .from("club_members")
+        .insert({
+          club_id: club.id,
+          user_id: userId,
+        });
       
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clubs'] });
-      toast.success('Successfully joined the club!');
+      queryClient.invalidateQueries({ queryKey: ['club', club.id] });
+      toast.success('Successfully joined the club');
     },
     onError: (error) => {
       console.error('Error joining club:', error);
@@ -29,15 +41,16 @@ export const useClubActions = (club: Club, userId?: string) => {
   const leaveClubMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase
-        .from('club_members')
+        .from("club_members")
         .delete()
-        .eq('club_id', club.id)
-        .eq('user_id', userId);
+        .eq("club_id", club.id)
+        .eq("user_id", userId);
       
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clubs'] });
+      queryClient.invalidateQueries({ queryKey: ['club', club.id] });
       toast.success('Successfully left the club');
     },
     onError: (error) => {
@@ -50,7 +63,7 @@ export const useClubActions = (club: Club, userId?: string) => {
     e.stopPropagation();
     
     if (!userId) {
-      toast.error('Please log in to join clubs');
+      navigate("/login");
       return;
     }
 
@@ -61,11 +74,9 @@ export const useClubActions = (club: Club, userId?: string) => {
     }
   };
 
-  const isLoading = joinClubMutation.isPending || leaveClubMutation.isPending;
-
   return {
     handleJoinLeaveClick,
-    isLoading,
-    isMember
+    isLoading: joinClubMutation.isPending || leaveClubMutation.isPending,
+    isMember,
   };
 };
