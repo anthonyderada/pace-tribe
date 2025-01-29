@@ -6,7 +6,6 @@ import { EventRSVPButton } from "./EventRSVPButton";
 import { EventDescription } from "./EventDescription";
 import { EventCardProps } from "./types";
 import { Badge } from "@/components/ui/badge";
-import { Repeat } from "lucide-react";
 
 export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCardProps) => {
   const navigate = useNavigate();
@@ -34,7 +33,6 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
           <EventTitle id={event.id} title={event.title} />
           {event.is_recurring && event.recurrence_schedule && (
             <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 hover:bg-zinc-600 whitespace-nowrap">
-              <Repeat className="h-3 w-3 mr-1" />
               {event.recurrence_schedule}
             </Badge>
           )}
