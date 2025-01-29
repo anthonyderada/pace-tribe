@@ -13,6 +13,7 @@ import { MessageDialog } from "../messages/MessageDialog";
 
 type ProfileHeaderProps = {
   profile: {
+    id: string;
     username: string | null;
     avatar_url: string | null;
     bio: string | null;
@@ -242,12 +243,15 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
                 <h1 className="text-3xl font-bold text-zinc-100">
                   {profile?.username || user?.email}
                 </h1>
-                {user?.id !== profile?.id && (
+                {user?.id !== profile?.id && profile?.id && (
                   <div className="flex items-center gap-2">
-                    <FollowButton userId={profile?.id || ""} />
+                    <FollowButton 
+                      userId={profile.id} 
+                      initialIsFollowing={false} // We'll need to implement this properly
+                    />
                     <MessageDialog 
-                      recipientId={profile?.id || ""} 
-                      recipientName={profile?.username || "User"}
+                      recipientId={profile.id} 
+                      recipientName={profile.username || "User"}
                     />
                   </div>
                 )}

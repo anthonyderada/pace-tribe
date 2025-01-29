@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface MessageDialogProps {
   recipientId: string;
@@ -16,20 +17,20 @@ export const MessageDialog = ({ recipientId, recipientName }: MessageDialogProps
   const [isOpen, setIsOpen] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleSendMessage = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() || !user) return;
     
     setIsSending(true);
     try {
       const { error } = await supabase
         .from('messages')
-        .insert([
-          {
-            recipient_id: recipientId,
-            content: message.trim(),
-          }
-        ]);
+        .insert({
+          recipient_id: recipientId,
+          sender_id: user.id,
+          content: message.trim(),
+        });
 
       if (error) throw error;
 
@@ -77,7 +78,7 @@ export const MessageDialog = ({ recipientId, recipientName }: MessageDialogProps
             </Button>
             <Button
               onClick={handleSendMessage}
-              disabled={!message.trim() || isSending}
+              disabled={!message.trim() || isSending || !user}
             >
               Send Message
             </Button>
