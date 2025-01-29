@@ -13,7 +13,13 @@ interface Event {
   location: string | null;
   distance: number | null;
   pace: string | null;
-  event_participants: { user_id: string }[];
+  event_participants: {
+    user_id: string;
+    profiles?: {
+      avatar_url: string | null;
+      username: string | null;
+    };
+  }[];
 }
 
 interface EventCardProps {
@@ -66,6 +72,7 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
       <EventDescription
         description={event.description}
         participantCount={event.event_participants?.length || 0}
+        participants={event.event_participants}
       />
     </Card>
   );
