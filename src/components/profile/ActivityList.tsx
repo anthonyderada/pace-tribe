@@ -35,7 +35,7 @@ export const ActivityList = ({ joinedClubs, registeredEvents }: ActivityListProp
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-zinc-100">
             <Users className="h-5 w-5" />
-            My Clubs
+            My Tribes
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -73,7 +73,7 @@ export const ActivityList = ({ joinedClubs, registeredEvents }: ActivityListProp
               ))}
             </div>
           ) : (
-            <p className="text-zinc-400">No clubs joined yet</p>
+            <p className="text-zinc-400">No tribes joined yet</p>
           )}
         </CardContent>
       </Card>
@@ -82,7 +82,7 @@ export const ActivityList = ({ joinedClubs, registeredEvents }: ActivityListProp
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-zinc-100">
             <Calendar className="h-5 w-5" />
-            Registered Events
+            Events I'm Going To
           </CardTitle>
         </CardHeader>
         <CardContent>
