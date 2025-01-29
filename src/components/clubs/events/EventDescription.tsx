@@ -1,4 +1,4 @@
-import { Road, Users } from "lucide-react";
+import { MapPin, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
@@ -21,7 +21,7 @@ export const EventDescription = ({
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700/70">
-            <Road className="h-3 w-3 mr-1" />
+            <MapPin className="h-3 w-3 mr-1" />
             Road Running
           </Badge>
           <Badge variant="secondary" className="bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700/70">
