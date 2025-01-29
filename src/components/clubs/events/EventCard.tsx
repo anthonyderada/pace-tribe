@@ -36,13 +36,18 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
             isRecurring={event.is_recurring}
           />
         </div>
-        {userId && (
+        <div className="flex flex-col items-end gap-2">
           <EventRSVPButton
             isParticipant={isParticipant}
             isLoading={isLoading}
             onClick={handleRSVPClick}
           />
-        )}
+          {event.is_free && (
+            <span className="text-xs font-medium text-zinc-400">
+              FREE
+            </span>
+          )}
+        </div>
       </div>
       
       <EventMetadata
