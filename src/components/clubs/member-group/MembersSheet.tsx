@@ -18,11 +18,13 @@ interface MembersSheetProps {
 
 type Member = {
   id: string;
-  username: string | null;
-  avatar_url: string | null;
-  location: string | null;
-  shared_events_count?: number;
+  user_id: string;
   role?: string;
+  profiles: {
+    username: string | null;
+    avatar_url: string | null;
+    location: string | null;
+  };
 };
 
 export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
@@ -35,10 +37,10 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
       const { data: membersData, error: membersError } = await supabase
         .from('club_members')
         .select(`
+          id,
           user_id,
           role,
           profiles (
-            id,
             username,
             avatar_url,
             location
@@ -47,18 +49,7 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
         .eq('club_id', clubId);
 
       if (membersError) throw membersError;
-
-      // Transform the data to match our Member type
-      const transformedMembers = membersData.map(member => ({
-        id: member.profiles.id,
-        username: member.profiles.username,
-        avatar_url: member.profiles.avatar_url,
-        location: member.profiles.location,
-        shared_events_count: 0,
-        role: member.role
-      }));
-
-      return sortAndGroupMembers(transformedMembers);
+      return membersData as Member[];
     },
   });
 
@@ -79,7 +70,7 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
       const followingSet = new Set(data.map(f => f.following_id));
       const newFollowingMap: Record<string, boolean> = {};
       members?.forEach(member => {
-        newFollowingMap[member.id] = followingSet.has(member.id);
+        newFollowingMap[member.user_id] = followingSet.has(member.user_id);
       });
       setFollowingMap(newFollowingMap);
     };
@@ -127,37 +118,32 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
-                    <MemberProfileLink userId={member.id}>
+                    <MemberProfileLink userId={member.user_id}>
                       <Avatar className="h-12 w-12">
-                        <AvatarImage src={member.avatar_url || undefined} />
+                        <AvatarImage src={member.profiles.avatar_url || undefined} />
                         <AvatarFallback>
-                          {member.username?.[0]?.toUpperCase() || '?'}
+                          {member.profiles.username?.[0]?.toUpperCase() || '?'}
                         </AvatarFallback>
                       </Avatar>
                     </MemberProfileLink>
                     <div className="flex-grow">
-                      <MemberProfileLink userId={member.id}>
+                      <MemberProfileLink userId={member.user_id}>
                         <h3 className="text-sm font-medium text-zinc-100">
-                          {member.username || 'Anonymous'}
+                          {member.profiles.username || 'Anonymous'}
                         </h3>
                       </MemberProfileLink>
                       <div className="flex flex-col gap-1">
-                        {member.location && (
+                        {member.profiles.location && (
                           <span className="text-xs text-zinc-400">
-                            {member.location}
-                          </span>
-                        )}
-                        {user && member.shared_events_count! > 0 && (
-                          <span className="text-xs text-zinc-400">
-                            {member.shared_events_count} shared event{member.shared_events_count !== 1 ? 's' : ''}
+                            {member.profiles.location}
                           </span>
                         )}
                       </div>
                     </div>
-                    {user && user.id !== member.id && (
+                    {user && user.id !== member.user_id && (
                       <FollowButton
-                        userId={member.id}
-                        initialIsFollowing={followingMap[member.id] || false}
+                        userId={member.user_id}
+                        initialIsFollowing={followingMap[member.user_id] || false}
                       />
                     )}
                   </div>

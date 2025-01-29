@@ -49,7 +49,6 @@ export const MemberRow = ({ member, isFollowing }: MemberRowProps) => {
         <FollowButton
           userId={member.user_id}
           initialIsFollowing={isFollowing}
-          size="sm"
         />
       )}
     </div>
