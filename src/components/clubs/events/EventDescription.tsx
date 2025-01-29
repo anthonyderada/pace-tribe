@@ -1,4 +1,4 @@
-import { MapPin, Users } from "lucide-react";
+import { MapPin, Users, Route, Trophy } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
@@ -19,14 +19,22 @@ export const EventDescription = ({
         {description || "No description available"}
       </p>
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700/70">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Badge variant="secondary" className="bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700/70 whitespace-nowrap">
             <MapPin className="h-3 w-3 mr-1" />
             Road Running
           </Badge>
-          <Badge variant="secondary" className="bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700/70">
+          <Badge variant="secondary" className="bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700/70 whitespace-nowrap">
             <Users className="h-3 w-3 mr-1" />
             Social
+          </Badge>
+          <Badge variant="secondary" className="bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700/70 whitespace-nowrap">
+            <Route className="h-3 w-3 mr-1" />
+            Track
+          </Badge>
+          <Badge variant="secondary" className="bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700/70 whitespace-nowrap">
+            <Trophy className="h-3 w-3 mr-1" />
+            Performance
           </Badge>
         </div>
         <div className="flex items-center gap-2">
@@ -48,7 +56,7 @@ export const EventDescription = ({
               </div>
             )}
           </div>
-          <span className="text-gray-400 text-sm">
+          <span className="text-gray-400 text-sm whitespace-nowrap">
             {participantCount} participants
           </span>
         </div>
