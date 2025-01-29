@@ -47,7 +47,7 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
       const { data, error } = await supabase
         .from('messages')
         .select('*')
-        .or(`and(sender_id.eq.${user.id},recipient_id.eq.${recipientId}),and(sender_id.eq.${recipientId},recipient_id.eq.${user.id})`)
+        .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`)
         .order('created_at', { ascending: true });
 
       if (error) {
@@ -61,14 +61,14 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
     fetchMessages();
 
     const channel = supabase
-      .channel('chat_messages')
+      .channel('messages')
       .on(
         'postgres_changes',
         {
           event: 'INSERT',
           schema: 'public',
           table: 'messages',
-          filter: `or(and(sender_id=eq.${user.id},recipient_id=eq.${recipientId}),and(sender_id=eq.${recipientId},recipient_id=eq.${user.id}))`,
+          filter: `or(and(sender_id.eq.${user.id},recipient_id.eq.${recipientId}),and(sender_id.eq.${recipientId},recipient_id.eq.${user.id}))`,
         },
         (payload) => {
           setMessages(current => [...current, payload.new as Message]);
