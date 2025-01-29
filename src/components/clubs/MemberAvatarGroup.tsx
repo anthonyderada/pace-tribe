@@ -106,7 +106,7 @@ export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAva
                   {member.profiles.username?.[0]?.toUpperCase() || '?'}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm text-zinc-300">
+              <span className="text-sm text-white font-semibold flex-grow">
                 {member.profiles.username || 'Anonymous'}
               </span>
               <FollowButton
