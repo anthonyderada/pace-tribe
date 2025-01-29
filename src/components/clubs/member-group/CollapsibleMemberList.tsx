@@ -6,12 +6,12 @@ import { sortAndGroupMembers } from "./utils/memberSorting";
 type Member = {
   id: string;
   user_id: string;
+  role?: string;
   profiles: {
     username: string | null;
     avatar_url: string | null;
     location: string | null;
   };
-  role?: string;
 };
 
 interface CollapsibleMemberListProps {

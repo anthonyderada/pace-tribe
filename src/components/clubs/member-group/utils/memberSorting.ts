@@ -21,9 +21,13 @@ export const sortAndGroupMembers = (members: Member[]) => {
     return usernameA.localeCompare(usernameB);
   });
   
-  // Randomize regular members
-  const shuffledRegularMembers = [...regularMembers].sort(() => Math.random() - 0.5);
+  // Sort regular members by username
+  const sortedRegularMembers = [...regularMembers].sort((a, b) => {
+    const usernameA = a.profiles.username?.toLowerCase() || '';
+    const usernameB = b.profiles.username?.toLowerCase() || '';
+    return usernameA.localeCompare(usernameB);
+  });
   
-  // Combine the arrays: captains first, then randomized regular members
-  return [...sortedCaptains, ...shuffledRegularMembers];
+  // Combine the arrays: captains first, then regular members
+  return [...sortedCaptains, ...sortedRegularMembers];
 };
