@@ -27,7 +27,7 @@ export const EventList = ({ registeredEvents }: EventListProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-zinc-100">
           <Calendar className="h-5 w-5" />
-          Registered Events
+          Events I'm Going To
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -59,7 +59,7 @@ export const EventList = ({ registeredEvents }: EventListProps) => {
                     )}
                     {event.pace && (
                       <p className="text-sm text-zinc-400">
-                        Target Pace: {event.pace}
+                        Target Pace: {event.pace.replace(/min\/mil/g, '/mi')}
                       </p>
                     )}
                     <p className="text-sm text-zinc-400">

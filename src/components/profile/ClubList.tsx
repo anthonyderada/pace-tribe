@@ -23,7 +23,7 @@ export const ClubList = ({ joinedClubs }: ClubListProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-zinc-100">
           <Users className="h-5 w-5" />
-          My Clubs
+          My Tribes
         </CardTitle>
       </CardHeader>
       <CardContent>

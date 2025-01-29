@@ -1,12 +1,6 @@
 import { Calendar, MapPin, Route, Timer } from "lucide-react";
 import { format } from "date-fns";
-
-interface EventMetadataProps {
-  date: string;
-  location: string | null;
-  distance: number | null;
-  pace: string | null;
-}
+import { EventMetadataProps } from "./types";
 
 export const EventMetadata = ({ date, location, distance, pace }: EventMetadataProps) => {
   return (

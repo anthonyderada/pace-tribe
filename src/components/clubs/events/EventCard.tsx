@@ -4,23 +4,7 @@ import { EventTitle } from "./EventTitle";
 import { EventMetadata } from "./EventMetadata";
 import { EventRSVPButton } from "./EventRSVPButton";
 import { EventDescription } from "./EventDescription";
-
-interface Event {
-  id: string;
-  title: string;
-  description: string | null;
-  date: string;
-  location: string | null;
-  distance: number | null;
-  pace: string | null;
-  event_participants: {
-    user_id: string;
-    profiles?: {
-      avatar_url: string | null;
-      username: string | null;
-    };
-  }[];
-}
+import { Event } from "./types";
 
 interface EventCardProps {
   event: Event;
