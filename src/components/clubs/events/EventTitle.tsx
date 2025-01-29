@@ -23,7 +23,7 @@ export const EventTitle = ({ id, title, isRecurring, className = "" }: EventTitl
         {title}
       </h4>
       {isRecurring && (
-        <Repeat className="h-4 w-4 text-zinc-400" />
+        <Repeat className="h-5 w-5 text-white" strokeWidth={2.5} />
       )}
     </div>
   );
