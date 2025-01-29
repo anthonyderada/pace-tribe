@@ -48,7 +48,7 @@ export const CollapsibleTriggerButton = ({
           )}
         </Button>
       </CollapsibleTrigger>
-      {!isOpen && <MembersSheet clubId={clubId} totalCount={totalCount} />}
+      {isOpen && <MembersSheet clubId={clubId} totalCount={totalCount} />}
     </div>
   );
 };
