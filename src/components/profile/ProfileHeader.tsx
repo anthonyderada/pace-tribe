@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { FollowButton } from "./FollowButton";
-import { MessageDialog } from "../messages/MessageDialog";
+import { ChatRoom } from "../messages/ChatRoom";
 
 type ProfileHeaderProps = {
   profile: {
@@ -249,9 +249,10 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
                       userId={profile.id} 
                       initialIsFollowing={false} // We'll need to implement this properly
                     />
-                    <MessageDialog 
+                    <ChatRoom 
                       recipientId={profile.id} 
                       recipientName={profile.username || "User"}
+                      recipientAvatar={profile.avatar_url}
                     />
                   </div>
                 )}

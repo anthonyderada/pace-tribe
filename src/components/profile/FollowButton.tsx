@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { UserCheck, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +15,25 @@ export const FollowButton = ({ userId, initialIsFollowing }: FollowButtonProps) 
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Check initial follow status
+  useEffect(() => {
+    const checkFollowStatus = async () => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('follows')
+        .select('*')
+        .eq('follower_id', user.id)
+        .eq('following_id', userId)
+        .single();
+
+      if (!error && data) {
+        setIsFollowing(true);
+      }
+    };
+
+    checkFollowStatus();
+  }, [user, userId]);
 
   const handleFollowToggle = async () => {
     if (!user) return;
