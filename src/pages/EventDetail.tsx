@@ -1,43 +1,14 @@
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Users, Route, Timer, Building2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
 import { toast } from "sonner";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-type Event = {
-  id: string;
-  title: string;
-  description: string | null;
-  date: string;
-  location: string | null;
-  club_id: string;
-  distance: number | null;
-  pace: string | null;
-  clubs: {
-    name: string;
-    location: string | null;
-    description: string | null;
-    thumbnail_url: string | null;
-    club_members: {
-      id: string;
-      user_id: string;
-    }[];
-  };
-  event_participants: {
-    id: string;
-    user_id: string;
-    profiles: {
-      username: string | null;
-      avatar_url: string | null;
-    };
-  }[];
-};
+import { EventHeader } from "@/components/events/detail/EventHeader";
+import { EventDetailsSection } from "@/components/events/detail/EventDetailsSection";
+import { EventParticipantsList } from "@/components/events/detail/EventParticipantsList";
+import { EventActions } from "@/components/events/detail/EventActions";
+import { useEffect } from "react";
 
 const EventDetail = () => {
   const navigate = useNavigate();
@@ -56,11 +27,7 @@ const EventDetail = () => {
             name,
             location,
             description,
-            thumbnail_url,
-            club_members (
-              id,
-              user_id
-            )
+            thumbnail_url
           ),
           event_participants (
             id,
@@ -76,7 +43,7 @@ const EventDetail = () => {
 
       if (error) throw error;
       if (!data) throw new Error("Event not found");
-      return data as Event;
+      return data;
     },
   });
 
@@ -162,15 +129,9 @@ const EventDetail = () => {
     return (
       <div className="container mx-auto px-4 py-8 space-y-8">
         <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
-          <CardHeader>
+          <CardContent className="p-6">
             <div className="h-8 w-3/4 bg-zinc-800 rounded animate-pulse" />
             <div className="h-4 w-1/2 bg-zinc-800 rounded animate-pulse mt-2" />
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="h-4 w-full bg-zinc-800 rounded animate-pulse" />
-              <div className="h-4 w-3/4 bg-zinc-800 rounded animate-pulse" />
-            </div>
           </CardContent>
         </Card>
       </div>
@@ -185,133 +146,20 @@ const EventDetail = () => {
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-4xl font-bold text-zinc-100">
-            {event.title}
-          </CardTitle>
-          <CardDescription className="flex items-center gap-2 text-zinc-400">
-            <Calendar className="h-4 w-4" />
-            {format(new Date(event.date), "MMMM d, yyyy - h:mm a")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div>
-            <h3 className="text-xl font-semibold mb-4 text-zinc-100">
-              Event Details
-            </h3>
-            <p className="text-zinc-400 mb-4">
-              {event.description || "No description available."}
-            </p>
-            <div className="space-y-4">
-              {event.clubs && (
-                <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-zinc-300 transition-colors"
-                  onClick={() => navigate(`/clubs/${event.club_id}`)}
-                >
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src={event.clubs.thumbnail_url || undefined}
-                      alt={event.clubs.name}
-                    />
-                    <AvatarFallback>
-                      <Building2 className="h-4 w-4 text-zinc-400" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-zinc-400">
-                    Organized by {event.clubs.name}
-                  </span>
-                </div>
-              )}
-              {event.location && (
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-zinc-400" />
-                  <span className="text-zinc-400">{event.location}</span>
-                </div>
-              )}
-              {event.distance && (
-                <div className="flex items-center gap-2">
-                  <Route className="h-5 w-5 text-zinc-400" />
-                  <span className="text-zinc-400">
-                    {(event.distance * 0.621371).toFixed(1)} miles
-                  </span>
-                </div>
-              )}
-              {event.pace && (
-                <div className="flex items-center gap-2">
-                  <Timer className="h-5 w-5 text-zinc-400" />
-                  <span className="text-zinc-400">{event.pace.replace(/min\/mil/g, '/mi')}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-zinc-400" />
-                <span className="text-zinc-400">
-                  {event.event_participants.length} participants
-                </span>
-              </div>
-            </div>
-          </div>
-          {user ? (
-            <Button
-              className={`w-full mt-8 ${
-                isParticipant
-                  ? "border border-white text-white bg-transparent hover:bg-white/10"
-                  : "border border-white bg-white text-black hover:bg-gray-100"
-              }`}
-              onClick={handleParticipation}
-              disabled={isMutating}
-            >
-              {isMutating
-                ? "Loading..."
-                : isParticipant
-                ? "Going"
-                : "RSVP"}
-            </Button>
-          ) : (
-            <Button
-              className="w-full mt-8 border border-white bg-white text-black hover:bg-gray-100"
-              onClick={() => navigate("/login")}
-            >
-              Login to RSVP
-            </Button>
-          )}
+        <CardContent className="p-6">
+          <EventHeader event={event} />
+          <EventDetailsSection event={event} />
+          <EventActions
+            isParticipant={isParticipant}
+            isMutating={isMutating}
+            user={user}
+            handleParticipation={handleParticipation}
+          />
         </CardContent>
       </Card>
 
       <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-zinc-100">
-            Participants ({event.event_participants.length})
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {event.event_participants.length === 0 ? (
-              <p className="text-zinc-400">No participants yet. Be the first to join!</p>
-            ) : (
-              event.event_participants.map((participant) => (
-                <div
-                  key={participant.id}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-800/50 transition-colors"
-                  onClick={() => navigate(`/profile/${participant.user_id}`)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage
-                      src={participant.profiles.avatar_url || undefined}
-                      alt={participant.profiles.username || "User"}
-                    />
-                    <AvatarFallback className="bg-emerald-600 text-white">
-                      {participant.profiles.username?.[0]?.toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-zinc-100">
-                    {participant.profiles.username || "Anonymous Runner"}
-                  </span>
-                </div>
-              ))
-            )}
-          </div>
-        </CardContent>
+        <EventParticipantsList event={event} />
       </Card>
     </div>
   );
