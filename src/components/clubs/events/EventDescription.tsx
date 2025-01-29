@@ -22,7 +22,7 @@ export const EventDescription = ({
 }: EventDescriptionProps) => {
   const baseDescription = description || "No description available";
   const scheduleText = recurrenceSchedule ? (
-    <span className="inline-flex items-center rounded-full bg-zinc-700/50 px-2 py-0.5 text-xs font-medium text-zinc-300 ml-2">
+    <span className="inline-flex items-center rounded-full bg-zinc-700/50 px-2 py-0.5 text-xs font-medium text-zinc-300 ml-2 -mt-0.5">
       {recurrenceSchedule}
     </span>
   ) : null;
