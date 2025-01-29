@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Event } from "./events/types";
+import { Card } from "@/components/ui/card";
 
 interface ClubEventsListProps {
   events: Event[];
@@ -85,7 +86,7 @@ export const ClubEventsList = ({ events, clubId, userId }: ClubEventsListProps) 
   );
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-12 pt-4">
       <section>
         <div className="flex items-center gap-2 mb-6">
           <h2 className="text-2xl font-bold text-white">Upcoming Events</h2>
@@ -98,7 +99,7 @@ export const ClubEventsList = ({ events, clubId, userId }: ClubEventsListProps) 
         {renderEventGrid(upcomingEvents)}
       </section>
 
-      <section>
+      <Card className="p-6 border border-zinc-800 bg-zinc-900/90">
         <div className="flex items-center gap-2 mb-6">
           <h2 className="text-2xl font-bold text-white">Past Events</h2>
           {pastEvents.length > 0 && (
@@ -108,7 +109,7 @@ export const ClubEventsList = ({ events, clubId, userId }: ClubEventsListProps) 
           )}
         </div>
         {renderEventGrid(pastEvents)}
-      </section>
+      </Card>
     </div>
   );
 };
