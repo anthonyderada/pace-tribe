@@ -100,13 +100,13 @@ export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAva
         <div className="space-y-2 p-2 bg-zinc-800/20 rounded-lg">
           {members.map((member) => (
             <div key={member.id} className="flex items-center gap-2 p-2 hover:bg-zinc-800/30 rounded-lg transition-colors">
-              <Avatar className="w-10 h-10 border-2 border-zinc-900">
+              <Avatar className="w-12 h-12 border-2 border-zinc-900">
                 <AvatarImage src={member.profiles.avatar_url || undefined} />
                 <AvatarFallback>
                   {member.profiles.username?.[0]?.toUpperCase() || '?'}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm text-white font-semibold flex-grow">
+              <span className="text-sm text-white font-medium flex-grow">
                 {member.profiles.username || 'Anonymous'}
               </span>
               <FollowButton
