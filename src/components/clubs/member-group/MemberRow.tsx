@@ -1,7 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FollowButton } from "@/components/profile/FollowButton";
 import { MemberProfileLink } from "./MemberProfileLink";
-import { Crown } from "lucide-react";
+import { MemberAvatar } from "./MemberAvatar";
 
 interface MemberRowProps {
   member: {
@@ -22,21 +21,7 @@ export const MemberRow = ({ member, isFollowing }: MemberRowProps) => {
 
   return (
     <div className="flex items-center gap-2 p-2 hover:bg-zinc-800/30 rounded-lg transition-colors">
-      <div className="relative">
-        <MemberProfileLink userId={member.user_id}>
-          <Avatar className="w-12 h-12 cursor-pointer">
-            <AvatarImage src={member.profiles.avatar_url || undefined} />
-            <AvatarFallback>
-              {member.profiles.username?.[0]?.toUpperCase() || '?'}
-            </AvatarFallback>
-          </Avatar>
-        </MemberProfileLink>
-        {isCaptain && (
-          <div className="absolute -top-1 -right-1 bg-amber-500 rounded-full p-0.5" title="Club Captain">
-            <Crown className="h-3 w-3 text-zinc-900" />
-          </div>
-        )}
-      </div>
+      <MemberAvatar member={member} />
       <MemberProfileLink 
         userId={member.user_id}
         className="flex-grow"

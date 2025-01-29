@@ -1,7 +1,7 @@
 import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Crown } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { MemberAvatar } from "./MemberAvatar";
 
 interface CollapsibleTriggerButtonProps {
   visibleMembers: {
@@ -32,19 +32,11 @@ export const CollapsibleTriggerButton = ({
               key={index}
               className="relative z-[1] hover:z-10"
             >
-              <Avatar 
-                className="h-8 w-8 ring-2 ring-zinc-900 hover:translate-y-[-2px] transition-transform"
-              >
-                <AvatarImage src={member.profiles.avatar_url || undefined} />
-                <AvatarFallback>
-                  {member.profiles.username?.[0]?.toUpperCase() || '?'}
-                </AvatarFallback>
-              </Avatar>
-              {member.role === 'captain' && (
-                <div className="absolute -top-1 -right-1 bg-amber-500 rounded-full p-0.5" title="Club Captain">
-                  <Crown className="h-2.5 w-2.5 text-zinc-900" />
-                </div>
-              )}
+              <MemberAvatar 
+                member={member}
+                size="sm"
+                className="ring-2 ring-zinc-900 hover:translate-y-[-2px] transition-transform"
+              />
             </div>
           ))}
         </div>
