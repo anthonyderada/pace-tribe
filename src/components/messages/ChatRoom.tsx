@@ -21,6 +21,10 @@ interface Message {
   sender_id: string;
   recipient_id: string;
   created_at: string;
+  sender?: {
+    username: string;
+    avatar_url: string | null;
+  };
 }
 
 export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRoomProps) => {
@@ -46,8 +50,14 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
     const fetchMessages = async () => {
       const { data, error } = await supabase
         .from('messages')
-        .select('*')
-        .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`)
+        .select(`
+          *,
+          sender:profiles!messages_sender_id_fkey (
+            username,
+            avatar_url
+          )
+        `)
+        .or(`and(sender_id.eq.${user.id},recipient_id.eq.${recipientId}),and(sender_id.eq.${recipientId},recipient_id.eq.${user.id})`)
         .order('created_at', { ascending: true });
 
       if (error) {
@@ -121,7 +131,7 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
         <MessageCircle className="h-4 w-4" />
         Message
       </Button>
-      <DialogContent className="sm:max-w-md bg-zinc-900 border-zinc-800">
+      <DialogContent className="sm:max-w-[500px] bg-zinc-900 border-zinc-800">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-zinc-100">
             <Avatar className="h-8 w-8">
@@ -140,16 +150,25 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${message.sender_id === user?.id ? 'justify-end' : 'justify-start'}`}
+                  className={`flex items-start gap-2 ${message.sender_id === user?.id ? 'flex-row-reverse' : 'flex-row'}`}
                 >
-                  <div
-                    className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                      message.sender_id === user?.id
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-zinc-800 text-zinc-100'
-                    }`}
-                  >
-                    {message.content}
+                  <Avatar className="h-8 w-8 flex-shrink-0">
+                    <AvatarImage src={message.sender?.avatar_url || undefined} />
+                    <AvatarFallback>{message.sender?.username?.[0] || '?'}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col gap-1">
+                    <span className={`text-xs ${message.sender_id === user?.id ? 'text-right' : 'text-left'} text-zinc-400`}>
+                      {message.sender?.username}
+                    </span>
+                    <div
+                      className={`max-w-[240px] rounded-lg px-4 py-2 ${
+                        message.sender_id === user?.id
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-zinc-800 text-zinc-100'
+                      }`}
+                    >
+                      {message.content}
+                    </div>
                   </div>
                 </div>
               ))}
