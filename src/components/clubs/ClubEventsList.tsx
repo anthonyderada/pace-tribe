@@ -99,7 +99,7 @@ export const ClubEventsList = ({ events, clubId, userId }: ClubEventsListProps) 
         {renderEventGrid(upcomingEvents)}
       </section>
 
-      <Card className="p-6 border border-zinc-800 bg-zinc-900/90">
+      <section className="bg-zinc-900/90 border border-zinc-800 rounded-lg p-6">
         <div className="flex items-center gap-2 mb-6">
           <h2 className="text-2xl font-bold text-white">Past Events</h2>
           {pastEvents.length > 0 && (
@@ -109,7 +109,7 @@ export const ClubEventsList = ({ events, clubId, userId }: ClubEventsListProps) 
           )}
         </div>
         {renderEventGrid(pastEvents)}
-      </Card>
+      </section>
     </div>
   );
 };
