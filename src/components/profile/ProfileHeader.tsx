@@ -8,6 +8,8 @@ import { Pencil, Save, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { FollowButton } from "./FollowButton";
+import { MessageDialog } from "../messages/MessageDialog";
 
 type ProfileHeaderProps = {
   profile: {
@@ -236,9 +238,20 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
         ) : (
           <>
             <div className="flex flex-col items-center md:items-start gap-2">
-              <h1 className="text-3xl font-bold text-zinc-100">
-                {profile?.username || user?.email}
-              </h1>
+              <div className="flex items-center gap-4">
+                <h1 className="text-3xl font-bold text-zinc-100">
+                  {profile?.username || user?.email}
+                </h1>
+                {user?.id !== profile?.id && (
+                  <div className="flex items-center gap-2">
+                    <FollowButton userId={profile?.id || ""} />
+                    <MessageDialog 
+                      recipientId={profile?.id || ""} 
+                      recipientName={profile?.username || "User"}
+                    />
+                  </div>
+                )}
+              </div>
               {captainRoles && captainRoles.length > 0 && (
                 <div className="flex flex-col items-center md:items-start gap-2">
                   {captainRoles.map((role, index) => (
