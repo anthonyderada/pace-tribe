@@ -23,11 +23,18 @@ export const CollapsibleTriggerButton = ({
   remainingCount,
   isOpen,
 }: CollapsibleTriggerButtonProps) => {
+  // Sort visible members to show captains first
+  const sortedVisibleMembers = [...visibleMembers].sort((a, b) => {
+    if (a.role === 'captain' && b.role !== 'captain') return -1;
+    if (a.role !== 'captain' && b.role === 'captain') return 1;
+    return 0;
+  });
+
   return (
     <div className="flex items-center gap-4">
       <CollapsibleTrigger asChild>
         <div className="flex -space-x-2 cursor-pointer">
-          {visibleMembers.map((member, index) => (
+          {sortedVisibleMembers.map((member, index) => (
             <div 
               key={index}
               className="relative z-[1] hover:z-10"

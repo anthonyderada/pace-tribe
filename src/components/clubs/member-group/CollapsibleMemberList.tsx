@@ -9,6 +9,7 @@ type Member = {
     avatar_url: string | null;
     location: string | null;
   };
+  role?: string;
 };
 
 interface CollapsibleMemberListProps {
@@ -24,11 +25,18 @@ export const CollapsibleMemberList = ({
   clubId,
   totalCount,
 }: CollapsibleMemberListProps) => {
+  // Sort members to show captains first
+  const sortedMembers = [...members].sort((a, b) => {
+    if (a.role === 'captain' && b.role !== 'captain') return -1;
+    if (a.role !== 'captain' && b.role === 'captain') return 1;
+    return 0;
+  });
+
   return (
     <div className="p-2 bg-zinc-800/20 rounded-lg">
       <ScrollArea className="h-[300px] pr-4">
         <div className="space-y-2">
-          {members.map((member) => (
+          {sortedMembers.map((member) => (
             <MemberRow
               key={member.id}
               member={member}

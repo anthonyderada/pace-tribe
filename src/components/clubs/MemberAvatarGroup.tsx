@@ -30,7 +30,15 @@ export const MemberAvatarGroup = ({
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
   const [followingMap, setFollowingMap] = useState<Record<string, boolean>>({});
-  const visibleMembers = members.slice(0, maxVisible);
+
+  // Sort members to show captains first
+  const sortedMembers = [...members].sort((a, b) => {
+    if (a.role === 'captain' && b.role !== 'captain') return -1;
+    if (a.role !== 'captain' && b.role === 'captain') return 1;
+    return 0;
+  });
+
+  const visibleMembers = sortedMembers.slice(0, maxVisible);
   const remainingCount = Math.max(0, members.length - maxVisible);
 
   useEffect(() => {
@@ -73,7 +81,7 @@ export const MemberAvatarGroup = ({
       />
       <CollapsibleContent className="mt-2">
         <CollapsibleMemberList 
-          members={members}
+          members={sortedMembers}
           followingMap={followingMap}
           clubId={clubId}
           totalCount={members.length}
