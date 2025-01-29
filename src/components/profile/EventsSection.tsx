@@ -25,7 +25,7 @@ export const EventsSection = ({ registeredEvents }: EventsSectionProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-zinc-100">
           <Calendar className="h-5 w-5" />
-          Events I'm Going To
+          My Events
         </CardTitle>
       </CardHeader>
       <CardContent>
