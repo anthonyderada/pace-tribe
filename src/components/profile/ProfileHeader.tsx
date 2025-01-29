@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Pencil, Save, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 type ProfileHeaderProps = {
   profile: {
@@ -33,6 +35,28 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
   const [location, setLocation] = useState(profile?.location || "");
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
+
+  // Fetch captain roles
+  const { data: captainRoles } = useQuery({
+    queryKey: ['captainRoles', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('club_members')
+        .select(`
+          role,
+          clubs (
+            id,
+            name
+          )
+        `)
+        .eq('user_id', user?.id)
+        .eq('role', 'captain');
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user?.id,
+  });
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -211,16 +235,32 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
           </div>
         ) : (
           <>
-            <h1 className="text-3xl font-bold text-zinc-100 mb-2">
-              {profile?.username || user?.email}
-            </h1>
-            <p className="text-zinc-400 flex items-center justify-center md:justify-start gap-2 mb-4">
-              {profile?.location || "Not set"}
-            </p>
-            <div className="space-y-4">
-              <p className="text-zinc-400">
-                {profile?.bio || "No bio added yet"}
+            <div className="flex flex-col items-center md:items-start gap-2">
+              <h1 className="text-3xl font-bold text-zinc-100">
+                {profile?.username || user?.email}
+              </h1>
+              {captainRoles && captainRoles.length > 0 && (
+                <div className="flex flex-col items-center md:items-start gap-2">
+                  {captainRoles.map((role, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
+                        Captain
+                      </Badge>
+                      <span className="text-zinc-400">
+                        of {role.clubs?.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <p className="text-zinc-400 flex items-center justify-center md:justify-start gap-2">
+                {profile?.location || "Not set"}
               </p>
+              <div className="space-y-4">
+                <p className="text-zinc-400">
+                  {profile?.bio || "No bio added yet"}
+                </p>
+              </div>
             </div>
           </>
         )}
