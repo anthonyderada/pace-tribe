@@ -152,9 +152,9 @@ const Events = () => {
                       {isLoading ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : isRegistered ? (
-                        'Leave'
+                        'Going'
                       ) : (
-                        'Join'
+                        'RSVP'
                       )}
                     </Button>
                   )}

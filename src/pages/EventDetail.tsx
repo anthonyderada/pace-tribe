@@ -264,15 +264,15 @@ const EventDetail = () => {
               {isMutating
                 ? "Loading..."
                 : isParticipant
-                ? "Cancel Registration"
-                : "Register"}
+                ? "Going"
+                : "RSVP"}
             </Button>
           ) : (
             <Button
               className="w-full mt-8 border border-white bg-white text-black hover:bg-gray-100"
               onClick={() => navigate("/login")}
             >
-              Login to Register
+              Login to RSVP
             </Button>
           )}
         </CardContent>

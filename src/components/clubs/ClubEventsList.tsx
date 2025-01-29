@@ -108,9 +108,9 @@ export const ClubEventsList = ({ events, clubId, userId }: ClubEventsListProps) 
                     {isLoading ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : isParticipant ? (
-                      'Leave'
+                      'Going'
                     ) : (
-                      'Join'
+                      'RSVP'
                     )}
                   </Button>
                 )}
