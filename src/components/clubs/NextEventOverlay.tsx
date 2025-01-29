@@ -15,10 +15,10 @@ export const NextEventOverlay = ({ event }: NextEventOverlayProps) => {
   const eventDate = new Date(event.date);
 
   return (
-    <div className="absolute bottom-0 right-0 left-1/2 bg-black/80 p-6">
-      <div className="flex items-start gap-3 justify-end">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 text-sm text-white/90 mb-1 justify-end whitespace-nowrap">
+    <div className="absolute bottom-0 right-0 left-1/2 p-6">
+      <div className="flex items-center gap-3 justify-end">
+        <div className="flex-1 flex flex-col items-end">
+          <div className="flex items-center gap-2 text-sm text-white/90 mb-1 whitespace-nowrap">
             {format(eventDate, 'EEEE h:mm a')}
             <Calendar className="h-4 w-4 flex-shrink-0" />
           </div>
