@@ -319,7 +319,7 @@ export type Database = {
           seeking_race_pacers: boolean | null
           seeking_training_partners: boolean | null
           updated_at: string
-          username: string | null
+          username: string
         }
         Insert: {
           avatar_url?: string | null
@@ -335,7 +335,7 @@ export type Database = {
           seeking_race_pacers?: boolean | null
           seeking_training_partners?: boolean | null
           updated_at?: string
-          username?: string | null
+          username: string
         }
         Update: {
           avatar_url?: string | null
@@ -351,7 +351,7 @@ export type Database = {
           seeking_race_pacers?: boolean | null
           seeking_training_partners?: boolean | null
           updated_at?: string
-          username?: string | null
+          username?: string
         }
         Relationships: []
       }
