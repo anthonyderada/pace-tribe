@@ -2,7 +2,6 @@ import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MemberProfileLink } from "./MemberProfileLink";
 
 interface CollapsibleTriggerButtonProps {
   visibleMembers: {
@@ -31,21 +30,15 @@ export const CollapsibleTriggerButton = ({
             <div 
               key={index}
               className="relative z-[1] hover:z-10"
-              onClick={(e) => e.preventDefault()}
             >
-              <MemberProfileLink 
-                userId={member.user_id}
-                className="block"
+              <Avatar 
+                className="h-8 w-8 ring-2 ring-zinc-900 hover:translate-y-[-2px] transition-transform"
               >
-                <Avatar 
-                  className="h-8 w-8 ring-2 ring-zinc-900 hover:translate-y-[-2px] transition-transform"
-                >
-                  <AvatarImage src={member.profiles.avatar_url || undefined} />
-                  <AvatarFallback>
-                    {member.profiles.username?.[0]?.toUpperCase() || '?'}
-                  </AvatarFallback>
-                </Avatar>
-              </MemberProfileLink>
+                <AvatarImage src={member.profiles.avatar_url || undefined} />
+                <AvatarFallback>
+                  {member.profiles.username?.[0]?.toUpperCase() || '?'}
+                </AvatarFallback>
+              </Avatar>
             </div>
           ))}
         </div>
