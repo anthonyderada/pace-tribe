@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
@@ -8,9 +7,10 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { useState, useEffect } from "react";
-import { FollowButton } from "@/components/profile/FollowButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { CollapsedMemberView } from "./member-group/CollapsedMemberView";
+import { MemberRow } from "./member-group/MemberRow";
 
 type Member = {
   id: string;
@@ -72,26 +72,11 @@ export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAva
           className="w-full p-2 hover:bg-zinc-800/50 rounded-lg transition-colors"
         >
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center">
-              <div className="flex items-center -space-x-2">
-                {visibleMembers.map((member) => (
-                  <Avatar key={member.id} className="w-6 h-6 border-2 border-zinc-900">
-                    <AvatarImage src={member.profiles.avatar_url || undefined} />
-                    <AvatarFallback>
-                      {member.profiles.username?.[0]?.toUpperCase() || '?'}
-                    </AvatarFallback>
-                  </Avatar>
-                ))}
-                {remainingCount > 0 && (
-                  <div className="w-6 h-6 rounded-full bg-zinc-800 border-2 border-zinc-900 flex items-center justify-center text-xs text-zinc-300">
-                    +{remainingCount}
-                  </div>
-                )}
-              </div>
-              <span className="ml-3 text-sm text-zinc-400">
-                {members.length} {members.length === 1 ? 'member' : 'members'}
-              </span>
-            </div>
+            <CollapsedMemberView 
+              visibleMembers={visibleMembers}
+              remainingCount={remainingCount}
+              totalCount={members.length}
+            />
             <ChevronDown className={`h-4 w-4 text-zinc-400 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`} />
           </div>
         </Button>
@@ -99,21 +84,11 @@ export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAva
       <CollapsibleContent className="mt-2">
         <div className="space-y-2 p-2 bg-zinc-800/20 rounded-lg">
           {members.map((member) => (
-            <div key={member.id} className="flex items-center gap-2 p-2 hover:bg-zinc-800/30 rounded-lg transition-colors">
-              <Avatar className="w-12 h-12 border-2 border-zinc-900">
-                <AvatarImage src={member.profiles.avatar_url || undefined} />
-                <AvatarFallback>
-                  {member.profiles.username?.[0]?.toUpperCase() || '?'}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-sm text-white font-normal tracking-wide flex-grow">
-                {member.profiles.username || 'Anonymous'}
-              </span>
-              <FollowButton
-                userId={member.user_id}
-                initialIsFollowing={followingMap[member.user_id] || false}
-              />
-            </div>
+            <MemberRow
+              key={member.id}
+              member={member}
+              isFollowing={followingMap[member.user_id] || false}
+            />
           ))}
           <Button
             variant="ghost"
