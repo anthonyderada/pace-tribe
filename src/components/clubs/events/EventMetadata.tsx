@@ -31,7 +31,7 @@ export const EventMetadata = ({ date, location, distance, pace }: EventMetadataP
         {pace && (
           <div className="flex items-center gap-2 text-gray-400 text-sm">
             <Timer className="h-4 w-4" />
-            {pace.replace('min/mil', '/mi')}
+            {pace.replace(/min\/mil/g, '/mi')}
           </div>
         )}
       </div>

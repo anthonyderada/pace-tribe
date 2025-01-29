@@ -239,7 +239,7 @@ const EventDetail = () => {
               {event.pace && (
                 <div className="flex items-center gap-2">
                   <Timer className="h-5 w-5 text-zinc-400" />
-                  <span className="text-zinc-400">{event.pace.replace('min/mil', '/mi')}</span>
+                  <span className="text-zinc-400">{event.pace.replace(/min\/mil/g, '/mi')}</span>
                 </div>
               )}
               <div className="flex items-center gap-2">
