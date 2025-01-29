@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Loader2 } from "lucide-react";
+import { MapPin, Calendar, Route, Timer, Building2, Loader2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
 import { toast } from "sonner";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MemberAvatarGroup } from "@/components/clubs/MemberAvatarGroup";
 import { NextEventOverlay } from "@/components/clubs/NextEventOverlay";
 import { Badge } from "@/components/ui/badge";
@@ -95,6 +97,47 @@ const ClubDetail = () => {
     onError: (error) => {
       console.error('Error leaving club:', error);
       toast.error('Failed to leave the club. Please try again.');
+    }
+  });
+
+  const joinEventMutation = useMutation({
+    mutationFn: async (eventId: string) => {
+      const { error } = await supabase
+        .from("event_participants")
+        .insert({
+          event_id: eventId,
+          user_id: user?.id,
+        });
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['club', id] });
+      toast.success('Successfully registered for the event');
+    },
+    onError: (error) => {
+      console.error('Error joining event:', error);
+      toast.error('Failed to register for the event. Please try again.');
+    }
+  });
+
+  const leaveEventMutation = useMutation({
+    mutationFn: async (eventId: string) => {
+      const { error } = await supabase
+        .from("event_participants")
+        .delete()
+        .eq("event_id", eventId)
+        .eq("user_id", user?.id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['club', id] });
+      toast.success('Successfully unregistered from the event');
+    },
+    onError: (error) => {
+      console.error('Error leaving event:', error);
+      toast.error('Failed to unregister from the event. Please try again.');
     }
   });
 
