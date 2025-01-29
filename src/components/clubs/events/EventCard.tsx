@@ -50,18 +50,11 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
         recurrence_schedule={event.recurrence_schedule}
       />
       
-      {event.is_recurring && event.recurrence_schedule && (
-        <div className="mb-3">
-          <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 hover:bg-zinc-600 whitespace-nowrap">
-            {event.recurrence_schedule}
-          </Badge>
-        </div>
-      )}
-      
       <EventDescription
         description={event.description}
         participantCount={event.event_participants?.length || 0}
         participants={event.event_participants}
+        recurrenceSchedule={event.is_recurring ? event.recurrence_schedule : undefined}
       />
     </Card>
   );
