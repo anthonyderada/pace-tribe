@@ -94,7 +94,8 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
         title: "Success",
         description: "Profile picture updated successfully.",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error uploading image:', error);
       toast({
         title: "Error",
         description: "Failed to update profile picture. Please try again.",
@@ -124,7 +125,8 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
         title: "Profile updated",
         description: "Your profile has been updated successfully.",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error updating profile:', error);
       toast({
         title: "Error",
         description: "Failed to update profile. Please try again.",
@@ -142,7 +144,7 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
         userEmail={user?.email}
         onImageUpload={handleImageUpload}
       />
-      <div className="flex-1 text-center md:text-left">
+      <div className="flex-1 text-center md:text-left w-full">
         {user && !isEditing && (
           <Button
             onClick={() => setIsEditing(true)}

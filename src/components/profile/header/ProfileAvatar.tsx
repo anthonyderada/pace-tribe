@@ -21,19 +21,37 @@ export const ProfileAvatar = ({
   userEmail,
   onImageUpload,
 }: ProfileAvatarProps) => {
+  const [error, setError] = useState<string | null>(null);
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setError("Image must be less than 5MB");
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        setError("File must be an image");
+        return;
+      }
+      setError(null);
+      onImageUpload(event);
+    }
+  };
+
   return (
-    <div className="relative group">
+    <div className="relative group w-32 h-32">
       <Avatar className="w-32 h-32">
         {isEditing ? (
           <>
-            <AvatarImage src={profile?.avatar_url || undefined} />
+            <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
             <AvatarFallback className="bg-gray-500/20 flex items-center justify-center">
               <Upload className="w-8 h-8 text-gray-400" />
             </AvatarFallback>
           </>
         ) : (
           <>
-            <AvatarImage src={profile?.avatar_url || undefined} />
+            <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
             <AvatarFallback className="bg-emerald-600 text-4xl text-white">
               {profile?.username?.[0]?.toUpperCase() || userEmail?.[0]?.toUpperCase()}
             </AvatarFallback>
@@ -47,7 +65,7 @@ export const ProfileAvatar = ({
             accept="image/*"
             className="hidden"
             id="avatar-upload"
-            onChange={onImageUpload}
+            onChange={handleImageChange}
             disabled={uploading}
           />
           <label
@@ -59,6 +77,11 @@ export const ProfileAvatar = ({
             {profile?.avatar_url && <Upload className="w-6 h-6 text-white" />}
           </label>
         </>
+      )}
+      {error && (
+        <div className="absolute -bottom-6 left-0 right-0 text-center text-red-500 text-sm">
+          {error}
+        </div>
       )}
     </div>
   );
