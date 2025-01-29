@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ProfileContainer } from "@/components/profile/ProfileContainer";
 import { ProfileContent } from "@/components/profile/ProfileContent";
 import { useToast } from "@/hooks/use-toast";
@@ -51,7 +51,6 @@ type Event = {
 const Profile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const { id } = useParams();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [joinedClubs, setJoinedClubs] = useState<Club[]>([]);
@@ -209,7 +208,6 @@ const Profile = () => {
         profile={profile}
         user={user}
         isOwnProfile={isOwnProfile}
-        fromClubId={fromClubId}
         onProfileUpdate={(updates) => setProfile(prev => ({ ...prev!, ...updates }))}
       />
 
