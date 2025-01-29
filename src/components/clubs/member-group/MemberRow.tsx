@@ -29,7 +29,7 @@ export const MemberRow = ({ member, isFollowing }: MemberRowProps) => {
         userId={member.user_id}
         className="flex-grow"
       >
-        <span className="text-sm text-white font-normal tracking-wide cursor-pointer hover:text-zinc-300">
+        <span className="text-xs text-white font-normal tracking-wide cursor-pointer hover:text-zinc-300">
           {member.profiles.username || 'Anonymous'}
         </span>
       </MemberProfileLink>

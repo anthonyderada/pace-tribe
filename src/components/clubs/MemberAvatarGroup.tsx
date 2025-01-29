@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CollapsedMemberView } from "./member-group/CollapsedMemberView";
 import { MemberRow } from "./member-group/MemberRow";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type Member = {
   id: string;
@@ -82,14 +83,18 @@ export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAva
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="mt-2">
-        <div className="space-y-2 p-2 bg-zinc-800/20 rounded-lg">
-          {members.map((member) => (
-            <MemberRow
-              key={member.id}
-              member={member}
-              isFollowing={followingMap[member.user_id] || false}
-            />
-          ))}
+        <div className="p-2 bg-zinc-800/20 rounded-lg">
+          <ScrollArea className="h-[300px] pr-4">
+            <div className="space-y-2">
+              {members.map((member) => (
+                <MemberRow
+                  key={member.id}
+                  member={member}
+                  isFollowing={followingMap[member.user_id] || false}
+                />
+              ))}
+            </div>
+          </ScrollArea>
           <Button
             variant="ghost"
             className="w-full mt-2 text-zinc-400 hover:text-zinc-200"
