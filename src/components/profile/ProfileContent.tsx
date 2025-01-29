@@ -72,6 +72,8 @@ export const ProfileContent = ({
         onAccoladesUpdate={onAccoladesUpdate}
         isEditable={isEditable}
       />
+
+      <ClubList joinedClubs={joinedClubs} />
       
       <RunningPreferences
         userId={userId}
@@ -80,7 +82,6 @@ export const ProfileContent = ({
         isEditable={isEditable}
       />
 
-      <ClubList joinedClubs={joinedClubs} />
       <EventList registeredEvents={registeredEvents} />
     </div>
   );
