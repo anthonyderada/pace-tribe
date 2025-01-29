@@ -2,6 +2,7 @@ import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MemberProfileLink } from "./MemberProfileLink";
 
 interface CollapsibleTriggerButtonProps {
   visibleMembers: {
@@ -9,6 +10,7 @@ interface CollapsibleTriggerButtonProps {
       username: string | null;
       avatar_url: string | null;
     };
+    user_id: string;
   }[];
   remainingCount: number;
   totalCount: number;
@@ -25,15 +27,20 @@ export const CollapsibleTriggerButton = ({
     <div className="flex items-center gap-4">
       <div className="flex -space-x-2">
         {visibleMembers.map((member, index) => (
-          <Avatar 
+          <MemberProfileLink 
             key={index} 
-            className="h-8 w-8 ring-2 ring-zinc-900 hover:translate-y-[-2px] transition-transform cursor-pointer"
+            userId={member.user_id}
+            className="relative z-[1] hover:z-10"
           >
-            <AvatarImage src={member.profiles.avatar_url || undefined} />
-            <AvatarFallback>
-              {member.profiles.username?.[0]?.toUpperCase() || '?'}
-            </AvatarFallback>
-          </Avatar>
+            <Avatar 
+              className="h-8 w-8 ring-2 ring-zinc-900 hover:translate-y-[-2px] transition-transform"
+            >
+              <AvatarImage src={member.profiles.avatar_url || undefined} />
+              <AvatarFallback>
+                {member.profiles.username?.[0]?.toUpperCase() || '?'}
+              </AvatarFallback>
+            </Avatar>
+          </MemberProfileLink>
         ))}
       </div>
       {remainingCount > 0 && (
