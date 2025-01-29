@@ -15,9 +15,16 @@ type Member = {
 interface CollapsibleMemberListProps {
   members: Member[];
   followingMap: Record<string, boolean>;
+  clubId: string;
+  totalCount: number;
 }
 
-export const CollapsibleMemberList = ({ members, followingMap }: CollapsibleMemberListProps) => {
+export const CollapsibleMemberList = ({ 
+  members, 
+  followingMap,
+  clubId,
+  totalCount 
+}: CollapsibleMemberListProps) => {
   return (
     <div className="p-2 bg-zinc-800/20 rounded-lg">
       <ScrollArea className="h-[300px] pr-4">
@@ -31,7 +38,7 @@ export const CollapsibleMemberList = ({ members, followingMap }: CollapsibleMemb
           ))}
         </div>
       </ScrollArea>
-      <MembersSheet />
+      <MembersSheet clubId={clubId} totalCount={totalCount} />
     </div>
   );
 };

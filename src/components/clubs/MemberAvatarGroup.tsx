@@ -74,6 +74,8 @@ export const MemberAvatarGroup = ({
         <CollapsibleMemberList 
           members={members}
           followingMap={followingMap}
+          clubId={clubId}
+          totalCount={members.length}
         />
       </CollapsibleContent>
     </Collapsible>
