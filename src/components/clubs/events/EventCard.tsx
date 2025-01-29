@@ -27,7 +27,7 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
       className="bg-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-800/70 transition-colors cursor-pointer border-0"
       onClick={() => navigate(`/events/${event.id}`)}
     >
-      <div className="flex justify-between items-start mb-4">
+      <div className="flex justify-between items-start mb-1 md:mb-4">
         <div>
           <EventTitle 
             id={event.id} 
