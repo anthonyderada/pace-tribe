@@ -9,7 +9,6 @@ import { FollowButton } from "@/components/profile/FollowButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { sortAndGroupMembers } from "./utils/memberSorting";
 
 interface MembersSheetProps {
   clubId: string;
@@ -117,34 +116,36 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
                 className="bg-zinc-800/50 hover:bg-zinc-800/70 transition-colors duration-200 border-0"
               >
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <MemberProfileLink userId={member.user_id}>
-                      <Avatar className="h-12 w-12">
-                        <AvatarImage src={member.profiles.avatar_url || undefined} />
-                        <AvatarFallback>
-                          {member.profiles.username?.[0]?.toUpperCase() || '?'}
-                        </AvatarFallback>
-                      </Avatar>
-                    </MemberProfileLink>
-                    <div className="flex-grow">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 flex-grow">
                       <MemberProfileLink userId={member.user_id}>
-                        <h3 className="text-sm font-medium text-zinc-100">
-                          {member.profiles.username || 'Anonymous'}
-                        </h3>
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={member.profiles.avatar_url || undefined} />
+                          <AvatarFallback>
+                            {member.profiles.username?.[0]?.toUpperCase() || '?'}
+                          </AvatarFallback>
+                        </Avatar>
                       </MemberProfileLink>
-                      <div className="flex flex-col gap-1">
+                      <div className="flex-grow min-w-0">
+                        <MemberProfileLink userId={member.user_id}>
+                          <h3 className="text-sm font-medium text-zinc-100 truncate">
+                            {member.profiles.username || 'Anonymous'}
+                          </h3>
+                        </MemberProfileLink>
                         {member.profiles.location && (
-                          <span className="text-xs text-zinc-400">
+                          <span className="text-xs text-zinc-400 block truncate">
                             {member.profiles.location}
                           </span>
                         )}
                       </div>
                     </div>
                     {user && user.id !== member.user_id && (
-                      <FollowButton
-                        userId={member.user_id}
-                        initialIsFollowing={followingMap[member.user_id] || false}
-                      />
+                      <div className="flex-shrink-0">
+                        <FollowButton
+                          userId={member.user_id}
+                          initialIsFollowing={followingMap[member.user_id] || false}
+                        />
+                      </div>
                     )}
                   </div>
                 </CardContent>
