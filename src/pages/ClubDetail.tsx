@@ -90,44 +90,39 @@ const ClubDetail = () => {
           )}
         </div>
         <CardContent className="p-6">
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
             <div>
               <h1 className="text-4xl font-bold text-zinc-100 mb-2">{club.name}</h1>
               {club.location && (
-                <div className="flex items-center gap-2 text-zinc-400">
+                <div className="flex items-center gap-2 text-zinc-400 mb-4">
                   <MapPin className="h-4 w-4" />
                   {club.location}
                 </div>
               )}
-            </div>
-
-            <div>
-              <p className="text-zinc-400">
+              <div className="flex flex-wrap gap-2 mb-4">
+                {club.club_label_assignments?.map((assignment) => (
+                  <Badge
+                    key={assignment.id}
+                    variant="secondary"
+                    className="bg-zinc-800 text-zinc-100"
+                  >
+                    {assignment.club_labels.name}
+                  </Badge>
+                ))}
+              </div>
+              <p className="text-zinc-400 mb-6">
                 {club.description || "No description available."}
               </p>
             </div>
-
-            <div className="flex flex-wrap gap-2">
-              {club.club_label_assignments?.map((assignment) => (
-                <Badge
-                  key={assignment.id}
-                  variant="secondary"
-                  className="bg-zinc-800 text-zinc-100"
-                >
-                  {assignment.club_labels.name}
-                </Badge>
-              ))}
-            </div>
-
-            <div className="space-y-4">
-              <MemberAvatarGroup 
-                members={club.club_members} 
-                clubId={club.id}
-              />
+            <div className="flex flex-col gap-4">
               <ClubMembershipButton
                 clubId={club.id}
                 isMember={isMember}
                 userId={user?.id}
+              />
+              <MemberAvatarGroup 
+                members={club.club_members} 
+                clubId={club.id}
               />
             </div>
           </div>
