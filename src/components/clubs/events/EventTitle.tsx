@@ -24,11 +24,11 @@ export const EventTitle = ({ id, title, isRecurring, isFree, className = "" }: E
         {title}
       </h4>
       <div className="flex items-center gap-2">
-        {isFree && (
-          <span className="text-sm text-zinc-400">FREE</span>
-        )}
         {isRecurring && (
           <Repeat className="h-4 w-4 text-white" strokeWidth={1.5} />
+        )}
+        {isFree && (
+          <span className="text-sm text-zinc-400">FREE</span>
         )}
       </div>
     </div>
