@@ -24,7 +24,7 @@ interface MemberAvatarGroupProps {
 export const MemberAvatarGroup = ({ 
   members, 
   clubId, 
-  maxVisible = 8 // Increased from 5 to 8
+  maxVisible = 8
 }: MemberAvatarGroupProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
@@ -74,6 +74,8 @@ export const MemberAvatarGroup = ({
         <CollapsibleMemberList 
           members={members}
           followingMap={followingMap}
+          clubId={clubId}
+          totalCount={members.length}
         />
       </CollapsibleContent>
     </Collapsible>

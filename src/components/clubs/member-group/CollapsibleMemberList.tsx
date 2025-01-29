@@ -21,6 +21,8 @@ interface CollapsibleMemberListProps {
 export const CollapsibleMemberList = ({ 
   members, 
   followingMap,
+  clubId,
+  totalCount,
 }: CollapsibleMemberListProps) => {
   return (
     <div className="p-2 bg-zinc-800/20 rounded-lg">
