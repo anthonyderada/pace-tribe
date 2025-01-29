@@ -1,30 +1,101 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberProfileLink } from "@/components/clubs/member-group/MemberProfileLink";
+import { FollowButton } from "@/components/profile/FollowButton";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState, useEffect } from "react";
 
 type Member = {
   id: string;
   username: string | null;
   avatar_url: string | null;
   location: string | null;
+  shared_events_count?: number;
 };
 
 const Members = () => {
+  const { user } = useAuth();
+  const [followingMap, setFollowingMap] = useState<Record<string, boolean>>({});
+
   const { data: members, isLoading } = useQuery({
     queryKey: ['members'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First get all members
+      const { data: membersData, error: membersError } = await supabase
         .from('profiles')
-        .select('id, username, avatar_url, location')
-        .order('username');
+        .select('id, username, avatar_url, location');
 
-      if (error) throw error;
-      return data as Member[];
+      if (membersError) throw membersError;
+
+      // If user is logged in, get shared events count for each member
+      if (user) {
+        const { data: userEvents, error: eventsError } = await supabase
+          .from('event_participants')
+          .select('event_id')
+          .eq('user_id', user.id);
+
+        if (eventsError) throw eventsError;
+
+        const userEventIds = userEvents.map(e => e.event_id);
+
+        // For each member, count shared events
+        const membersWithSharedEvents = await Promise.all(
+          membersData.map(async (member) => {
+            if (member.id === user.id) {
+              return { ...member, shared_events_count: 0 };
+            }
+
+            const { data: memberEvents, error: memberEventsError } = await supabase
+              .from('event_participants')
+              .select('event_id')
+              .eq('user_id', member.id)
+              .in('event_id', userEventIds);
+
+            if (memberEventsError) throw memberEventsError;
+
+            return {
+              ...member,
+              shared_events_count: memberEvents.length
+            };
+          })
+        );
+
+        return membersWithSharedEvents;
+      }
+
+      return membersData.map(member => ({ ...member, shared_events_count: 0 }));
     },
   });
+
+  useEffect(() => {
+    const fetchFollowStatus = async () => {
+      if (!user) return;
+      
+      const { data, error } = await supabase
+        .from('follows')
+        .select('following_id')
+        .eq('follower_id', user.id);
+
+      if (error) {
+        console.error('Error fetching follow status:', error);
+        return;
+      }
+
+      const followingSet = new Set(data.map(f => f.following_id));
+      const newFollowingMap: Record<string, boolean> = {};
+      members?.forEach(member => {
+        newFollowingMap[member.id] = followingSet.has(member.id);
+      });
+      setFollowingMap(newFollowingMap);
+    };
+
+    if (members) {
+      fetchFollowStatus();
+    }
+  }, [members, user]);
 
   if (isLoading) {
     return (
@@ -55,27 +126,39 @@ const Members = () => {
                 className="bg-zinc-800/50 hover:bg-zinc-800/70 transition-colors border-0"
               >
                 <CardContent className="p-4">
-                  <MemberProfileLink userId={member.id}>
-                    <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3">
+                    <MemberProfileLink userId={member.id}>
                       <Avatar className="h-12 w-12">
                         <AvatarImage src={member.avatar_url || undefined} />
                         <AvatarFallback>
                           {member.username?.[0]?.toUpperCase() || '?'}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
+                    </MemberProfileLink>
+                    <div className="flex-grow">
+                      <MemberProfileLink userId={member.id}>
                         <h3 className="font-semibold text-zinc-100">
                           {member.username || 'Anonymous'}
                         </h3>
+                      </MemberProfileLink>
+                      <div className="flex flex-col gap-0.5">
                         {member.location && (
-                          <p className="text-sm text-zinc-400 flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
+                          <span className="text-xs text-zinc-400">
                             {member.location}
-                          </p>
+                          </span>
+                        )}
+                        {user && member.shared_events_count! > 0 && (
+                          <span className="text-xs text-zinc-400">
+                            {member.shared_events_count} shared event{member.shared_events_count !== 1 ? 's' : ''}
+                          </span>
                         )}
                       </div>
                     </div>
-                  </MemberProfileLink>
+                    <FollowButton
+                      userId={member.id}
+                      initialIsFollowing={followingMap[member.id] || false}
+                    />
+                  </div>
                 </CardContent>
               </Card>
             ))}
