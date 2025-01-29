@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Event } from "./events/types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ClubEventsListProps {
   events: Event[];
@@ -13,6 +14,16 @@ interface ClubEventsListProps {
 
 export const ClubEventsList = ({ events, clubId, userId }: ClubEventsListProps) => {
   const queryClient = useQueryClient();
+  const now = new Date();
+
+  // Split events into upcoming and past
+  const upcomingEvents = events
+    .filter(event => new Date(event.date) >= now)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  const pastEvents = events
+    .filter(event => new Date(event.date) < now)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Most recent first
 
   const joinEventMutation = useMutation({
     mutationFn: async (eventId: string) => {
@@ -55,25 +66,55 @@ export const ClubEventsList = ({ events, clubId, userId }: ClubEventsListProps) 
     }
   });
 
+  const renderEventGrid = (eventList: Event[]) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {eventList.length > 0 ? (
+        eventList.map((event) => (
+          <EventCard
+            key={event.id}
+            event={event}
+            userId={userId}
+            onJoin={(eventId) => joinEventMutation.mutate(eventId)}
+            onLeave={(eventId) => leaveEventMutation.mutate(eventId)}
+            isLoading={joinEventMutation.isPending || leaveEventMutation.isPending}
+          />
+        ))
+      ) : (
+        <NoEvents />
+      )}
+    </div>
+  );
+
   return (
     <div className="pt-4">
-      <h2 className="text-2xl font-bold text-white mb-6">Upcoming Events</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {events && events.length > 0 ? (
-          events.map((event) => (
-            <EventCard
-              key={event.id}
-              event={event}
-              userId={userId}
-              onJoin={(eventId) => joinEventMutation.mutate(eventId)}
-              onLeave={(eventId) => leaveEventMutation.mutate(eventId)}
-              isLoading={joinEventMutation.isPending || leaveEventMutation.isPending}
-            />
-          ))
-        ) : (
-          <NoEvents />
-        )}
-      </div>
+      <Tabs defaultValue="upcoming" className="w-full">
+        <TabsList className="mb-6">
+          <TabsTrigger value="upcoming" className="flex items-center gap-2">
+            Upcoming Events
+            {upcomingEvents.length > 0 && (
+              <span className="bg-zinc-800 text-white px-2 py-0.5 rounded-full text-xs">
+                {upcomingEvents.length}
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="past" className="flex items-center gap-2">
+            Past Events
+            {pastEvents.length > 0 && (
+              <span className="bg-zinc-800 text-white px-2 py-0.5 rounded-full text-xs">
+                {pastEvents.length}
+              </span>
+            )}
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="upcoming" className="mt-0">
+          {renderEventGrid(upcomingEvents)}
+        </TabsContent>
+        
+        <TabsContent value="past" className="mt-0">
+          {renderEventGrid(pastEvents)}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
