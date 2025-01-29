@@ -2,7 +2,6 @@ import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MembersSheet } from "./MembersSheet";
 
 interface CollapsibleTriggerButtonProps {
   visibleMembers: {
@@ -20,9 +19,7 @@ interface CollapsibleTriggerButtonProps {
 export const CollapsibleTriggerButton = ({
   visibleMembers,
   remainingCount,
-  totalCount,
   isOpen,
-  clubId,
 }: CollapsibleTriggerButtonProps) => {
   return (
     <div className="flex items-center gap-2">
@@ -48,7 +45,6 @@ export const CollapsibleTriggerButton = ({
           )}
         </Button>
       </CollapsibleTrigger>
-      {isOpen && <MembersSheet clubId={clubId} totalCount={totalCount} />}
     </div>
   );
 };
