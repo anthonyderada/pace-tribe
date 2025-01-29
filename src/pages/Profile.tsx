@@ -6,6 +6,7 @@ import { ProfileContainer } from "@/components/profile/ProfileContainer";
 import { ProfileContent } from "@/components/profile/ProfileContent";
 
 type Profile = {
+  id: string;  // Added this line to fix the type error
   username: string | null;
   avatar_url: string | null;
   bio: string | null;
@@ -115,7 +116,7 @@ const Profile = () => {
         ]);
 
         if (profileData.error) throw profileData.error;
-        setProfile(profileData.data);
+        setProfile({ ...profileData.data, id: profileId }); // Ensure id is included
 
         if (accoladesData.data) {
           setAccolades(accoladesData.data);
