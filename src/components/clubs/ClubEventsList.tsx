@@ -3,17 +3,7 @@ import { NoEvents } from "./events/NoEvents";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-interface Event {
-  id: string;
-  title: string;
-  description: string | null;
-  date: string;
-  location: string | null;
-  distance: number | null;
-  pace: string | null;
-  event_participants: { user_id: string }[];
-}
+import { Event } from "./events/types";
 
 interface ClubEventsListProps {
   events: Event[];

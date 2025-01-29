@@ -4,15 +4,7 @@ import { EventTitle } from "./EventTitle";
 import { EventMetadata } from "./EventMetadata";
 import { EventRSVPButton } from "./EventRSVPButton";
 import { EventDescription } from "./EventDescription";
-import { Event } from "./types";
-
-interface EventCardProps {
-  event: Event;
-  userId?: string;
-  onJoin: (eventId: string) => void;
-  onLeave: (eventId: string) => void;
-  isLoading: boolean;
-}
+import { Event, EventCardProps } from "./types";
 
 export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCardProps) => {
   const navigate = useNavigate();
