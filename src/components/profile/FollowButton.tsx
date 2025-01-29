@@ -65,7 +65,7 @@ export const FollowButton = ({ userId, initialIsFollowing }: FollowButtonProps) 
       size="sm"
       onClick={handleFollowToggle}
       disabled={isLoading || !user}
-      className="ml-auto"
+      className="ml-auto text-xs font-medium"
     >
       {isFollowing ? (
         <>
