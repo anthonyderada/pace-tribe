@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { MessageCircle, Send } from "lucide-react";
@@ -43,7 +43,6 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
   useEffect(() => {
     if (!isOpen || !user) return;
 
-    // Fetch existing messages
     const fetchMessages = async () => {
       const { data, error } = await supabase
         .from('messages')
@@ -61,7 +60,6 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
 
     fetchMessages();
 
-    // Subscribe to new messages
     const channel = supabase
       .channel('chat_messages')
       .on(
@@ -90,11 +88,11 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
     try {
       const { error } = await supabase
         .from('messages')
-        .insert({
-          recipient_id: recipientId,
-          sender_id: user.id,
+        .insert([{
           content: newMessage.trim(),
-        });
+          recipient_id: recipientId,
+          sender_id: user.id
+        }]);
 
       if (error) throw error;
 
@@ -123,15 +121,18 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
         <MessageCircle className="h-4 w-4" />
         Message
       </Button>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-zinc-900 border-zinc-800">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-zinc-100">
             <Avatar className="h-8 w-8">
               <AvatarImage src={recipientAvatar || undefined} />
               <AvatarFallback>{recipientName[0]}</AvatarFallback>
             </Avatar>
             {recipientName}
           </DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            Send a message to {recipientName}
+          </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col h-[400px]">
           <ScrollArea className="flex-1 p-4">
@@ -144,8 +145,8 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
                   <div
                     className={`max-w-[80%] rounded-lg px-4 py-2 ${
                       message.sender_id === user?.id
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-zinc-800 text-zinc-100'
                     }`}
                   >
                     {message.content}
@@ -155,20 +156,21 @@ export const ChatRoom = ({ recipientId, recipientName, recipientAvatar }: ChatRo
               <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
-          <div className="p-4 border-t">
+          <div className="p-4 border-t border-zinc-800">
             <div className="flex gap-2">
               <Textarea
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message..."
-                className="min-h-[44px] resize-none"
+                className="min-h-[44px] resize-none bg-zinc-800 border-zinc-700 text-zinc-100 placeholder:text-zinc-400"
                 rows={1}
               />
               <Button
                 size="icon"
                 onClick={handleSendMessage}
                 disabled={!newMessage.trim() || isSending || !user}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white"
               >
                 <Send className="h-4 w-4" />
               </Button>
