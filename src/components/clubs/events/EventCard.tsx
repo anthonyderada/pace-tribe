@@ -4,7 +4,7 @@ import { EventTitle } from "./EventTitle";
 import { EventMetadata } from "./EventMetadata";
 import { EventRSVPButton } from "./EventRSVPButton";
 import { EventDescription } from "./EventDescription";
-import { Event, EventCardProps } from "./types";
+import { EventCardProps } from "./types";
 
 export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCardProps) => {
   const navigate = useNavigate();
@@ -43,6 +43,8 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
         location={event.location}
         distance={event.distance}
         pace={event.pace}
+        is_recurring={event.is_recurring}
+        recurrence_schedule={event.recurrence_schedule}
       />
       
       <EventDescription

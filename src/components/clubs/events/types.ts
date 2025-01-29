@@ -7,6 +7,8 @@ export interface Event {
   distance: number | null;
   pace: string | null;
   club_id?: string;
+  is_recurring?: boolean;
+  recurrence_schedule?: string | null;
   clubs?: {
     name: string;
     thumbnail_url: string | null;
@@ -26,6 +28,8 @@ export interface EventMetadataProps {
   location: string | null;
   distance: number | null;
   pace: string | null;
+  is_recurring?: boolean;
+  recurrence_schedule?: string | null;
 }
 
 export interface EventCardProps {

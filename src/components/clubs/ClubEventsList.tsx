@@ -56,21 +56,24 @@ export const ClubEventsList = ({ events, clubId, userId }: ClubEventsListProps) 
   });
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {events && events.length > 0 ? (
-        events.map((event) => (
-          <EventCard
-            key={event.id}
-            event={event}
-            userId={userId}
-            onJoin={(eventId) => joinEventMutation.mutate(eventId)}
-            onLeave={(eventId) => leaveEventMutation.mutate(eventId)}
-            isLoading={joinEventMutation.isPending || leaveEventMutation.isPending}
-          />
-        ))
-      ) : (
-        <NoEvents />
-      )}
+    <div>
+      <h2 className="text-2xl font-bold text-white mb-6">Upcoming Events</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {events && events.length > 0 ? (
+          events.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              userId={userId}
+              onJoin={(eventId) => joinEventMutation.mutate(eventId)}
+              onLeave={(eventId) => leaveEventMutation.mutate(eventId)}
+              isLoading={joinEventMutation.isPending || leaveEventMutation.isPending}
+            />
+          ))
+        ) : (
+          <NoEvents />
+        )}
+      </div>
     </div>
   );
 };

@@ -214,8 +214,10 @@ export type Database = {
           description: string | null
           distance: number | null
           id: string
+          is_recurring: boolean | null
           location: string | null
           pace: string | null
+          recurrence_schedule: string | null
           title: string
           updated_at: string
         }
@@ -226,8 +228,10 @@ export type Database = {
           description?: string | null
           distance?: number | null
           id?: string
+          is_recurring?: boolean | null
           location?: string | null
           pace?: string | null
+          recurrence_schedule?: string | null
           title: string
           updated_at?: string
         }
@@ -238,8 +242,10 @@ export type Database = {
           description?: string | null
           distance?: number | null
           id?: string
+          is_recurring?: boolean | null
           location?: string | null
           pace?: string | null
+          recurrence_schedule?: string | null
           title?: string
           updated_at?: string
         }
