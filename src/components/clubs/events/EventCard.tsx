@@ -31,11 +31,6 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
       <div className="flex justify-between items-start mb-1">
         <div>
           <EventTitle id={event.id} title={event.title} />
-          {event.is_recurring && event.recurrence_schedule && (
-            <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 hover:bg-zinc-600 whitespace-nowrap mt-2">
-              {event.recurrence_schedule}
-            </Badge>
-          )}
         </div>
         {userId && (
           <EventRSVPButton
@@ -54,6 +49,14 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
         is_recurring={event.is_recurring}
         recurrence_schedule={event.recurrence_schedule}
       />
+      
+      {event.is_recurring && event.recurrence_schedule && (
+        <div className="mb-3">
+          <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 hover:bg-zinc-600 whitespace-nowrap">
+            {event.recurrence_schedule}
+          </Badge>
+        </div>
+      )}
       
       <EventDescription
         description={event.description}
