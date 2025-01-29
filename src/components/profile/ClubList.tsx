@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { MapPin, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
@@ -49,8 +49,7 @@ export const ClubList = ({ joinedClubs }: ClubListProps) => {
                     <div className="flex-1">
                       <CardTitle className="text-lg text-zinc-100">{club.name}</CardTitle>
                       {club.location && (
-                        <CardDescription className="text-sm text-zinc-400 flex items-center gap-2">
-                          <MapPin className="h-4 w-4" />
+                        <CardDescription className="text-sm text-zinc-400">
                           {club.location}
                         </CardDescription>
                       )}
