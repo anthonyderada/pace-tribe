@@ -109,18 +109,21 @@ export type Database = {
           club_id: string | null
           created_at: string
           id: string
+          role: string | null
           user_id: string | null
         }
         Insert: {
           club_id?: string | null
           created_at?: string
           id?: string
+          role?: string | null
           user_id?: string | null
         }
         Update: {
           club_id?: string | null
           created_at?: string
           id?: string
+          role?: string | null
           user_id?: string | null
         }
         Relationships: [

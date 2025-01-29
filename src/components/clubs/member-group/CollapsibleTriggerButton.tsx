@@ -1,6 +1,6 @@
 import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Crown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface CollapsibleTriggerButtonProps {
@@ -10,6 +10,7 @@ interface CollapsibleTriggerButtonProps {
       avatar_url: string | null;
     };
     user_id: string;
+    role?: string;
   }[];
   remainingCount: number;
   totalCount: number;
@@ -39,6 +40,11 @@ export const CollapsibleTriggerButton = ({
                   {member.profiles.username?.[0]?.toUpperCase() || '?'}
                 </AvatarFallback>
               </Avatar>
+              {member.role === 'captain' && (
+                <div className="absolute -top-1 -right-1 bg-amber-500 rounded-full p-0.5" title="Club Captain">
+                  <Crown className="h-2.5 w-2.5 text-zinc-900" />
+                </div>
+              )}
             </div>
           ))}
         </div>
