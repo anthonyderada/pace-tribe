@@ -35,7 +35,11 @@ const ClubDetail = () => {
             *,
             event_participants (
               id,
-              user_id
+              user_id,
+              profiles (
+                username,
+                avatar_url
+              )
             )
           ),
           club_label_assignments (
