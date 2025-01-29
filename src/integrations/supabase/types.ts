@@ -145,6 +145,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_free: boolean | null
           location: string | null
           name: string
           thumbnail_url: string | null
@@ -154,6 +155,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_free?: boolean | null
           location?: string | null
           name: string
           thumbnail_url?: string | null
@@ -163,6 +165,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_free?: boolean | null
           location?: string | null
           name?: string
           thumbnail_url?: string | null
@@ -214,6 +217,7 @@ export type Database = {
           description: string | null
           distance: number | null
           id: string
+          is_free: boolean | null
           is_recurring: boolean | null
           location: string | null
           pace: string | null
@@ -228,6 +232,7 @@ export type Database = {
           description?: string | null
           distance?: number | null
           id?: string
+          is_free?: boolean | null
           is_recurring?: boolean | null
           location?: string | null
           pace?: string | null
@@ -242,6 +247,7 @@ export type Database = {
           description?: string | null
           distance?: number | null
           id?: string
+          is_free?: boolean | null
           is_recurring?: boolean | null
           location?: string | null
           pace?: string | null

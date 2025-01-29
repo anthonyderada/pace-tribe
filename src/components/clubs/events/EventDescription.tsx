@@ -4,7 +4,6 @@ import { EventParticipants } from "./EventParticipants";
 interface EventDescriptionProps {
   description: string | null;
   participantCount: number;
-  recurrenceSchedule?: string | null;
   participants?: { 
     user_id: string; 
     profiles?: { 
@@ -17,21 +16,12 @@ interface EventDescriptionProps {
 export const EventDescription = ({ 
   description, 
   participantCount,
-  recurrenceSchedule,
   participants = []
 }: EventDescriptionProps) => {
-  const baseDescription = description || "No description available";
-  const scheduleText = recurrenceSchedule ? (
-    <span className="inline-flex items-center rounded-full bg-zinc-700/50 px-2 py-0.5 text-xs font-medium text-zinc-300 ml-2 -mt-1.5">
-      {recurrenceSchedule}
-    </span>
-  ) : null;
-
   return (
     <>
       <p className="text-gray-400 line-clamp-3 mb-4">
-        {baseDescription}
-        {scheduleText}
+        {description || "No description available"}
       </p>
       <div className="flex justify-between items-center">
         <EventBadges />

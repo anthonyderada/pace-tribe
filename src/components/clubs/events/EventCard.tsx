@@ -30,7 +30,11 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
     >
       <div className="flex justify-between items-start mb-1">
         <div>
-          <EventTitle id={event.id} title={event.title} />
+          <EventTitle 
+            id={event.id} 
+            title={event.title} 
+            isRecurring={event.is_recurring}
+          />
         </div>
         {userId && (
           <EventRSVPButton
@@ -46,15 +50,12 @@ export const EventCard = ({ event, userId, onJoin, onLeave, isLoading }: EventCa
         location={event.location}
         distance={event.distance}
         pace={event.pace}
-        is_recurring={event.is_recurring}
-        recurrence_schedule={event.recurrence_schedule}
       />
       
       <EventDescription
         description={event.description}
         participantCount={event.event_participants?.length || 0}
         participants={event.event_participants}
-        recurrenceSchedule={event.is_recurring ? event.recurrence_schedule : undefined}
       />
     </Card>
   );
