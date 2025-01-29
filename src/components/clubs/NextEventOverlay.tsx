@@ -1,6 +1,5 @@
 import { format } from "date-fns";
 import { Calendar } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 interface NextEventOverlayProps {
@@ -23,18 +22,15 @@ export const NextEventOverlay = ({ event }: NextEventOverlayProps) => {
             {format(eventDate, 'EEEE h:mm a')}
             <Calendar className="h-4 w-4 flex-shrink-0" />
           </div>
-          <h4 className="text-white font-semibold line-clamp-2 text-right mb-2">{event.title}</h4>
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full border border-white bg-white/10 text-white hover:bg-white/20"
+          <h4 
+            className="text-white font-semibold line-clamp-2 text-right mb-2 cursor-pointer hover:text-zinc-200"
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/events/${event.id}`);
             }}
           >
-            RSVP
-          </Button>
+            {event.title}
+          </h4>
         </div>
         <div className="flex-shrink-0 bg-white text-black rounded-lg p-2 text-center min-w-14">
           <div className="text-xs font-semibold">{format(eventDate, 'MMM')}</div>
