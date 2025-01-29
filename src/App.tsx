@@ -10,6 +10,7 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Onboarding from "@/pages/Onboarding";
 import Members from "@/pages/Members";
+import EventDetail from "@/pages/EventDetail";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ function App() {
               <Route path="clubs/:id" element={<ClubDetail />} />
               <Route path="profile/:id" element={<Profile />} />
               <Route path="members" element={<Members />} />
+              <Route path="events/:id" element={<EventDetail />} />
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
               <Route path="onboarding" element={<Onboarding />} />
