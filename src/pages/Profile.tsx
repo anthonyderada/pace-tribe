@@ -66,29 +66,51 @@ const Profile = () => {
   const fromClubId = location.state?.fromClubId;
 
   useEffect(() => {
+    // If not logged in and trying to access own profile, redirect to login
     if (!user && !id) {
       navigate("/login");
       return;
     }
 
-    if (!profileId) return;
+    // If no profileId is available, show error
+    if (!profileId) {
+      setError("Profile not found");
+      setLoading(false);
+      return;
+    }
 
     const fetchProfileData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const [profileData, accoladesData, clubsData, eventsData] = await Promise.all([
-          supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", profileId)
-            .single(),
+        // Fetch profile data
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", profileId)
+          .maybeSingle();
+
+        if (profileError) {
+          console.error("Error fetching profile:", profileError);
+          throw new Error("Failed to load profile data");
+        }
+
+        if (!profileData) {
+          setError("Profile not found");
+          setLoading(false);
+          return;
+        }
+
+        setProfile({ ...profileData, id: profileId });
+
+        // Fetch remaining data in parallel
+        const [accoladesData, clubsData, eventsData] = await Promise.all([
           supabase
             .from("accolades")
             .select("*")
             .eq("user_id", profileId)
-            .single(),
+            .maybeSingle(),
           supabase
             .from("club_members")
             .select(`
@@ -120,13 +142,6 @@ const Profile = () => {
             `)
             .eq("user_id", profileId),
         ]);
-
-        if (profileData.error) {
-          console.error("Error fetching profile:", profileData.error);
-          throw new Error("Failed to load profile data");
-        }
-
-        setProfile({ ...profileData.data, id: profileId });
 
         if (accoladesData.data) {
           setAccolades(accoladesData.data);
@@ -202,7 +217,7 @@ const Profile = () => {
       />
 
       <ProfileContent
-        userId={profileId || ""}
+        userId={profileId}
         profile={profile}
         accolades={accolades}
         joinedClubs={joinedClubs}
