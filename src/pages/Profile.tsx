@@ -1,16 +1,9 @@
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { ProfileHeader } from "@/components/profile/ProfileHeader";
-import { PersonalBests } from "@/components/profile/PersonalBests";
-import { RunningPreferences } from "@/components/profile/RunningPreferences";
-import { ClubList } from "@/components/profile/ClubList";
-import { EventList } from "@/components/profile/EventList";
-import { FollowersSection } from "@/components/profile/FollowersSection";
-import { ArrowLeft } from "lucide-react";
+import { ProfileContainer } from "@/components/profile/ProfileContainer";
+import { ProfileContent } from "@/components/profile/ProfileContent";
 
 type Profile = {
   username: string | null;
@@ -76,159 +69,91 @@ const Profile = () => {
 
     if (!profileId) return;
 
-    async function getProfile() {
+    const fetchProfileData = async () => {
       try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("username, avatar_url, bio, location, preferred_distance, comfortable_pace, seeking_training_partners, seeking_casual_meetups, seeking_race_pacers, seeking_coach, preferred_shoe_brand")
-          .eq("id", profileId)
-          .single();
+        const [profileData, accoladesData, clubsData, eventsData] = await Promise.all([
+          supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", profileId)
+            .single(),
+          supabase
+            .from("accolades")
+            .select("*")
+            .eq("user_id", profileId)
+            .single(),
+          supabase
+            .from("club_members")
+            .select(`
+              club_id,
+              clubs (
+                id,
+                name,
+                location,
+                description,
+                thumbnail_url
+              )
+            `)
+            .eq("user_id", profileId),
+          supabase
+            .from("event_participants")
+            .select(`
+              event_id,
+              events (
+                id,
+                title,
+                date,
+                location,
+                distance,
+                pace,
+                clubs (
+                  name
+                )
+              )
+            `)
+            .eq("user_id", profileId),
+        ]);
 
-        if (error) throw error;
-        setProfile(data as Profile);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      }
-    }
+        if (profileData.error) throw profileData.error;
+        setProfile(profileData.data);
 
-    async function getAccolades() {
-      try {
-        const { data, error } = await supabase
-          .from("accolades")
-          .select("pb_5k, pb_10k, pb_half_marathon, pb_marathon")
-          .eq("user_id", profileId)
-          .single();
+        if (accoladesData.data) {
+          setAccolades(accoladesData.data);
+        }
 
-        if (error) throw error;
+        if (clubsData.data) {
+          const clubs = clubsData.data.map(item => ({
+            id: item.clubs.id,
+            name: item.clubs.name,
+            location: item.clubs.location,
+            description: item.clubs.description,
+            thumbnail_url: item.clubs.thumbnail_url
+          }));
+          setJoinedClubs(clubs);
+        }
 
-        if (data) {
-          setAccolades({
-            pb_5k: data.pb_5k as string | null,
-            pb_10k: data.pb_10k as string | null,
-            pb_half_marathon: data.pb_half_marathon as string | null,
-            pb_marathon: data.pb_marathon as string | null
-          });
+        if (eventsData.data) {
+          const events = eventsData.data.map(item => ({
+            id: item.events.id,
+            title: item.events.title,
+            date: item.events.date,
+            location: item.events.location,
+            distance: item.events.distance,
+            pace: item.events.pace,
+            club: {
+              name: item.events.clubs.name
+            }
+          }));
+          setRegisteredEvents(events);
         }
       } catch (error) {
-        console.error("Error fetching accolades:", error);
-      }
-    }
-
-    async function getJoinedClubs() {
-      try {
-        const { data, error } = await supabase
-          .from("club_members")
-          .select(`
-            club_id,
-            clubs (
-              id,
-              name,
-              location,
-              description,
-              thumbnail_url
-            )
-          `)
-          .eq("user_id", profileId);
-
-        if (error) throw error;
-
-        const clubs = data.map(item => ({
-          id: item.clubs.id,
-          name: item.clubs.name,
-          location: item.clubs.location,
-          description: item.clubs.description,
-          thumbnail_url: item.clubs.thumbnail_url
-        }));
-
-        setJoinedClubs(clubs);
-      } catch (error) {
-        console.error("Error fetching joined clubs:", error);
-      }
-    }
-
-    async function getRegisteredEvents() {
-      try {
-        const { data, error } = await supabase
-          .from("event_participants")
-          .select(`
-            event_id,
-            events (
-              id,
-              title,
-              date,
-              location,
-              distance,
-              pace,
-              clubs (
-                name
-              )
-            )
-          `)
-          .eq("user_id", profileId);
-
-        if (error) throw error;
-
-        const events = data.map(item => ({
-          id: item.events.id,
-          title: item.events.title,
-          date: item.events.date,
-          location: item.events.location,
-          distance: item.events.distance,
-          pace: item.events.pace,
-          club: {
-            name: item.events.clubs.name
-          }
-        }));
-
-        setRegisteredEvents(events);
-      } catch (error) {
-        console.error("Error fetching registered events:", error);
+        console.error("Error fetching profile data:", error);
       } finally {
         setLoading(false);
       }
-    }
-
-    getProfile();
-    getAccolades();
-    getJoinedClubs();
-    getRegisteredEvents();
-
-    const clubsChannel = supabase
-      .channel('schema-db-changes-clubs')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'club_members',
-          filter: `user_id=eq.${profileId}`
-        },
-        () => {
-          getJoinedClubs();
-        }
-      )
-      .subscribe();
-
-    const eventsChannel = supabase
-      .channel('schema-db-changes-events')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'event_participants',
-          filter: `user_id=eq.${profileId}`
-        },
-        () => {
-          getRegisteredEvents();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(clubsChannel);
-      supabase.removeChannel(eventsChannel);
     };
+
+    fetchProfileData();
   }, [user, navigate, profileId, id]);
 
   if (loading) {
@@ -245,45 +170,24 @@ const Profile = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {fromClubId && (
-        <Button
-          variant="ghost"
-          className="mb-4 text-zinc-400 hover:text-zinc-100"
-          onClick={() => navigate(`/clubs/${fromClubId}`)}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Club
-        </Button>
-      )}
+      <ProfileContainer
+        profile={profile}
+        user={user}
+        isOwnProfile={isOwnProfile}
+        fromClubId={fromClubId}
+        onProfileUpdate={(updates) => setProfile(prev => ({ ...prev!, ...updates }))}
+      />
 
-      <Card className="mb-8 border-0 bg-zinc-900/90">
-        <ProfileHeader
-          profile={profile}
-          user={isOwnProfile ? user : null}
-          onProfileUpdate={(updates) => isOwnProfile && setProfile(prev => ({ ...prev!, ...updates }))}
-        />
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <RunningPreferences
-          userId={profileId || ""}
-          profile={profile}
-          onPreferencesUpdate={(preferences) => isOwnProfile && setProfile(prev => ({ ...prev!, ...preferences }))}
-          isEditable={isOwnProfile}
-        />
-        
-        <PersonalBests
-          userId={profileId || ""}
-          accolades={accolades}
-          onAccoladesUpdate={(newAccolades) => isOwnProfile && setAccolades(newAccolades)}
-          isEditable={isOwnProfile}
-        />
-
-        <FollowersSection userId={profileId || ""} />
-
-        <ClubList joinedClubs={joinedClubs} />
-        <EventList registeredEvents={registeredEvents} />
-      </div>
+      <ProfileContent
+        userId={profileId || ""}
+        profile={profile}
+        accolades={accolades}
+        joinedClubs={joinedClubs}
+        registeredEvents={registeredEvents}
+        isEditable={isOwnProfile}
+        onPreferencesUpdate={(preferences) => setProfile(prev => ({ ...prev!, ...preferences }))}
+        onAccoladesUpdate={setAccolades}
+      />
     </div>
   );
 };
