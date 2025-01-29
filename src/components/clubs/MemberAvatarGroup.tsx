@@ -1,17 +1,9 @@
-import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
-import { 
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { CollapsedMemberView } from "./member-group/CollapsedMemberView";
-import { MemberRow } from "./member-group/MemberRow";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { MembersSheet } from "./member-group/MembersSheet";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
+import { CollapsibleTriggerButton } from "./member-group/CollapsibleTriggerButton";
+import { CollapsibleMemberList } from "./member-group/CollapsibleMemberList";
 
 type Member = {
   id: string;
@@ -29,7 +21,11 @@ interface MemberAvatarGroupProps {
   maxVisible?: number;
 }
 
-export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAvatarGroupProps) => {
+export const MemberAvatarGroup = ({ 
+  members, 
+  clubId, 
+  maxVisible = 5 
+}: MemberAvatarGroupProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
   const [followingMap, setFollowingMap] = useState<Record<string, boolean>>({});
@@ -67,36 +63,17 @@ export const MemberAvatarGroup = ({ members, clubId, maxVisible = 5 }: MemberAva
       onOpenChange={setIsOpen}
       className="w-full"
     >
-      <CollapsibleTrigger asChild>
-        <Button
-          variant="ghost"
-          className="w-full p-2 hover:bg-zinc-800/50 rounded-lg transition-colors"
-        >
-          <div className="flex items-center justify-between w-full">
-            <CollapsedMemberView 
-              visibleMembers={visibleMembers}
-              remainingCount={remainingCount}
-              totalCount={members.length}
-            />
-            <ChevronDown className={`h-4 w-4 text-zinc-400 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`} />
-          </div>
-        </Button>
-      </CollapsibleTrigger>
+      <CollapsibleTriggerButton 
+        visibleMembers={visibleMembers}
+        remainingCount={remainingCount}
+        totalCount={members.length}
+        isOpen={isOpen}
+      />
       <CollapsibleContent className="mt-2">
-        <div className="p-2 bg-zinc-800/20 rounded-lg">
-          <ScrollArea className="h-[300px] pr-4">
-            <div className="space-y-2">
-              {members.map((member) => (
-                <MemberRow
-                  key={member.id}
-                  member={member}
-                  isFollowing={followingMap[member.user_id] || false}
-                />
-              ))}
-            </div>
-          </ScrollArea>
-          <MembersSheet />
-        </div>
+        <CollapsibleMemberList 
+          members={members}
+          followingMap={followingMap}
+        />
       </CollapsibleContent>
     </Collapsible>
   );
