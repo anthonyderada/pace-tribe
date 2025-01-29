@@ -27,7 +27,8 @@ const ClubDetail = () => {
             user_id,
             profiles (
               username,
-              avatar_url
+              avatar_url,
+              location
             )
           ),
           events (
