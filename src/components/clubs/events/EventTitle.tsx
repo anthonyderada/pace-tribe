@@ -28,7 +28,7 @@ export const EventTitle = ({ id, title, isRecurring, isFree, className = "" }: E
           <Repeat className="h-4 w-4 text-white" strokeWidth={1.5} />
         )}
         {isFree && (
-          <span className="text-sm text-zinc-500">FREE</span>
+          <span className="text-sm text-zinc-500/70">FREE</span>
         )}
       </div>
     </div>
