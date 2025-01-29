@@ -1,6 +1,5 @@
 import { EventBadges } from "./EventBadges";
 import { EventParticipants } from "./EventParticipants";
-import { Badge } from "@/components/ui/badge";
 
 interface EventDescriptionProps {
   description: string | null;
@@ -21,20 +20,17 @@ export const EventDescription = ({
   recurrenceSchedule,
   participants = []
 }: EventDescriptionProps) => {
+  const fullDescription = recurrenceSchedule 
+    ? `${description || "No description available"} - ${recurrenceSchedule}`
+    : description || "No description available";
+
   return (
     <>
       <p className="text-gray-400 line-clamp-3 mb-4">
-        {description || "No description available"}
+        {fullDescription}
       </p>
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <EventBadges />
-          {recurrenceSchedule && (
-            <Badge variant="secondary" className="bg-zinc-700 text-zinc-300 hover:bg-zinc-600 whitespace-nowrap">
-              {recurrenceSchedule}
-            </Badge>
-          )}
-        </div>
+        <EventBadges />
         <EventParticipants 
           participantCount={participantCount} 
           participants={participants} 
