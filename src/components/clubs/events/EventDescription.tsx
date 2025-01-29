@@ -20,14 +20,18 @@ export const EventDescription = ({
   recurrenceSchedule,
   participants = []
 }: EventDescriptionProps) => {
-  const fullDescription = recurrenceSchedule 
-    ? `${description || "No description available"} - ${recurrenceSchedule}`
-    : description || "No description available";
+  const baseDescription = description || "No description available";
+  const scheduleText = recurrenceSchedule ? (
+    <span className="inline-flex items-center rounded-full bg-zinc-700/50 px-2 py-0.5 text-xs font-medium text-zinc-300 ml-2">
+      {recurrenceSchedule}
+    </span>
+  ) : null;
 
   return (
     <>
       <p className="text-gray-400 line-clamp-3 mb-4">
-        {fullDescription}
+        {baseDescription}
+        {scheduleText}
       </p>
       <div className="flex justify-between items-center">
         <EventBadges />
