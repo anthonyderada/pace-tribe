@@ -66,17 +66,17 @@ export const ProfileContent = ({
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <FollowersSection userId={userId} />
       
-      <RunningPreferences
-        userId={userId}
-        profile={profile}
-        onPreferencesUpdate={onPreferencesUpdate}
-        isEditable={isEditable}
-      />
-      
       <PersonalBests
         userId={userId}
         accolades={accolades}
         onAccoladesUpdate={onAccoladesUpdate}
+        isEditable={isEditable}
+      />
+      
+      <RunningPreferences
+        userId={userId}
+        profile={profile}
+        onPreferencesUpdate={onPreferencesUpdate}
         isEditable={isEditable}
       />
 
