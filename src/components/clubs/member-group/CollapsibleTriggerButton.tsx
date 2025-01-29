@@ -22,10 +22,13 @@ export const CollapsibleTriggerButton = ({
   isOpen,
 }: CollapsibleTriggerButtonProps) => {
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex -space-x-3">
+    <div className="flex items-center gap-4">
+      <div className="flex -space-x-2">
         {visibleMembers.map((member, index) => (
-          <Avatar key={index} className="h-6 w-6 ring-2 ring-zinc-900">
+          <Avatar 
+            key={index} 
+            className="h-8 w-8 ring-2 ring-zinc-900 hover:translate-y-[-2px] transition-transform cursor-pointer"
+          >
             <AvatarImage src={member.profiles.avatar_url || undefined} />
             <AvatarFallback>
               {member.profiles.username?.[0]?.toUpperCase() || '?'}
