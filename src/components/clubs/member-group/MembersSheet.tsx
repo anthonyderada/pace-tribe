@@ -9,6 +9,7 @@ import { FollowButton } from "@/components/profile/FollowButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { sortAndGroupMembers } from "./utils/memberSorting";
 
 interface MembersSheetProps {
   clubId: string;
@@ -57,22 +58,7 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
         role: member.role
       }));
 
-      // Separate captains and regular members
-      const captains = transformedMembers.filter(member => member.role === 'captain');
-      const regularMembers = transformedMembers.filter(member => member.role !== 'captain');
-      
-      // Randomize regular members
-      const shuffledRegularMembers = [...regularMembers].sort(() => Math.random() - 0.5);
-      
-      // Sort captains by username
-      const sortedCaptains = [...captains].sort((a, b) => {
-        const usernameA = a.username?.toLowerCase() || '';
-        const usernameB = b.username?.toLowerCase() || '';
-        return usernameA.localeCompare(usernameB);
-      });
-      
-      // Combine the arrays: captains first, then randomized regular members
-      return [...sortedCaptains, ...shuffledRegularMembers];
+      return sortAndGroupMembers(transformedMembers);
     },
   });
 

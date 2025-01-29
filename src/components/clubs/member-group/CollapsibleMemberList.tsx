@@ -1,5 +1,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MemberRow } from "./MemberRow";
+import { MemberListHeader } from "./MemberListHeader";
+import { sortAndGroupMembers } from "./utils/memberSorting";
 
 type Member = {
   id: string;
@@ -22,28 +24,13 @@ interface CollapsibleMemberListProps {
 export const CollapsibleMemberList = ({ 
   members, 
   followingMap,
-  clubId,
   totalCount,
 }: CollapsibleMemberListProps) => {
-  // First, separate captains and regular members
-  const captains = members.filter(member => member.role === 'captain');
-  const regularMembers = members.filter(member => member.role !== 'captain');
-  
-  // Randomize regular members
-  const shuffledRegularMembers = [...regularMembers].sort(() => Math.random() - 0.5);
-  
-  // Sort captains by username
-  const sortedCaptains = [...captains].sort((a, b) => {
-    const usernameA = a.profiles.username?.toLowerCase() || '';
-    const usernameB = b.profiles.username?.toLowerCase() || '';
-    return usernameA.localeCompare(usernameB);
-  });
-  
-  // Combine the arrays: captains first, then randomized regular members
-  const sortedMembers = [...sortedCaptains, ...shuffledRegularMembers];
+  const sortedMembers = sortAndGroupMembers(members);
 
   return (
     <div className="p-2 bg-zinc-800/20 rounded-lg">
+      <MemberListHeader totalCount={totalCount} />
       <ScrollArea className="h-[300px] pr-4">
         <div className="space-y-2">
           {sortedMembers.map((member) => (
