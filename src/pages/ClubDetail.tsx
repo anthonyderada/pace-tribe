@@ -1,60 +1,21 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Users, Calendar, Route, Timer, Loader2 } from "lucide-react";
+import { MapPin, Loader2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MemberAvatarGroup } from "@/components/clubs/MemberAvatarGroup";
+import { NextEventOverlay } from "@/components/clubs/NextEventOverlay";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-
-type Club = {
-  id: string;
-  name: string;
-  description: string | null;
-  location: string | null;
-  thumbnail_url: string | null;
-  club_members: {
-    id: string;
-    user_id: string;
-    profiles: {
-      username: string | null;
-      avatar_url: string | null;
-    };
-  }[];
-  events: {
-    id: string;
-    title: string;
-    description: string | null;
-    date: string;
-    location: string | null;
-    distance: number | null;
-    pace: string | null;
-    event_participants: {
-      id: string;
-      user_id: string;
-    }[];
-  }[];
-  club_label_assignments: {
-    id: string;
-    label_id: string;
-    club_labels: {
-      id: string;
-      name: string;
-    };
-  }[];
-};
 
 const ClubDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [isLoading, setIsLoading] = useState(true);
 
   const { data: club, isLoading: isClubLoading } = useQuery({
     queryKey: ['club', id],
@@ -92,32 +53,9 @@ const ClubDetail = () => {
 
       if (error) throw error;
       if (!data) throw new Error("Club not found");
-      return data as Club;
+      return data;
     },
   });
-
-  // Add real-time subscription for club members
-  useEffect(() => {
-    const channel = supabase
-      .channel('club-members-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'club_members',
-          filter: `club_id=eq.${id}`
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ['club', id] });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [id, queryClient]);
 
   const joinClubMutation = useMutation({
     mutationFn: async () => {
@@ -160,91 +98,44 @@ const ClubDetail = () => {
     }
   });
 
-  const joinEventMutation = useMutation({
-    mutationFn: async (eventId: string) => {
-      const { error } = await supabase
-        .from('event_participants')
-        .insert([{ event_id: eventId, user_id: user?.id }]);
-      
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['club', id] });
-      toast.success('Successfully registered for the event!');
-    },
-    onError: (error) => {
-      console.error('Error registering for event:', error);
-      toast.error('Failed to register for the event. Please try again.');
-    }
-  });
+  useEffect(() => {
+    const channel = supabase
+      .channel('club-members-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'club_members',
+          filter: `club_id=eq.${id}`
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['club', id] });
+        }
+      )
+      .subscribe();
 
-  const leaveEventMutation = useMutation({
-    mutationFn: async (eventId: string) => {
-      const { error } = await supabase
-        .from('event_participants')
-        .delete()
-        .eq('event_id', eventId)
-        .eq('user_id', user?.id);
-      
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['club', id] });
-      toast.success('Successfully unregistered from the event');
-    },
-    onError: (error) => {
-      console.error('Error unregistering from event:', error);
-      toast.error('Failed to unregister from the event. Please try again.');
-    }
-  });
-
-  const handleMembership = async () => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    const isMember = club?.club_members?.some(member => member.user_id === user?.id);
-    if (isMember) {
-      leaveClubMutation.mutate();
-    } else {
-      joinClubMutation.mutate();
-    }
-  };
-
-  const handleEventParticipation = (eventId: string, isParticipant: boolean, e: React.MouseEvent) => {
-    e.stopPropagation();
-    
-    if (!user) {
-      toast.error('Please log in to register for events');
-      return;
-    }
-
-    if (isParticipant) {
-      leaveEventMutation.mutate(eventId);
-    } else {
-      joinEventMutation.mutate(eventId);
-    }
-  };
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id, queryClient]);
 
   if (isClubLoading || !club) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
-          <CardHeader>
+          <CardContent className="p-6">
             <div className="h-8 w-3/4 bg-zinc-800 rounded animate-pulse" />
             <div className="h-4 w-1/2 bg-zinc-800 rounded animate-pulse mt-2" />
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="h-4 w-full bg-zinc-800 rounded animate-pulse" />
-              <div className="h-4 w-3/4 bg-zinc-800 rounded animate-pulse" />
-            </div>
           </CardContent>
         </Card>
       </div>
     );
   }
+
+  const nextEvent = club.events
+    ?.filter(event => new Date(event.date) > new Date())
+    ?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
 
   const isMember = club?.club_members?.some(member => member.user_id === user?.id);
   const isClubMutating = joinClubMutation.isPending || leaveClubMutation.isPending;
@@ -252,128 +143,88 @@ const ClubDetail = () => {
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl overflow-hidden">
-        {club.thumbnail_url && (
-          <div className="w-full h-64 relative">
-            <img
-              src={club.thumbnail_url}
-              alt={club.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-        <CardHeader>
-          <CardTitle className="text-4xl font-bold text-zinc-100">
-            {club?.name}
-          </CardTitle>
-          {club?.location && (
-            <CardDescription className="flex items-center gap-2 text-zinc-400">
-              <MapPin className="h-4 w-4" />
-              {club.location}
-            </CardDescription>
+        <div className="relative">
+          {club.thumbnail_url && (
+            <div className="w-full h-64 relative">
+              <img
+                src={club.thumbnail_url}
+                alt={club.name}
+                className="w-full h-full object-cover"
+              />
+              {nextEvent && <NextEventOverlay event={nextEvent} />}
+            </div>
           )}
-        </CardHeader>
-        <CardContent>
-          <div className="mb-6">
-            <h3 className="text-xl font-semibold mb-2 text-zinc-100">About</h3>
-            <p className="text-zinc-400">
-              {club?.description || "No description available."}
-            </p>
-          </div>
-
-          {club.club_label_assignments.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2 text-zinc-100">Labels</h3>
-              <div className="flex flex-wrap gap-2">
-                {club.club_label_assignments.map((assignment) => (
+        </div>
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div>
+              <h1 className="text-4xl font-bold text-zinc-100 mb-2">{club.name}</h1>
+              {club.location && (
+                <div className="flex items-center gap-2 text-zinc-400 mb-4">
+                  <MapPin className="h-4 w-4" />
+                  {club.location}
+                </div>
+              )}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {club.club_label_assignments?.map((assignment) => (
                   <Badge
                     key={assignment.id}
                     variant="secondary"
-                    className="bg-zinc-800 text-zinc-100 pointer-events-none"
+                    className="bg-zinc-800 text-zinc-100"
                   >
                     {assignment.club_labels.name}
                   </Badge>
                 ))}
               </div>
+              <p className="text-zinc-400 mb-6">
+                {club.description || "No description available."}
+              </p>
             </div>
-          )}
-
-          <div className="flex items-center gap-2 mb-6">
-            <Users className="h-5 w-5 text-zinc-400" />
-            <span className="text-zinc-400">
-              {club?.club_members?.length} members
-            </span>
-          </div>
-
-          {user ? (
-            <Button
-              className={`w-full ${
-                isMember
-                  ? "border border-white text-white bg-transparent hover:bg-white/10"
-                  : "border border-white bg-white text-black hover:bg-gray-100"
-              }`}
-              onClick={handleMembership}
-              disabled={isClubMutating}
-            >
-              {isClubMutating ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : isMember ? (
-                "Leave Club"
-              ) : (
-                "Join Club"
-              )}
-            </Button>
-          ) : (
-            <Button
-              className="w-full border border-white bg-white text-black hover:bg-gray-100"
-              onClick={() => navigate("/login")}
-            >
-              Login to Join
-            </Button>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-zinc-100">
-            Members ({club.club_members.length})
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {club.club_members.length === 0 ? (
-              <p className="text-zinc-400 col-span-full">No members yet. Be the first to join!</p>
-            ) : (
-              club.club_members.map((member) => (
-                <div
-                  key={member.id}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-800/50 transition-colors cursor-pointer"
-                  onClick={() => navigate(`/profile/${member.user_id}`)}
+            <div className="flex flex-col gap-4">
+              {user ? (
+                <Button
+                  className={`w-full min-w-32 ${
+                    isMember
+                      ? "border border-white text-white bg-transparent hover:bg-white/10"
+                      : "border border-white bg-white text-black hover:bg-gray-100"
+                  }`}
+                  onClick={() => {
+                    if (isMember) {
+                      leaveClubMutation.mutate();
+                    } else {
+                      joinClubMutation.mutate();
+                    }
+                  }}
+                  disabled={isClubMutating}
                 >
-                  <Avatar>
-                    <AvatarImage src={member.profiles.avatar_url || undefined} />
-                    <AvatarFallback>
-                      {member.profiles.username?.[0]?.toUpperCase() || '?'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-zinc-200">
-                    {member.profiles.username || 'Anonymous'}
-                  </span>
-                </div>
-              ))
-            )}
+                  {isClubMutating ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : isMember ? (
+                    "Leave Club"
+                  ) : (
+                    "Join Club"
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  className="w-full min-w-32 border border-white bg-white text-black hover:bg-gray-100"
+                  onClick={() => navigate("/login")}
+                >
+                  Login to Join
+                </Button>
+              )}
+              <MemberAvatarGroup 
+                members={club.club_members} 
+                clubId={club.id}
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
 
       <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-zinc-100">
-            Upcoming Events
-          </CardTitle>
-        </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {club.events && club.events.length > 0 ? (
               club.events.map((event) => {
                 const isParticipant = event.event_participants?.some(participant => participant.user_id === user?.id);
@@ -396,7 +247,14 @@ const ClubDetail = () => {
                               ? "border border-white text-white bg-transparent hover:bg-white/10"
                               : "border border-white bg-white text-black hover:bg-gray-100"
                           }`}
-                          onClick={(e) => handleEventParticipation(event.id, isParticipant, e)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (isParticipant) {
+                              leaveEventMutation.mutate(event.id);
+                            } else {
+                              joinEventMutation.mutate(event.id);
+                            }
+                          }}
                           disabled={isLoading}
                         >
                           {isLoading ? (
