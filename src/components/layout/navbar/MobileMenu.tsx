@@ -67,14 +67,7 @@ export const MobileMenu = () => {
           <span className="relative">Clubs</span>
         </DropdownMenuItem>
         <DropdownMenuItem 
-          onClick={() => navigate("/events")} 
-          className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-3 px-4 transition-all duration-200 relative overflow-hidden group"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
-          <span className="relative">Events</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => navigate("/profile")} 
+          onClick={() => navigate(`/profile/${user.id}`)} 
           className="text-base text-white hover:text-white focus:text-white hover:bg-white/10 focus:bg-white/10 py-3 px-4 transition-all duration-200 relative overflow-hidden group"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
