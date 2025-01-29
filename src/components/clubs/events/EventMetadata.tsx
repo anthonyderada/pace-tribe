@@ -17,9 +17,11 @@ export const EventMetadata = ({
         {format(new Date(date), "MMM d, yyyy - h:mm a")}
       </div>
       {is_recurring && recurrence_schedule && (
-        <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-          <Repeat className="h-4 w-4" />
-          {recurrence_schedule}
+        <div className="flex items-center gap-2 mb-2">
+          <Repeat className="h-4 w-4 text-emerald-400" />
+          <span className="text-sm font-medium text-emerald-400">
+            {recurrence_schedule}
+          </span>
         </div>
       )}
       {location && (
