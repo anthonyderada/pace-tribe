@@ -34,6 +34,7 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
   const { data: members, isLoading } = useQuery({
     queryKey: ['club-members', clubId],
     queryFn: async () => {
+      console.log('Fetching members with roles...');
       const { data: membersData, error: membersError } = await supabase
         .from('club_members')
         .select(`
@@ -48,7 +49,11 @@ export const MembersSheet = ({ clubId, totalCount }: MembersSheetProps) => {
         `)
         .eq('club_id', clubId);
 
-      if (membersError) throw membersError;
+      if (membersError) {
+        console.error('Error fetching members:', membersError);
+        throw membersError;
+      }
+      console.log('Fetched members:', membersData);
       return membersData as Member[];
     },
   });
