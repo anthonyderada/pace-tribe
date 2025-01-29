@@ -30,8 +30,8 @@ export const MemberRow = ({ member, isFollowing }: MemberRowProps) => {
         userId={member.user_id}
         className="flex-grow"
       >
-        <div className="flex flex-col">
-          <span className="text-xs text-white font-normal tracking-wide cursor-pointer hover:text-zinc-300">
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium text-white tracking-wide cursor-pointer hover:text-zinc-300">
             {member.profiles.username || 'Anonymous'}
           </span>
           {member.profiles.location && (
