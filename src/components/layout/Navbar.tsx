@@ -11,7 +11,7 @@ export const Navbar = () => {
   return (
     <nav className="bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 md:h-20 pt-4 md:pt-0">
+        <div className="flex justify-between h-16 md:h-20 pt-6 md:pt-5">
           <div className="flex">
             <Logo />
           </div>
