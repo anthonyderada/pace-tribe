@@ -14,6 +14,11 @@ export interface ClubMember {
   user_id: string;
 }
 
+interface MeetingTime {
+  day: string;
+  time: string;
+}
+
 export interface Club {
   id: string;
   name: string;
@@ -22,4 +27,5 @@ export interface Club {
   thumbnail_url?: string;
   club_members?: ClubMember[];
   club_label_assignments?: ClubLabelAssignment[];
+  meeting_schedule?: MeetingTime[] | null;
 }

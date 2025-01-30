@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, Route, Trophy, Loader2 } from "lucide-react";
 import { Club } from "./types";
 import { useClubActions } from "./useClubActions";
+import { MeetingScheduleOverlay } from "./MeetingScheduleOverlay";
 
 interface ClubCardProps {
   club: Club;
@@ -15,15 +16,18 @@ const ClubCard = ({ club, userId }: ClubCardProps) => {
 
   return (
     <Card 
-      className="bg-black/50 rounded-2xl overflow-hidden hover:bg-black/60 transition-colors cursor-pointer border-0 transform hover:scale-[1.02] transition-all duration-300"
+      className="bg-black/50 rounded-2xl overflow-hidden hover:bg-black/60 transition-colors cursor-pointer border-0 transform hover:scale-[1.02] transition-all duration-300 relative"
     >
       <CardContent className="p-0">
         {club.thumbnail_url ? (
-          <img 
-            src={club.thumbnail_url} 
-            alt={club.name}
-            className="w-full h-48 object-cover"
-          />
+          <div className="relative">
+            <img 
+              src={club.thumbnail_url} 
+              alt={club.name}
+              className="w-full h-48 object-cover"
+            />
+            <MeetingScheduleOverlay schedule={club.meeting_schedule} />
+          </div>
         ) : (
           <div className="w-full h-48 bg-white/10 flex items-center justify-center">
             <span className="text-white/60">No image</span>

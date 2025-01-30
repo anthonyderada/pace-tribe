@@ -150,6 +150,7 @@ export type Database = {
           id: string
           is_free: boolean | null
           location: string | null
+          meeting_schedule: Json | null
           name: string
           thumbnail_url: string | null
           updated_at: string
@@ -160,6 +161,7 @@ export type Database = {
           id?: string
           is_free?: boolean | null
           location?: string | null
+          meeting_schedule?: Json | null
           name: string
           thumbnail_url?: string | null
           updated_at?: string
@@ -170,6 +172,7 @@ export type Database = {
           id?: string
           is_free?: boolean | null
           location?: string | null
+          meeting_schedule?: Json | null
           name?: string
           thumbnail_url?: string | null
           updated_at?: string
