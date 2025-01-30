@@ -46,8 +46,8 @@ export const ProfileAvatar = ({
 
   return (
     <div className="relative group w-32 h-32">
-      {/* Gradient border container */}
-      <div className="absolute inset-0 p-1 rounded-full bg-gradient-to-tr from-emerald-500 via-zinc-400 to-emerald-500 animate-gradient">
+      {/* White border container */}
+      <div className="absolute inset-0 p-1 rounded-full bg-white">
         <Avatar className="w-full h-full">
           {isEditing ? (
             <>
@@ -59,7 +59,7 @@ export const ProfileAvatar = ({
           ) : (
             <>
               <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
-              <AvatarFallback className="bg-emerald-600 text-4xl text-white">
+              <AvatarFallback className="bg-zinc-800 text-4xl text-white">
                 {profile?.username?.[0]?.toUpperCase() || userEmail?.[0]?.toUpperCase()}
               </AvatarFallback>
             </>

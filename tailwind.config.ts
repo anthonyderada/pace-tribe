@@ -1,14 +1,13 @@
-import type { Config } from "tailwindcss";
+import { type Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
   ],
-  prefix: "",
   theme: {
     container: {
       center: true,
@@ -18,34 +17,7 @@ export default {
       },
     },
     extend: {
-      fontFamily: {
-        sans: ["Inter", "sans-serif"],
-      },
       colors: {
-        background: {
-          light: "#FFFFFF",
-          dark: "#0C0C0C",
-        },
-        text: {
-          primary: "#171717",
-          secondary: "#666666",
-          dark: "#F5F5F5",
-        },
-        accent: {
-          primary: "#10B981",
-          light: "#D1FAE5",
-          dark: "#059669",
-        },
-        gray: {
-          light: "#F3F4F6",
-          medium: "#E5E7EB",
-          dark: "#4B5563",
-        },
-        status: {
-          error: "#EF4444",
-          success: "#10B981",
-          warning: "#F59E0B",
-        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -94,23 +66,12 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        gradient: {
-          '0%, 100%': {
-            'background-size': '200% 200%',
-            'background-position': 'left center'
-          },
-          '50%': {
-            'background-size': '200% 200%',
-            'background-position': 'right center'
-          },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "gradient": "gradient 8s ease infinite",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config;
+} satisfies Config
