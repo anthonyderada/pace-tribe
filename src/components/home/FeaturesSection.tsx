@@ -1,4 +1,4 @@
-import { Navigation, Users, MapPin, Road } from "lucide-react";
+import { Navigation, Users, MapPin, Route } from "lucide-react";
 
 const FeaturesSection = () => {
   return (
@@ -34,7 +34,7 @@ const FeaturesSection = () => {
           </div>
           <div className="text-center">
             <div className="flex justify-center mb-6">
-              <Road className="w-10 h-10 text-white" />
+              <Route className="w-10 h-10 text-white" />
             </div>
             <h3 className="text-xl font-semibold text-white mb-4">Road</h3>
             <p className="text-gray-400">
