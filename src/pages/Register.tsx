@@ -43,7 +43,6 @@ const Register = () => {
       
       if (error) throw error;
       
-      // If we have data but no error, the OAuth flow has started
       if (data) {
         toast({
           title: "Redirecting to Google",
