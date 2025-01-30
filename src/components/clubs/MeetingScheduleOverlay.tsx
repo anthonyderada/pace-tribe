@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { Circle } from "lucide-react";
 
 interface MeetingTime {
   day: string;
@@ -9,19 +9,36 @@ interface MeetingScheduleOverlayProps {
   schedule: MeetingTime[] | null;
 }
 
+const dayAbbreviations: { [key: string]: string } = {
+  'Monday': 'M',
+  'Tuesday': 'T',
+  'Wednesday': 'W',
+  'Thursday': 'T',
+  'Friday': 'F',
+  'Saturday': 'S',
+  'Sunday': 'S'
+};
+
 export const MeetingScheduleOverlay = ({ schedule }: MeetingScheduleOverlayProps) => {
   if (!schedule || schedule.length === 0) return null;
 
-  const formatSchedule = () => {
-    const days = schedule.map(s => s.day).join(", ");
-    const time = schedule[0].time; // Assuming same time for all days
-    return `${days} | ${time}`;
-  };
+  const time = schedule[0].time; // Assuming same time for all days
+  const days = schedule.map(s => dayAbbreviations[s.day]);
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-black/60 px-6 py-3 text-white/90 text-sm">
-      <div className="flex items-center gap-2">
-        <span className="truncate">{formatSchedule()}</span>
+    <div className="absolute bottom-0 left-0 right-0 bg-black/60 px-4 py-3 flex justify-between items-center">
+      <div className="flex items-center gap-1">
+        {days.map((day, index) => (
+          <div key={index} className="relative">
+            <Circle className="h-5 w-5 text-white/70" />
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-white">
+              {day}
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="text-white font-bold text-base">
+        {time}
       </div>
     </div>
   );
