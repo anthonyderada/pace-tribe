@@ -37,7 +37,7 @@ export const ProfileContainer = ({
   const navigate = useNavigate();
 
   return (
-    <div className="bg-black">
+    <>
       {fromClubId && (
         <Button
           variant="ghost"
@@ -56,6 +56,6 @@ export const ProfileContainer = ({
           onProfileUpdate={(updates) => isOwnProfile && onProfileUpdate(updates)}
         />
       </div>
-    </div>
+    </>
   );
 };
