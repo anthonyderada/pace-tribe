@@ -32,7 +32,10 @@ const VideoBackground = () => {
             opacity: '0.75',
             filter: 'grayscale(100%) brightness(30%)',
             transform: 'scale(1.2)',
-            transformOrigin: 'center center'
+            transformOrigin: 'center center',
+            '@media (max-width: 768px)': {
+              transform: 'scale(3)',
+            }
           }}
         />
       </div>
