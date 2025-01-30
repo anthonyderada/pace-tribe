@@ -5,6 +5,7 @@ import { Pencil, Save, Trophy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { TimeInput } from "./TimeInput";
+import { useQuery } from "@tanstack/react-query";
 
 type Time = {
   hours: string;
@@ -20,6 +21,32 @@ const parseIntervalToTime = (interval: string | null): Time => {
     minutes: minutes.padStart(2, '0'),
     seconds: seconds.padStart(2, '0')
   };
+};
+
+const intervalToSeconds = (interval: string | null): number => {
+  if (!interval) return 0;
+  const time = parseIntervalToTime(interval);
+  return (
+    parseInt(time.hours) * 3600 +
+    parseInt(time.minutes) * 60 +
+    parseInt(time.seconds)
+  );
+};
+
+const formatTimeDifference = (diff: number): string => {
+  if (diff === 0) return "Equal";
+  const isPositive = diff > 0;
+  const absDiff = Math.abs(diff);
+  const hours = Math.floor(absDiff / 3600);
+  const minutes = Math.floor((absDiff % 3600) / 60);
+  const seconds = absDiff % 60;
+
+  const parts = [];
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0) parts.push(`${minutes}m`);
+  if (seconds > 0) parts.push(`${seconds}s`);
+
+  return `${isPositive ? '+' : '-'} ${parts.join(' ')}`;
 };
 
 type PersonalBestsProps = {
@@ -46,6 +73,24 @@ export const PersonalBests = ({ userId, accolades, onAccoladesUpdate, isEditable
   const [pb10kTime, setPb10kTime] = useState<Time>(parseIntervalToTime(accolades?.pb_10k));
   const [pbHalfTime, setPbHalfTime] = useState<Time>(parseIntervalToTime(accolades?.pb_half_marathon));
   const [pbMarathonTime, setPbMarathonTime] = useState<Time>(parseIntervalToTime(accolades?.pb_marathon));
+
+  // Fetch current user's PRs for comparison
+  const { data: currentUserAccolades } = useQuery({
+    queryKey: ['current-user-accolades'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      
+      const { data } = await supabase
+        .from("accolades")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+      
+      return data;
+    },
+    enabled: !isEditable, // Only fetch when viewing another user's profile
+  });
 
   const formatTimeToInterval = (time: Time) => {
     return `${time.hours}:${time.minutes}:${time.seconds}`;
@@ -95,6 +140,20 @@ export const PersonalBests = ({ userId, accolades, onAccoladesUpdate, isEditable
     if (seconds !== "00") formattedTime.push(`${parseInt(seconds)}s`);
     
     return formattedTime.join(' ') || "Not set";
+  };
+
+  const renderComparison = (userTime: string | null, currentUserTime: string | null) => {
+    if (!userTime || !currentUserTime) return null;
+    
+    const diff = intervalToSeconds(userTime) - intervalToSeconds(currentUserTime);
+    const comparisonText = formatTimeDifference(diff);
+    const textColor = diff === 0 ? "text-zinc-400" : diff < 0 ? "text-green-400" : "text-red-400";
+    
+    return (
+      <span className={`text-sm ${textColor}`}>
+        {comparisonText}
+      </span>
+    );
   };
 
   return (
@@ -183,19 +242,39 @@ export const PersonalBests = ({ userId, accolades, onAccoladesUpdate, isEditable
             <div className="grid grid-cols-2 gap-6">
               <div className="bg-zinc-800/50 p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-zinc-400 mb-1">5K</h3>
-                <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_5k)}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_5k)}</p>
+                  {!isEditable && currentUserAccolades && (
+                    renderComparison(accolades?.pb_5k, currentUserAccolades.pb_5k)
+                  )}
+                </div>
               </div>
               <div className="bg-zinc-800/50 p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-zinc-400 mb-1">10K</h3>
-                <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_10k)}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_10k)}</p>
+                  {!isEditable && currentUserAccolades && (
+                    renderComparison(accolades?.pb_10k, currentUserAccolades.pb_10k)
+                  )}
+                </div>
               </div>
               <div className="bg-zinc-800/50 p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-zinc-400 mb-1">Half Marathon</h3>
-                <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_half_marathon)}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_half_marathon)}</p>
+                  {!isEditable && currentUserAccolades && (
+                    renderComparison(accolades?.pb_half_marathon, currentUserAccolades.pb_half_marathon)
+                  )}
+                </div>
               </div>
               <div className="bg-zinc-800/50 p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-zinc-400 mb-1">Marathon</h3>
-                <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_marathon)}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_marathon)}</p>
+                  {!isEditable && currentUserAccolades && (
+                    renderComparison(accolades?.pb_marathon, currentUserAccolades.pb_marathon)
+                  )}
+                </div>
               </div>
             </div>
           </div>
