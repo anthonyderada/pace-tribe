@@ -30,7 +30,8 @@ const FeaturedClubs = () => {
             )
           )
         `)
-        .order('created_at', { ascending: false })
+        .order('name', { ascending: true }) // Order by name to ensure consistent ordering
+        .in('name', ['Speed and Form', 'iRun']) // Specify the clubs we want to show first
         .limit(3);
       
       if (error) throw error;
