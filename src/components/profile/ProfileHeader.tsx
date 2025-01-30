@@ -61,6 +61,8 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
   });
 
   const handleImageUpload = async (imageData: string) => {
+    if (!imageData) return;
+    
     try {
       setUploading(true);
       
@@ -98,6 +100,10 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
         title: "Success",
         description: "Profile picture updated successfully.",
       });
+      
+      // Close the crop dialog after successful upload
+      setCropDialogOpen(false);
+      setSelectedImage(null);
     } catch (error: any) {
       console.error('Error uploading image:', error);
       toast({
@@ -117,18 +123,20 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
         uploading={uploading}
         profile={profile}
         userEmail={user?.email}
-        onImageUpload={(imageData) => {
-          handleImageUpload(imageData);
+        onImageSelect={(imageData) => {
+          setSelectedImage(imageData);
+          setCropDialogOpen(true);
         }}
       />
       {selectedImage && (
         <ImageCropDialog
           open={cropDialogOpen}
-          onClose={() => setCropDialogOpen(false)}
-          imageSrc={selectedImage}
-          onCropComplete={(croppedImage) => {
-            handleImageUpload(croppedImage);
+          onClose={() => {
+            setCropDialogOpen(false);
+            setSelectedImage(null);
           }}
+          imageSrc={selectedImage}
+          onCropComplete={handleImageUpload}
         />
       )}
       {isEditing ? (
@@ -141,7 +149,7 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
           onLocationChange={setLocation}
           onBioChange={setBio}
           onSave={() => {
-            handleImageUpload(selectedImage || "");
+            onProfileUpdate({ username, bio, location });
             setIsEditing(false);
           }}
           onCancel={() => {

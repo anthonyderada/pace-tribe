@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Upload } from "lucide-react";
-import { ImageCropDialog } from "./ImageCropDialog";
 
 interface ProfileAvatarProps {
   isEditing: boolean;
@@ -12,7 +11,7 @@ interface ProfileAvatarProps {
     username: string | null;
   } | null;
   userEmail?: string;
-  onImageUpload: (imageData: string) => void;
+  onImageSelect: (imageData: string) => void;
 }
 
 export const ProfileAvatar = ({
@@ -20,11 +19,9 @@ export const ProfileAvatar = ({
   uploading,
   profile,
   userEmail,
-  onImageUpload,
+  onImageSelect,
 }: ProfileAvatarProps) => {
   const [error, setError] = useState<string | null>(null);
-  const [cropDialogOpen, setCropDialogOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -41,15 +38,10 @@ export const ProfileAvatar = ({
       
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-        setCropDialogOpen(true);
+        onImageSelect(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const handleCropComplete = (croppedImage: string) => {
-    onImageUpload(croppedImage);
   };
 
   return (
@@ -95,14 +87,6 @@ export const ProfileAvatar = ({
         <div className="absolute -bottom-6 left-0 right-0 text-center text-red-500 text-sm">
           {error}
         </div>
-      )}
-      {selectedImage && (
-        <ImageCropDialog
-          open={cropDialogOpen}
-          onClose={() => setCropDialogOpen(false)}
-          imageSrc={selectedImage}
-          onCropComplete={handleCropComplete}
-        />
       )}
     </div>
   );
