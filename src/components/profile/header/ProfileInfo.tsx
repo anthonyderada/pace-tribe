@@ -53,8 +53,8 @@ export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfo
               className="hover:opacity-80 transition-opacity"
             >
               <Badge
-                variant="secondary"
-                className="bg-zinc-800 text-zinc-100 hover:bg-zinc-700 cursor-pointer"
+                variant="outline"
+                className="bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20 cursor-pointer"
               >
                 {role.clubs.name}
               </Badge>
