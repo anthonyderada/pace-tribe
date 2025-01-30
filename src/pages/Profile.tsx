@@ -22,10 +22,16 @@ const Profile = () => {
     error
   } = useProfileData(profileId);
 
-  const isOwnProfile = user?.id === profileId;
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     if (error) {
+      console.error("Profile error:", error);
       toast({
         title: "Error",
         description: "Failed to load profile data. Please try again.",
@@ -35,13 +41,11 @@ const Profile = () => {
     }
   }, [error, navigate, toast]);
 
-  if (isLoading) {
-    return <LoadingState />;
-  }
+  if (!user) return null;
+  if (isLoading) return <LoadingState />;
+  if (!profile) return null;
 
-  if (!profile) {
-    return null;
-  }
+  const isOwnProfile = user?.id === profileId;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white pb-12">
@@ -50,7 +54,6 @@ const Profile = () => {
         user={user}
         isOwnProfile={isOwnProfile}
         onProfileUpdate={(updates) => {
-          // Profile updates will be handled by react-query cache updates
           toast({
             title: "Success",
             description: "Profile updated successfully.",
@@ -66,14 +69,12 @@ const Profile = () => {
           registeredEvents={registeredEvents || []}
           isEditable={isOwnProfile}
           onPreferencesUpdate={(preferences) => {
-            // Preferences updates will be handled by react-query cache updates
             toast({
               title: "Success",
               description: "Preferences updated successfully.",
             });
           }}
           onAccoladesUpdate={(newAccolades) => {
-            // Accolades updates will be handled by react-query cache updates
             toast({
               title: "Success",
               description: "Personal bests updated successfully.",
