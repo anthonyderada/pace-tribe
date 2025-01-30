@@ -66,15 +66,14 @@ export const ImageCropDialog = ({
         crop as unknown as PixelCrop
       );
       onCropComplete(croppedImageUrl);
-      onClose();
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] bg-zinc-900 border-zinc-800">
         <DialogHeader>
-          <DialogTitle>Crop Image</DialogTitle>
+          <DialogTitle className="text-zinc-100">Adjust Profile Picture</DialogTitle>
         </DialogHeader>
         <div className="mt-4">
           <ReactCrop
@@ -82,6 +81,7 @@ export const ImageCropDialog = ({
             onChange={(c) => setCrop(c)}
             aspect={1}
             circularCrop
+            className="max-h-[400px]"
           >
             <img
               src={imageSrc}
@@ -91,11 +91,20 @@ export const ImageCropDialog = ({
             />
           </ReactCrop>
         </div>
-        <DialogFooter className="mt-4">
-          <Button variant="outline" onClick={onClose}>
+        <DialogFooter className="mt-6">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="text-zinc-300 border-zinc-700 hover:bg-zinc-800 hover:text-zinc-100"
+          >
             Cancel
           </Button>
-          <Button onClick={handleComplete}>Save</Button>
+          <Button
+            onClick={handleComplete}
+            className="bg-emerald-600 text-white hover:bg-emerald-700"
+          >
+            Save Changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
