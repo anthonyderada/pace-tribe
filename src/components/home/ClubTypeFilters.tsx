@@ -11,7 +11,7 @@ import {
 type ClubType = 'trails' | 'road' | 'track' | 'performance' | 'social';
 
 const ClubTypeFilters = () => {
-  const [selectedType, setSelectedType] = useState<ClubType | null>(null);
+  const [selectedType, setSelectedType] = useState<ClubType>('road');
 
   const handleTypeSelect = (type: ClubType) => {
     setSelectedType(type === selectedType ? null : type);

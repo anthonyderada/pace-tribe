@@ -30,6 +30,7 @@ const FeaturedClubs = () => {
             )
           )
         `)
+        .eq('club_label_assignments.club_labels.name', 'Road Running')
         .order('created_at', { ascending: false })
         .limit(3);
       
