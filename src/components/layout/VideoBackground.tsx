@@ -26,7 +26,7 @@ const VideoBackground = () => {
           allow="autoplay; fullscreen"
           style={{
             position: 'absolute',
-            top: '-90px',
+            top: '-200px',
             left: 0,
             objectFit: 'cover',
             opacity: '0.75',
