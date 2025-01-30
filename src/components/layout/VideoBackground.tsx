@@ -26,12 +26,12 @@ const VideoBackground = () => {
           allow="autoplay; fullscreen"
           style={{
             position: 'absolute',
-            top: 0,
+            top: '-90px',
             left: 0,
             objectFit: 'cover',
             opacity: '0.75',
             filter: 'grayscale(100%) brightness(30%)',
-            transform: 'scale(1.3)',
+            transform: 'scale(1.2)',
             transformOrigin: 'center center'
           }}
         />
