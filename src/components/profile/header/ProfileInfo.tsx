@@ -27,16 +27,6 @@ export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfo
         <h1 className="text-3xl font-bold text-zinc-100">
           {profile.username}
         </h1>
-        {!isOwnProfile && profile.id && (
-          <div className="flex items-center gap-2">
-            <FollowButton userId={profile.id} initialIsFollowing={false} />
-            <ChatRoom
-              recipientId={profile.id}
-              recipientName={profile.username || "User"}
-              recipientAvatar={profile.avatar_url}
-            />
-          </div>
-        )}
       </div>
       {captainRoles && captainRoles.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
@@ -65,8 +55,20 @@ export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfo
       <p className="text-zinc-400 flex items-center justify-center md:justify-start gap-2">
         {profile.location || "Not set"}
       </p>
-      <div className="space-y-4">
-        <p className="text-zinc-400">{profile.bio || "No bio added yet"}</p>
+      <div className="space-y-4 w-full">
+        <p className="text-zinc-400 text-center md:text-left">
+          {profile.bio || "No bio added yet"}
+        </p>
+        {!isOwnProfile && profile.id && (
+          <div className="flex items-center justify-center md:justify-start gap-2 mt-4">
+            <FollowButton userId={profile.id} initialIsFollowing={false} />
+            <ChatRoom
+              recipientId={profile.id}
+              recipientName={profile.username || "User"}
+              recipientAvatar={profile.avatar_url}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
