@@ -16,6 +16,8 @@ type ProfileHeaderProps = {
     avatar_url: string | null;
     bio: string | null;
     location: string | null;
+    instagram_username: string | null;
+    strava_athlete_id: string | null;
   } | null;
   user: {
     id: string;
@@ -26,6 +28,8 @@ type ProfileHeaderProps = {
     bio: string;
     location: string;
     avatar_url?: string;
+    instagram_username?: string;
+    strava_athlete_id?: string;
   }) => void;
 };
 
@@ -34,6 +38,8 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
   const [username, setUsername] = useState(profile?.username || "");
   const [bio, setBio] = useState(profile?.bio || "");
   const [location, setLocation] = useState(profile?.location || "");
+  const [instagramUsername, setInstagramUsername] = useState(profile?.instagram_username || "");
+  const [stravaAthleteId, setStravaAthleteId] = useState(profile?.strava_athlete_id || "");
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
@@ -144,12 +150,22 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
           username={username}
           location={location}
           bio={bio}
+          instagramUsername={instagramUsername}
+          stravaAthleteId={stravaAthleteId}
           uploading={uploading}
           onUsernameChange={setUsername}
           onLocationChange={setLocation}
           onBioChange={setBio}
+          onInstagramUsernameChange={setInstagramUsername}
+          onStravaAthleteIdChange={setStravaAthleteId}
           onSave={() => {
-            onProfileUpdate({ username, bio, location });
+            onProfileUpdate({
+              username,
+              bio,
+              location,
+              instagram_username: instagramUsername,
+              strava_athlete_id: stravaAthleteId
+            });
             setIsEditing(false);
           }}
           onCancel={() => {
@@ -157,6 +173,8 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
             setUsername(profile?.username || "");
             setLocation(profile?.location || "");
             setBio(profile?.bio || "");
+            setInstagramUsername(profile?.instagram_username || "");
+            setStravaAthleteId(profile?.strava_athlete_id || "");
           }}
         />
       ) : (

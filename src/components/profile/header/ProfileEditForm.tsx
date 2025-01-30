@@ -7,10 +7,14 @@ interface ProfileEditFormProps {
   username: string;
   location: string;
   bio: string;
+  instagramUsername: string;
+  stravaAthleteId: string;
   uploading: boolean;
   onUsernameChange: (value: string) => void;
   onLocationChange: (value: string) => void;
   onBioChange: (value: string) => void;
+  onInstagramUsernameChange: (value: string) => void;
+  onStravaAthleteIdChange: (value: string) => void;
   onSave: () => void;
   onCancel: () => void;
 }
@@ -19,10 +23,14 @@ export const ProfileEditForm = ({
   username,
   location,
   bio,
+  instagramUsername,
+  stravaAthleteId,
   uploading,
   onUsernameChange,
   onLocationChange,
   onBioChange,
+  onInstagramUsernameChange,
+  onStravaAthleteIdChange,
   onSave,
   onCancel,
 }: ProfileEditFormProps) => {
@@ -46,6 +54,20 @@ export const ProfileEditForm = ({
         placeholder="Tell us about your running goals and ambitions..."
         className="min-h-[100px]"
       />
+      <div className="space-y-2">
+        <Input
+          value={instagramUsername}
+          onChange={(e) => onInstagramUsernameChange(e.target.value)}
+          placeholder="Instagram Username (without @)"
+          className="max-w-xs"
+        />
+        <Input
+          value={stravaAthleteId}
+          onChange={(e) => onStravaAthleteIdChange(e.target.value)}
+          placeholder="Strava Athlete ID"
+          className="max-w-xs"
+        />
+      </div>
       <div className="flex gap-2 justify-center md:justify-start">
         <Button
           onClick={onSave}

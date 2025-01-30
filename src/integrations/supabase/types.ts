@@ -491,6 +491,7 @@ export type Database = {
           comfortable_pace: string | null
           created_at: string
           id: string
+          instagram_username: string | null
           location: string | null
           preferred_distance: string | null
           preferred_shoe_brand: string[] | null
@@ -498,6 +499,7 @@ export type Database = {
           seeking_coach: boolean | null
           seeking_race_pacers: boolean | null
           seeking_training_partners: boolean | null
+          strava_athlete_id: string | null
           updated_at: string
           username: string
         }
@@ -507,6 +509,7 @@ export type Database = {
           comfortable_pace?: string | null
           created_at?: string
           id: string
+          instagram_username?: string | null
           location?: string | null
           preferred_distance?: string | null
           preferred_shoe_brand?: string[] | null
@@ -514,6 +517,7 @@ export type Database = {
           seeking_coach?: boolean | null
           seeking_race_pacers?: boolean | null
           seeking_training_partners?: boolean | null
+          strava_athlete_id?: string | null
           updated_at?: string
           username: string
         }
@@ -523,6 +527,7 @@ export type Database = {
           comfortable_pace?: string | null
           created_at?: string
           id?: string
+          instagram_username?: string | null
           location?: string | null
           preferred_distance?: string | null
           preferred_shoe_brand?: string[] | null
@@ -530,6 +535,7 @@ export type Database = {
           seeking_coach?: boolean | null
           seeking_race_pacers?: boolean | null
           seeking_training_partners?: boolean | null
+          strava_athlete_id?: string | null
           updated_at?: string
           username?: string
         }
