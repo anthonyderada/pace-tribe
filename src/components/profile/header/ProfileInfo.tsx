@@ -22,7 +22,7 @@ interface ProfileInfoProps {
 
 export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfoProps) => {
   return (
-    <div className="flex flex-col items-center md:items-start gap-2">
+    <div className="flex flex-col items-center md:items-start gap-2 w-full">
       <div className="flex items-center gap-4">
         <h1 className="text-3xl font-bold text-zinc-100">
           {profile.username}
@@ -55,12 +55,12 @@ export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfo
       <p className="text-zinc-400 flex items-center justify-center md:justify-start gap-2">
         {profile.location || "Not set"}
       </p>
-      <div className="space-y-4 w-full">
+      <div className="flex flex-col items-center md:items-start w-full gap-4">
         <p className="text-zinc-400 text-center md:text-left">
           {profile.bio || "No bio added yet"}
         </p>
         {!isOwnProfile && profile.id && (
-          <div className="flex items-center justify-center md:justify-start gap-2">
+          <div className="flex items-center justify-center gap-2 w-full md:w-auto md:justify-start">
             <FollowButton userId={profile.id} initialIsFollowing={false} />
             <ChatRoom
               recipientId={profile.id}
