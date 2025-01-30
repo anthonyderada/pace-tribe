@@ -46,8 +46,8 @@ export const ProfileAvatar = ({
 
   return (
     <div className="relative group w-32 h-32">
-      {/* White border container - reduced padding from p-1 to p-[2px] */}
-      <div className="absolute inset-0 p-[2px] rounded-full bg-white">
+      {/* White border container with reduced opacity */}
+      <div className="absolute inset-0 p-[2px] rounded-full bg-white/30">
         <Avatar className="w-full h-full">
           {isEditing ? (
             <>
