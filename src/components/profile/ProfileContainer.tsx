@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +37,7 @@ export const ProfileContainer = ({
   const navigate = useNavigate();
 
   return (
-    <>
+    <div className="bg-black">
       {fromClubId && (
         <Button
           variant="ghost"
@@ -57,6 +56,6 @@ export const ProfileContainer = ({
           onProfileUpdate={(updates) => isOwnProfile && onProfileUpdate(updates)}
         />
       </div>
-    </>
+    </div>
   );
 };

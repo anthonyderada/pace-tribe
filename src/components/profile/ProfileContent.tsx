@@ -64,14 +64,14 @@ export const ProfileContent = ({
 }: ProfileContentProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <FollowersSection userId={userId} />
-      
       <PersonalBests
         userId={userId}
         accolades={accolades}
         onAccoladesUpdate={onAccoladesUpdate}
         isEditable={isEditable}
       />
+      
+      <FollowersSection userId={userId} />
 
       <ClubList joinedClubs={joinedClubs} />
       
