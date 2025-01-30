@@ -18,6 +18,7 @@ type Post = {
   created_at: string;
   event_id: string | null;
   profiles: {
+    id: string;
     username: string;
     avatar_url: string | null;
   };

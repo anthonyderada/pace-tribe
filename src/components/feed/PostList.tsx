@@ -21,7 +21,7 @@ export const PostList = () => {
           events (
             id,
             title,
-            clubs (
+            club:clubs (
               name
             )
           ),
