@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Pencil, Save, Trophy } from "lucide-react";
+import { Pencil, Trophy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { parseIntervalToTime } from "./utils/timeUtils";
-import { PRRecord } from "./PRRecord";
+import { EditableTimeInputs } from "./components/EditableTimeInputs";
+import { PRGrid } from "./components/PRGrid";
 
 type Time = {
   hours: string;
@@ -67,24 +68,21 @@ export const PersonalBests = ({
 
   const handleUpdateAccolades = async () => {
     try {
-      const { error } = await supabase
-        .from("accolades")
-        .update({
-          pb_5k: formatTimeToInterval(pb5kTime),
-          pb_10k: formatTimeToInterval(pb10kTime),
-          pb_half_marathon: formatTimeToInterval(pbHalfTime),
-          pb_marathon: formatTimeToInterval(pbMarathonTime),
-        })
-        .eq("user_id", userId);
-
-      if (error) throw error;
-
-      onAccoladesUpdate({
+      const updates = {
         pb_5k: formatTimeToInterval(pb5kTime),
         pb_10k: formatTimeToInterval(pb10kTime),
         pb_half_marathon: formatTimeToInterval(pbHalfTime),
         pb_marathon: formatTimeToInterval(pbMarathonTime),
-      });
+      };
+
+      const { error } = await supabase
+        .from("accolades")
+        .update(updates)
+        .eq("user_id", userId);
+
+      if (error) throw error;
+
+      onAccoladesUpdate(updates);
       setIsEditing(false);
       toast({
         title: "Personal bests updated",
@@ -99,6 +97,14 @@ export const PersonalBests = ({
     }
   };
 
+  const handleCancel = () => {
+    setIsEditing(false);
+    setPb5kTime(parseIntervalToTime(accolades?.pb_5k));
+    setPb10kTime(parseIntervalToTime(accolades?.pb_10k));
+    setPbHalfTime(parseIntervalToTime(accolades?.pb_half_marathon));
+    setPbMarathonTime(parseIntervalToTime(accolades?.pb_marathon));
+  };
+
   return (
     <Card className="border-0 bg-zinc-900/90">
       <CardHeader>
@@ -109,63 +115,18 @@ export const PersonalBests = ({
       </CardHeader>
       <CardContent>
         {isEditing ? (
-          <div className="space-y-4">
-            <PRRecord
-              title="5K"
-              time={accolades?.pb_5k}
-              isEditing={true}
-              onTimeChange={setPb5kTime}
-              initialTime={pb5kTime}
-              distanceKey="5k"
-            />
-            <PRRecord
-              title="10K"
-              time={accolades?.pb_10k}
-              isEditing={true}
-              onTimeChange={setPb10kTime}
-              initialTime={pb10kTime}
-              distanceKey="10k"
-            />
-            <PRRecord
-              title="Half Marathon"
-              time={accolades?.pb_half_marathon}
-              isEditing={true}
-              onTimeChange={setPbHalfTime}
-              initialTime={pbHalfTime}
-              distanceKey="half_marathon"
-            />
-            <PRRecord
-              title="Marathon"
-              time={accolades?.pb_marathon}
-              isEditing={true}
-              onTimeChange={setPbMarathonTime}
-              initialTime={pbMarathonTime}
-              distanceKey="marathon"
-            />
-            <div className="flex gap-2">
-              <Button
-                onClick={handleUpdateAccolades}
-                className="border border-white bg-white text-black"
-                variant="outline"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsEditing(false);
-                  setPb5kTime(parseIntervalToTime(accolades?.pb_5k));
-                  setPb10kTime(parseIntervalToTime(accolades?.pb_10k));
-                  setPbHalfTime(parseIntervalToTime(accolades?.pb_half_marathon));
-                  setPbMarathonTime(parseIntervalToTime(accolades?.pb_marathon));
-                }}
-                className="border border-white text-white bg-transparent"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
+          <EditableTimeInputs
+            pb5kTime={pb5kTime}
+            pb10kTime={pb10kTime}
+            pbHalfTime={pbHalfTime}
+            pbMarathonTime={pbMarathonTime}
+            setPb5kTime={setPb5kTime}
+            setPb10kTime={setPb10kTime}
+            setPbHalfTime={setPbHalfTime}
+            setPbMarathonTime={setPbMarathonTime}
+            onSave={handleUpdateAccolades}
+            onCancel={handleCancel}
+          />
         ) : (
           <div className="relative">
             {isEditable && (
@@ -178,32 +139,10 @@ export const PersonalBests = ({
                 <Pencil className="h-5 w-5 md:h-6 md:w-6" />
               </Button>
             )}
-            <div className="grid grid-cols-2 gap-6">
-              <PRRecord
-                title="5K"
-                time={accolades?.pb_5k}
-                currentUserTime={!isEditable ? currentUserAccolades?.pb_5k : undefined}
-                distanceKey="5k"
-              />
-              <PRRecord
-                title="10K"
-                time={accolades?.pb_10k}
-                currentUserTime={!isEditable ? currentUserAccolades?.pb_10k : undefined}
-                distanceKey="10k"
-              />
-              <PRRecord
-                title="Half Marathon"
-                time={accolades?.pb_half_marathon}
-                currentUserTime={!isEditable ? currentUserAccolades?.pb_half_marathon : undefined}
-                distanceKey="half_marathon"
-              />
-              <PRRecord
-                title="Marathon"
-                time={accolades?.pb_marathon}
-                currentUserTime={!isEditable ? currentUserAccolades?.pb_marathon : undefined}
-                distanceKey="marathon"
-              />
-            </div>
+            <PRGrid
+              accolades={accolades}
+              currentUserAccolades={!isEditable ? currentUserAccolades : undefined}
+            />
           </div>
         )}
       </CardContent>
