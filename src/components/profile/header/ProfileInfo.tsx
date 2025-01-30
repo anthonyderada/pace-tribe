@@ -60,7 +60,7 @@ export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfo
           {profile.bio || "No bio added yet"}
         </p>
         {!isOwnProfile && profile.id && (
-          <div className="flex items-center justify-center md:justify-start gap-2 mt-4">
+          <div className="flex items-center justify-center md:justify-end gap-2 mt-4">
             <FollowButton userId={profile.id} initialIsFollowing={false} />
             <ChatRoom
               recipientId={profile.id}
