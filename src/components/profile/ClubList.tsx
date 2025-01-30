@@ -37,11 +37,11 @@ export const ClubList = ({ joinedClubs }: ClubListProps) => {
               >
                 <CardHeader className="py-3">
                   <div className="flex items-center gap-4">
-                    <Avatar className="h-16 w-16">
+                    <Avatar className="h-16 w-16 relative">
                       <AvatarImage 
                         src={club.thumbnail_url || undefined} 
                         alt={club.name}
-                        className="object-cover"
+                        className="object-cover absolute -left-1 -top-1 w-[110%] h-[110%]"
                       />
                       <AvatarFallback className="bg-emerald-600 text-white text-lg">
                         {club.name[0].toUpperCase()}
