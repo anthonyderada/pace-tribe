@@ -53,11 +53,6 @@ export const ClubList = ({ joinedClubs }: ClubListProps) => {
                           {club.location}
                         </CardDescription>
                       )}
-                      {club.description && (
-                        <CardDescription className="text-sm text-zinc-400 mt-2">
-                          {club.description}
-                        </CardDescription>
-                      )}
                     </div>
                   </div>
                 </CardHeader>
