@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { SearchBar } from "@/components/clubs/search/SearchBar";
 import ClubCard from "@/components/clubs/ClubCard";
 import { useState } from "react";
+import { Club } from "@/components/clubs/types";
 
 const Clubs = () => {
   const navigate = useNavigate();
@@ -33,7 +34,12 @@ const Clubs = () => {
         `);
 
       if (error) throw error;
-      return data;
+      
+      // Parse the meeting_schedule JSON into the correct type
+      return data?.map(club => ({
+        ...club,
+        meeting_schedule: club.meeting_schedule ? JSON.parse(JSON.stringify(club.meeting_schedule)) : null
+      })) as Club[];
     },
   });
 
