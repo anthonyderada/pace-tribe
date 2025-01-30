@@ -42,7 +42,7 @@ export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfo
         <div className="flex flex-wrap items-center gap-2">
           <Badge
             variant="outline"
-            className="bg-amber-500/10 text-amber-500 border-amber-500/20"
+            className="bg-amber-500/10 text-amber-500 border-amber-500/20 px-3 py-1"
           >
             Captain
           </Badge>
@@ -54,7 +54,7 @@ export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfo
             >
               <Badge
                 variant="outline"
-                className="bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20 cursor-pointer"
+                className="bg-purple-500/10 text-purple-500 border-purple-500/20 hover:bg-purple-500/20 cursor-pointer px-3 py-1"
               >
                 {role.clubs.name}
               </Badge>
