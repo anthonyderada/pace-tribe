@@ -21,10 +21,10 @@ const FeaturedClubs = () => {
             id,
             user_id
           ),
-          club_label_assignments (
+          club_label_assignments!inner (
             id,
             label_id,
-            club_labels (
+            club_labels!inner (
               id,
               name
             )
