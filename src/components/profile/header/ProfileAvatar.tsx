@@ -46,23 +46,26 @@ export const ProfileAvatar = ({
 
   return (
     <div className="relative group w-32 h-32">
-      <Avatar className="w-32 h-32">
-        {isEditing ? (
-          <>
-            <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
-            <AvatarFallback className="bg-gray-500/20 flex items-center justify-center">
-              <Upload className="w-8 h-8 text-gray-400" />
-            </AvatarFallback>
-          </>
-        ) : (
-          <>
-            <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
-            <AvatarFallback className="bg-emerald-600 text-4xl text-white">
-              {profile?.username?.[0]?.toUpperCase() || userEmail?.[0]?.toUpperCase()}
-            </AvatarFallback>
-          </>
-        )}
-      </Avatar>
+      {/* Gradient border container */}
+      <div className="absolute inset-0 p-1 rounded-full bg-gradient-to-tr from-emerald-500 via-zinc-400 to-emerald-500 animate-gradient">
+        <Avatar className="w-full h-full">
+          {isEditing ? (
+            <>
+              <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
+              <AvatarFallback className="bg-zinc-900 flex items-center justify-center">
+                <Upload className="w-8 h-8 text-gray-400" />
+              </AvatarFallback>
+            </>
+          ) : (
+            <>
+              <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
+              <AvatarFallback className="bg-emerald-600 text-4xl text-white">
+                {profile?.username?.[0]?.toUpperCase() || userEmail?.[0]?.toUpperCase()}
+              </AvatarFallback>
+            </>
+          )}
+        </Avatar>
+      </div>
       {isEditing && (
         <>
           <Input
