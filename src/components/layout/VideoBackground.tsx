@@ -1,6 +1,6 @@
 const VideoBackground = () => {
   return (
-    <div className="absolute inset-0 w-full h-[1200px] -z-10 overflow-hidden bg-black">
+    <div className="fixed inset-0 w-full h-[1200px] -z-10 overflow-hidden bg-black">
       {/* Base video overlay */}
       <div className="absolute inset-0 bg-black/80" />
       
