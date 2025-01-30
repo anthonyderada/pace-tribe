@@ -35,7 +35,7 @@ export const TribesSection = ({ joinedClubs }: TribesSectionProps) => {
                 onClick={() => navigate(`/clubs/${club.id}`)}
               >
                 <CardHeader className="pb-2">
-                  <div className="flex flex-col items-center gap-4">
+                  <div className="flex items-center gap-4">
                     <Avatar className="w-16 h-16">
                       <AvatarImage 
                         src={club.thumbnail_url || undefined} 
@@ -45,10 +45,10 @@ export const TribesSection = ({ joinedClubs }: TribesSectionProps) => {
                         {club.name[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex-1 text-center">
+                    <div>
                       <CardTitle className="text-lg text-zinc-100">{club.name}</CardTitle>
                       {club.location && (
-                        <CardDescription className="text-sm text-zinc-400 flex items-center justify-center gap-2">
+                        <CardDescription className="text-sm text-zinc-400 flex items-center gap-2">
                           <MapPin className="h-4 w-4" />
                           {club.location}
                         </CardDescription>
