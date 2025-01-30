@@ -46,8 +46,8 @@ export const ProfileAvatar = ({
 
   return (
     <div className="relative group w-32 h-32">
-      {/* White border container with reduced opacity */}
-      <div className="absolute inset-0 p-[2px] rounded-full bg-white/30">
+      {/* Gradient border container */}
+      <div className="absolute inset-0 p-[1px] rounded-full bg-gradient-to-r from-white/40 to-white/20">
         <Avatar className="w-full h-full">
           {isEditing ? (
             <>
