@@ -1,6 +1,6 @@
 const VideoBackground = () => {
   return (
-    <div className="fixed inset-0 w-full h-[1200px] -z-10 overflow-hidden bg-black">
+    <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden bg-black">
       {/* Base video overlay */}
       <div className="absolute inset-0 bg-black/80" />
       
@@ -26,8 +26,10 @@ const VideoBackground = () => {
           allow="autoplay; fullscreen"
           style={{
             position: 'absolute',
-            top: '-200px',
+            top: 0,
             left: 0,
+            width: '100%',
+            height: '100%',
             objectFit: 'cover',
             opacity: '0.75',
             filter: 'grayscale(100%) brightness(30%)',
