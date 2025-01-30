@@ -11,12 +11,12 @@ interface MeetingScheduleOverlayProps {
 
 const dayAbbreviations: { [key: string]: string } = {
   'Monday': 'M',
-  'Tuesday': 'T',
+  'Tuesday': 'Tue',
   'Wednesday': 'W',
-  'Thursday': 'T',
+  'Thursday': 'Th',
   'Friday': 'F',
-  'Saturday': 'S',
-  'Sunday': 'S'
+  'Saturday': 'Sa',
+  'Sunday': 'Su'
 };
 
 export const MeetingScheduleOverlay = ({ schedule }: MeetingScheduleOverlayProps) => {
