@@ -80,7 +80,7 @@ export const FollowButton = ({ userId, initialIsFollowing }: FollowButtonProps) 
 
   return (
     <Button
-      variant={isFollowing ? "outline" : "secondary"}
+      variant="secondary"
       size="sm"
       onClick={handleFollowToggle}
       disabled={isLoading || !user}
