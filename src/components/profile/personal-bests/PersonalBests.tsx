@@ -117,6 +117,7 @@ export const PersonalBests = ({
               isEditing={true}
               onTimeChange={setPb5kTime}
               initialTime={pb5kTime}
+              distanceKey="5k"
             />
             <PRRecord
               title="10K"
@@ -124,6 +125,7 @@ export const PersonalBests = ({
               isEditing={true}
               onTimeChange={setPb10kTime}
               initialTime={pb10kTime}
+              distanceKey="10k"
             />
             <PRRecord
               title="Half Marathon"
@@ -131,6 +133,7 @@ export const PersonalBests = ({
               isEditing={true}
               onTimeChange={setPbHalfTime}
               initialTime={pbHalfTime}
+              distanceKey="half_marathon"
             />
             <PRRecord
               title="Marathon"
@@ -138,6 +141,7 @@ export const PersonalBests = ({
               isEditing={true}
               onTimeChange={setPbMarathonTime}
               initialTime={pbMarathonTime}
+              distanceKey="marathon"
             />
             <div className="flex gap-2">
               <Button
@@ -180,21 +184,25 @@ export const PersonalBests = ({
                 title="5K"
                 time={accolades?.pb_5k}
                 currentUserTime={!isEditable ? currentUserAccolades?.pb_5k : undefined}
+                distanceKey="5k"
               />
               <PRRecord
                 title="10K"
                 time={accolades?.pb_10k}
                 currentUserTime={!isEditable ? currentUserAccolades?.pb_10k : undefined}
+                distanceKey="10k"
               />
               <PRRecord
                 title="Half Marathon"
                 time={accolades?.pb_half_marathon}
                 currentUserTime={!isEditable ? currentUserAccolades?.pb_half_marathon : undefined}
+                distanceKey="half_marathon"
               />
               <PRRecord
                 title="Marathon"
                 time={accolades?.pb_marathon}
                 currentUserTime={!isEditable ? currentUserAccolades?.pb_marathon : undefined}
+                distanceKey="marathon"
               />
             </div>
           </div>

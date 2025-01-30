@@ -400,6 +400,33 @@ export type Database = {
         }
         Relationships: []
       }
+      race_statistics: {
+        Row: {
+          created_at: string
+          distance: string
+          finish_time: string
+          id: string
+          percentile: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          distance: string
+          finish_time: string
+          id?: string
+          percentile: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          distance?: string
+          finish_time?: string
+          id?: string
+          percentile?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
