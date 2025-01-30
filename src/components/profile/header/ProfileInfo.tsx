@@ -29,7 +29,7 @@ export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfo
         </h1>
       </div>
       {captainRoles && captainRoles.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
           <Badge
             variant="outline"
             className="bg-amber-500/10 text-amber-500 border-amber-500/20 px-3 py-1"
@@ -60,7 +60,7 @@ export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfo
           {profile.bio || "No bio added yet"}
         </p>
         {!isOwnProfile && profile.id && (
-          <div className="flex items-center justify-center md:justify-end gap-2 mt-4">
+          <div className="flex items-center justify-center md:justify-start gap-2">
             <FollowButton userId={profile.id} initialIsFollowing={false} />
             <ChatRoom
               recipientId={profile.id}
