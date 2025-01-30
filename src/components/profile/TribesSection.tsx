@@ -34,7 +34,7 @@ export const TribesSection = ({ joinedClubs }: TribesSectionProps) => {
                 className="border-0 bg-zinc-800/90 cursor-pointer hover:bg-zinc-700/90 transition-colors"
                 onClick={() => navigate(`/clubs/${club.id}`)}
               >
-                <CardHeader className="pb-2">
+                <CardHeader className="py-3">
                   <div className="flex items-center gap-4">
                     <Avatar className="w-16 h-16">
                       <AvatarImage 
