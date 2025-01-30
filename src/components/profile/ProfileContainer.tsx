@@ -6,7 +6,7 @@ import { ProfileHeader } from "./ProfileHeader";
 import { User } from "@supabase/supabase-js";
 
 type Profile = {
-  id: string;  // Added this line to fix the type error
+  id: string;
   username: string | null;
   avatar_url: string | null;
   bio: string | null;
@@ -50,13 +50,13 @@ export const ProfileContainer = ({
         </Button>
       )}
 
-      <Card className="mb-8 border-0 bg-zinc-900/90">
+      <div className="mb-8">
         <ProfileHeader
           profile={profile}
           user={isOwnProfile ? user : null}
           onProfileUpdate={(updates) => isOwnProfile && onProfileUpdate(updates)}
         />
-      </Card>
+      </div>
     </>
   );
 };
