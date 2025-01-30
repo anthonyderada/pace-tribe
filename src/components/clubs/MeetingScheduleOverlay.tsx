@@ -26,18 +26,18 @@ export const MeetingScheduleOverlay = ({ schedule }: MeetingScheduleOverlayProps
   const days = schedule.map(s => dayAbbreviations[s.day]);
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-black/60 px-4 py-3 flex justify-between items-center">
+    <div className="absolute bottom-0 left-0 right-0 px-4 py-3 flex justify-between items-center">
       <div className="flex items-center gap-1">
         {days.map((day, index) => (
           <div key={index} className="relative">
-            <Circle className="h-5 w-5 text-white/70" />
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-white">
+            <Circle className="h-5 w-5 text-white" />
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-black">
               {day}
             </span>
           </div>
         ))}
       </div>
-      <div className="text-white font-bold text-base">
+      <div className="text-black font-bold text-base">
         {time}
       </div>
     </div>
