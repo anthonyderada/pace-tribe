@@ -72,14 +72,12 @@ export const FollowersSection = ({ userId }: FollowersSectionProps) => {
                   to={`/profile/${follow.profiles.id}`}
                   className="flex items-center gap-2 p-2 hover:bg-zinc-800/50 rounded-lg transition-colors"
                 >
-                  <div className="p-[1px] rounded-full bg-gradient-to-r from-white/40 to-white/20">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={follow.profiles.avatar_url || undefined} />
-                      <AvatarFallback className="bg-zinc-800">
-                        {follow.profiles.username[0]?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={follow.profiles.avatar_url || undefined} />
+                    <AvatarFallback className="bg-zinc-800">
+                      {follow.profiles.username[0]?.toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
                   <span className="text-sm text-zinc-300">
                     {follow.profiles.username}
                   </span>
@@ -100,14 +98,12 @@ export const FollowersSection = ({ userId }: FollowersSectionProps) => {
                   to={`/profile/${follow.profiles.id}`}
                   className="flex items-center gap-2 p-2 hover:bg-zinc-800/50 rounded-lg transition-colors"
                 >
-                  <div className="p-[1px] rounded-full bg-gradient-to-r from-white/40 to-white/20">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={follow.profiles.avatar_url || undefined} />
-                      <AvatarFallback className="bg-zinc-800">
-                        {follow.profiles.username[0]?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={follow.profiles.avatar_url || undefined} />
+                    <AvatarFallback className="bg-zinc-800">
+                      {follow.profiles.username[0]?.toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
                   <span className="text-sm text-zinc-300">
                     {follow.profiles.username}
                   </span>
