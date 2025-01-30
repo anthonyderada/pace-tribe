@@ -1,9 +1,8 @@
 import { FollowButton } from "../FollowButton";
 import { ChatRoom } from "../../messages/ChatRoom";
 import { Link } from "react-router-dom";
-import { SocialButtons } from "./SocialButtons";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { Activity, Instagram } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ProfileInfoProps {
   profile: {
@@ -15,30 +14,16 @@ interface ProfileInfoProps {
     strava_athlete_id: string | null;
   };
   isOwnProfile: boolean;
+  captainRoles?: {
+    role: string;
+    clubs: {
+      id: string;
+      name: string;
+    };
+  }[];
 }
 
-export const ProfileInfo = ({ profile, isOwnProfile }: ProfileInfoProps) => {
-  const { data: captainRoles } = useQuery({
-    queryKey: ['captainRoles', profile.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('club_members')
-        .select(`
-          role,
-          clubs (
-            id,
-            name
-          )
-        `)
-        .eq('user_id', profile.id)
-        .eq('role', 'captain');
-      
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!profile.id,
-  });
-
+export const ProfileInfo = ({ profile, isOwnProfile, captainRoles }: ProfileInfoProps) => {
   return (
     <div className="flex-1 min-w-0">
       <div className="flex flex-col items-center md:items-start">
@@ -76,16 +61,55 @@ export const ProfileInfo = ({ profile, isOwnProfile }: ProfileInfoProps) => {
         <div className="flex items-center gap-4 mt-2">
           {!isOwnProfile && (
             <>
-              <FollowButton userId={profile.id} />
-              <ChatRoom recipientId={profile.id} />
+              <FollowButton 
+                userId={profile.id} 
+                initialIsFollowing={false}
+              />
+              <ChatRoom 
+                recipientId={profile.id} 
+                recipientName={profile.username || "Anonymous Runner"}
+                recipientAvatar={null}
+              />
             </>
           )}
         </div>
 
-        <SocialButtons 
-          instagramUsername={profile.instagram_username}
-          stravaAthleteId={profile.strava_athlete_id}
-        />
+        <div className="flex gap-2 mt-4">
+          {profile.instagram_username && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              asChild
+            >
+              <a
+                href={`https://instagram.com/${profile.instagram_username}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Instagram className="h-4 w-4" />
+                Instagram
+              </a>
+            </Button>
+          )}
+          {profile.strava_athlete_id && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              asChild
+            >
+              <a
+                href={`https://www.strava.com/athletes/${profile.strava_athlete_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Activity className="h-4 w-4" />
+                Strava
+              </a>
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
