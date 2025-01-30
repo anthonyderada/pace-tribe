@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pencil, Save, Trophy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { TimeInput } from "../TimeInput";
 import { useQuery } from "@tanstack/react-query";
 import { parseIntervalToTime } from "./utils/timeUtils";
 import { PRRecord } from "./PRRecord";
