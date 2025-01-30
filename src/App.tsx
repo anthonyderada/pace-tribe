@@ -30,6 +30,7 @@ function App() {
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
               <Route path="onboarding" element={<Onboarding />} />
+              <Route path="settings" element={<Profile />} /> {/* Temporarily using Profile component for settings */}
             </Route>
           </Routes>
         </Router>
