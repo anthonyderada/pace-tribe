@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import ClubList from "./featured-clubs/ClubList";
+import { Club } from "./featured-clubs/types";
 
 const FeaturedClubs = () => {
   const navigate = useNavigate();
@@ -33,7 +34,12 @@ const FeaturedClubs = () => {
         .limit(3);
       
       if (error) throw error;
-      return data;
+
+      // Parse the meeting_schedule JSON into the correct type
+      return data?.map(club => ({
+        ...club,
+        meeting_schedule: club.meeting_schedule ? JSON.parse(JSON.stringify(club.meeting_schedule)) : null
+      })) as Club[];
     },
   });
 
