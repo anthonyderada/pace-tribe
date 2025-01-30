@@ -31,6 +31,8 @@ const VideoBackground = () => {
             objectFit: 'cover',
             opacity: '0.75',
             filter: 'grayscale(100%) brightness(30%)',
+            transform: 'scale(1.3)',
+            transformOrigin: 'center center'
           }}
         />
       </div>
