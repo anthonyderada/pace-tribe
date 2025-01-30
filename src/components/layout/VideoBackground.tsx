@@ -22,7 +22,7 @@ const VideoBackground = () => {
       <div className="absolute inset-0 w-full h-full">
         <iframe
           src="https://player.vimeo.com/video/1051222940?background=1&autoplay=1&loop=1&byline=0&title=0&transparent=1&controls=0&muted=1"
-          className="w-full h-full"
+          className="w-full h-full md:scale-[1.2] scale-[3] origin-center"
           allow="autoplay; fullscreen"
           style={{
             position: 'absolute',
@@ -31,11 +31,7 @@ const VideoBackground = () => {
             objectFit: 'cover',
             opacity: '0.75',
             filter: 'grayscale(100%) brightness(30%)',
-            transform: 'scale(1.2)',
             transformOrigin: 'center center',
-            '@media (max-width: 768px)': {
-              transform: 'scale(3)',
-            }
           }}
         />
       </div>
