@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ProfileAvatar } from "./header/ProfileAvatar";
 import { ProfileEditForm } from "./header/ProfileEditForm";
 import { ProfileInfo } from "./header/ProfileInfo";
+import { ImageCropDialog } from "./header/ImageCropDialog";
 
 type ProfileHeaderProps = {
   profile: {
@@ -35,6 +36,8 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
   const [location, setLocation] = useState(profile?.location || "");
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
+  const [cropDialogOpen, setCropDialogOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const { data: captainRoles } = useQuery({
     queryKey: ['captainRoles', user?.id],
@@ -57,20 +60,21 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
     enabled: !!user?.id,
   });
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (imageData: string) => {
     try {
-      if (!event.target.files || event.target.files.length === 0) {
-        return;
-      }
-      
       setUploading(true);
-      const file = event.target.files[0];
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${user?.id}-${Math.random()}.${fileExt}`;
+      
+      // Convert base64 to blob
+      const response = await fetch(imageData);
+      const blob = await response.blob();
+      
+      const filePath = `${user?.id}-${Math.random()}.jpg`;
 
       const { error: uploadError } = await supabase.storage
         .from('assets')
-        .upload(filePath, file);
+        .upload(filePath, blob, {
+          contentType: 'image/jpeg'
+        });
 
       if (uploadError) {
         throw uploadError;
@@ -106,35 +110,6 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
     }
   };
 
-  const handleUpdateProfile = async () => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          username,
-          bio,
-          location,
-        })
-        .eq('id', user?.id);
-
-      if (error) throw error;
-
-      onProfileUpdate({ username, bio, location });
-      setIsEditing(false);
-      toast({
-        title: "Profile updated",
-        description: "Your profile has been updated successfully.",
-      });
-    } catch (error: any) {
-      console.error('Error updating profile:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="flex flex-col md:flex-row gap-8 items-center md:items-start relative p-6">
       <ProfileAvatar
@@ -142,46 +117,59 @@ export const ProfileHeader = ({ profile, user, onProfileUpdate }: ProfileHeaderP
         uploading={uploading}
         profile={profile}
         userEmail={user?.email}
-        onImageUpload={handleImageUpload}
+        onImageUpload={(imageData) => {
+          handleImageUpload(imageData);
+        }}
       />
-      <div className="flex-1 text-center md:text-left w-full">
-        {user && !isEditing && (
-          <Button
-            onClick={() => setIsEditing(true)}
-            className="absolute top-4 right-4 hover:bg-zinc-800/50"
-            size="icon"
-            variant="ghost"
-          >
-            <Pencil className="h-5 w-5 text-zinc-400" />
-          </Button>
-        )}
-        {isEditing ? (
-          <ProfileEditForm
-            username={username}
-            location={location}
-            bio={bio}
-            uploading={uploading}
-            onUsernameChange={setUsername}
-            onLocationChange={setLocation}
-            onBioChange={setBio}
-            onSave={handleUpdateProfile}
-            onCancel={() => {
-              setIsEditing(false);
-              setUsername(profile?.username || "");
-              setLocation(profile?.location || "");
-              setBio(profile?.bio || "");
-            }}
+      {selectedImage && (
+        <ImageCropDialog
+          open={cropDialogOpen}
+          onClose={() => setCropDialogOpen(false)}
+          imageSrc={selectedImage}
+          onCropComplete={(croppedImage) => {
+            handleImageUpload(croppedImage);
+          }}
+        />
+      )}
+      {isEditing ? (
+        <ProfileEditForm
+          username={username}
+          location={location}
+          bio={bio}
+          uploading={uploading}
+          onUsernameChange={setUsername}
+          onLocationChange={setLocation}
+          onBioChange={setBio}
+          onSave={() => {
+            handleImageUpload(selectedImage || "");
+            setIsEditing(false);
+          }}
+          onCancel={() => {
+            setIsEditing(false);
+            setUsername(profile?.username || "");
+            setLocation(profile?.location || "");
+            setBio(profile?.bio || "");
+          }}
+        />
+      ) : (
+        profile && (
+          <ProfileInfo
+            profile={profile}
+            captainRoles={captainRoles}
+            isOwnProfile={user?.id === profile.id}
           />
-        ) : (
-          profile && (
-            <ProfileInfo
-              profile={profile}
-              captainRoles={captainRoles}
-              isOwnProfile={user?.id === profile.id}
-            />
-          )
-        )}
-      </div>
+        )
+      )}
+      {user && !isEditing && (
+        <Button
+          onClick={() => setIsEditing(true)}
+          className="absolute top-4 right-4 hover:bg-zinc-800/50"
+          size="icon"
+          variant="ghost"
+        >
+          <Pencil className="h-5 w-5 text-zinc-400" />
+        </Button>
+      )}
     </div>
   );
 };
