@@ -1,24 +1,44 @@
+import { Navigation, Users, MapPin, Road } from "lucide-react";
+
 const FeaturesSection = () => {
   return (
     <div className="py-24 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="text-center">
-            <h3 className="text-xl font-semibold text-white mb-4">Join Running Clubs</h3>
+            <div className="flex justify-center mb-6">
+              <Navigation className="w-10 h-10 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-4">Trails</h3>
             <p className="text-gray-400">
-              Find and join local running clubs that match your pace and goals.
+              Discover scenic running trails and routes in your area.
             </p>
           </div>
           <div className="text-center">
-            <h3 className="text-xl font-semibold text-white mb-4">Participate in Events</h3>
+            <div className="flex justify-center mb-6">
+              <Users className="w-10 h-10 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-4">Social</h3>
             <p className="text-gray-400">
-              Discover and register for running events in your area.
+              Connect with other runners and build your community.
             </p>
           </div>
           <div className="text-center">
-            <h3 className="text-xl font-semibold text-white mb-4">Connect with Runners</h3>
+            <div className="flex justify-center mb-6">
+              <MapPin className="w-10 h-10 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-4">Track</h3>
             <p className="text-gray-400">
-              Meet other runners and build your running community.
+              Find local tracks and training facilities.
+            </p>
+          </div>
+          <div className="text-center">
+            <div className="flex justify-center mb-6">
+              <Road className="w-10 h-10 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-4">Road</h3>
+            <p className="text-gray-400">
+              Explore popular road running routes and races.
             </p>
           </div>
         </div>
