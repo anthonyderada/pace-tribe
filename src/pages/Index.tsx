@@ -1,9 +1,8 @@
 import HeroSection from "@/components/home/HeroSection";
 import FeaturedClubs from "@/components/home/FeaturedClubs";
-import FeaturesSection from "@/components/home/FeaturesSection";
-import CallToAction from "@/components/home/CallToAction";
 import FeaturedLocation from "@/components/home/FeaturedLocation";
 import ClubTypeFilters from "@/components/home/ClubTypeFilters";
+import CallToAction from "@/components/home/CallToAction";
 
 const Index = () => {
   return (
@@ -12,7 +11,6 @@ const Index = () => {
       <FeaturedLocation />
       <ClubTypeFilters />
       <FeaturedClubs />
-      <FeaturesSection />
       <CallToAction />
     </div>
   );
