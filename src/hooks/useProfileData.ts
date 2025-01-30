@@ -21,7 +21,7 @@ export const useProfileData = (profileId: string | undefined) => {
       
       return data;
     },
-    enabled: !!profileId,
+    enabled: !!profileId, // Only run query when profileId exists
   });
 
   const { data: accolades, isLoading: isAccoladesLoading } = useQuery({
@@ -38,7 +38,7 @@ export const useProfileData = (profileId: string | undefined) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!profileId,
+    enabled: !!profileId, // Only run query when profileId exists
   });
 
   const { data: joinedClubs, isLoading: isClubsLoading } = useQuery({
@@ -62,7 +62,7 @@ export const useProfileData = (profileId: string | undefined) => {
       if (error) throw error;
       return data.map(item => item.clubs).filter(Boolean);
     },
-    enabled: !!profileId,
+    enabled: !!profileId, // Only run query when profileId exists
   });
 
   const { data: registeredEvents, isLoading: isEventsLoading } = useQuery({
@@ -95,7 +95,7 @@ export const useProfileData = (profileId: string | undefined) => {
         }))
         .filter(Boolean);
     },
-    enabled: !!profileId,
+    enabled: !!profileId, // Only run query when profileId exists
   });
 
   const isLoading = isProfileLoading || isAccoladesLoading || isClubsLoading || isEventsLoading;
