@@ -71,9 +71,9 @@ export const ProfileContent = ({
         isEditable={isEditable}
       />
       
-      <FollowersSection userId={userId} />
-
       <ClubList joinedClubs={joinedClubs} />
+      
+      <FollowersSection userId={userId} />
       
       <RunningPreferences
         userId={userId}
