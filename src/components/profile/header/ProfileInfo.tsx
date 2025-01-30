@@ -1,112 +1,91 @@
-import { Badge } from "@/components/ui/badge";
 import { FollowButton } from "../FollowButton";
 import { ChatRoom } from "../../messages/ChatRoom";
 import { Link } from "react-router-dom";
-import { Instagram, Activity } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { SocialButtons } from "./SocialButtons";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProfileInfoProps {
   profile: {
     id: string;
     username: string | null;
-    avatar_url: string | null;
-    location: string | null;
     bio: string | null;
+    location: string | null;
     instagram_username: string | null;
     strava_athlete_id: string | null;
   };
-  captainRoles?: Array<{
-    clubs: {
-      id: string;
-      name: string;
-    };
-  }>;
   isOwnProfile: boolean;
 }
 
-export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfoProps) => {
+export const ProfileInfo = ({ profile, isOwnProfile }: ProfileInfoProps) => {
+  const { data: captainRoles } = useQuery({
+    queryKey: ['captainRoles', profile.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('club_members')
+        .select(`
+          role,
+          clubs (
+            id,
+            name
+          )
+        `)
+        .eq('user_id', profile.id)
+        .eq('role', 'captain');
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!profile.id,
+  });
+
   return (
-    <div className="flex flex-col items-center md:items-start gap-2 w-full">
-      <div className="flex items-center gap-4">
-        <h1 className="text-3xl font-bold text-zinc-100">
-          {profile.username}
+    <div className="flex-1 min-w-0">
+      <div className="flex flex-col items-center md:items-start">
+        <h1 className="text-2xl font-bold text-white mb-2">
+          {profile.username || "Anonymous Runner"}
         </h1>
-      </div>
-      {captainRoles && captainRoles.length > 0 && (
-        <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-          <Badge
-            variant="outline"
-            className="bg-amber-500/10 text-amber-500 border-amber-500/20 px-3 py-1"
-          >
-            Captain
-          </Badge>
-          {captainRoles.map((role, index) => (
-            <Link 
-              key={role.clubs.id}
-              to={`/clubs/${role.clubs.id}`}
-              className="hover:opacity-80 transition-opacity"
-            >
-              <Badge
-                variant="outline"
-                className="bg-purple-500/10 text-purple-500 border-purple-500/20 hover:bg-purple-500/20 cursor-pointer px-3 py-1"
-              >
-                {role.clubs.name}
-              </Badge>
-            </Link>
-          ))}
-        </div>
-      )}
-      <p className="text-zinc-400 flex items-center justify-center md:justify-start gap-2">
-        {profile.location || "Not set"}
-      </p>
-      <div className="flex flex-col items-center md:items-start w-full gap-4">
-        <p className="text-zinc-400 text-center md:text-left">
-          {profile.bio || "No bio added yet"}
-        </p>
         
-        <div className="flex items-center gap-2">
-          {profile.instagram_username && (
-            <a
-              href={`https://instagram.com/${profile.instagram_username}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                variant="outline"
-                size="icon"
-                className="bg-gradient-to-br from-purple-600 to-pink-500 hover:from-purple-500 hover:to-pink-400 border-0"
-              >
-                <Instagram className="h-5 w-5 text-white" />
-              </Button>
-            </a>
-          )}
-          {profile.strava_athlete_id && (
-            <a
-              href={`https://www.strava.com/athletes/${profile.strava_athlete_id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                variant="outline"
-                size="icon"
-                className="bg-gradient-to-br from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 border-0"
-              >
-                <Activity className="h-5 w-5 text-white" />
-              </Button>
-            </a>
+        {profile.location && (
+          <p className="text-zinc-400 mb-4">{profile.location}</p>
+        )}
+
+        {profile.bio && (
+          <p className="text-zinc-300 mb-4 text-center md:text-left max-w-2xl">
+            {profile.bio}
+          </p>
+        )}
+
+        {captainRoles?.length > 0 && (
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-zinc-400 mb-2">Captain of:</h3>
+            <div className="flex flex-wrap gap-2">
+              {captainRoles.map((role) => (
+                <Link
+                  key={role.clubs.id}
+                  to={`/clubs/${role.clubs.id}`}
+                  className="text-emerald-400 hover:text-emerald-300 text-sm"
+                >
+                  {role.clubs.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center gap-4 mt-2">
+          {!isOwnProfile && (
+            <>
+              <FollowButton userId={profile.id} />
+              <ChatRoom recipientId={profile.id} />
+            </>
           )}
         </div>
 
-        {!isOwnProfile && profile.id && (
-          <div className="flex items-center justify-center gap-2 w-full md:w-auto md:justify-start">
-            <FollowButton userId={profile.id} initialIsFollowing={false} />
-            <ChatRoom
-              recipientId={profile.id}
-              recipientName={profile.username || "User"}
-              recipientAvatar={profile.avatar_url}
-            />
-          </div>
-        )}
+        <SocialButtons 
+          instagramUsername={profile.instagram_username}
+          stravaAthleteId={profile.strava_athlete_id}
+        />
       </div>
     </div>
   );
