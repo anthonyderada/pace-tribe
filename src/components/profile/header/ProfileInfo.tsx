@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { FollowButton } from "../FollowButton";
 import { ChatRoom } from "../../messages/ChatRoom";
+import { Link } from "react-router-dom";
 
 interface ProfileInfoProps {
   profile: {
@@ -38,17 +39,26 @@ export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfo
         )}
       </div>
       {captainRoles && captainRoles.length > 0 && (
-        <div className="flex flex-col items-center md:items-start gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge
+            variant="outline"
+            className="bg-amber-500/10 text-amber-500 border-amber-500/20"
+          >
+            Captain
+          </Badge>
           {captainRoles.map((role, index) => (
-            <div key={index} className="flex items-center gap-2">
+            <Link 
+              key={role.clubs.id}
+              to={`/clubs/${role.clubs.id}`}
+              className="hover:opacity-80 transition-opacity"
+            >
               <Badge
-                variant="outline"
-                className="bg-amber-500/10 text-amber-500 border-amber-500/20"
+                variant="secondary"
+                className="bg-zinc-800 text-zinc-100 hover:bg-zinc-700 cursor-pointer"
               >
-                Captain
+                {role.clubs.name}
               </Badge>
-              <span className="text-zinc-400">of {role.clubs?.name}</span>
-            </div>
+            </Link>
           ))}
         </div>
       )}
