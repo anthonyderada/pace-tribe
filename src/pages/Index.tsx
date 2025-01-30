@@ -10,15 +10,18 @@ const Index = () => {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen">
-      <HeroSection />
+    <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black">
       {user ? (
-        <div className="max-w-3xl mx-auto px-4 py-8">
-          <h2 className="text-2xl font-bold text-white mb-6">Recent Activity</h2>
-          <PostList />
-        </div>
+        <>
+          <HeroSection />
+          <div className="max-w-3xl mx-auto px-4 py-8">
+            <h2 className="text-2xl font-bold text-white mb-6">Recent Activity</h2>
+            <PostList />
+          </div>
+        </>
       ) : (
         <>
+          <HeroSection />
           <FeaturedLocation />
           <FeaturedClubs />
           <FeaturesSection />
