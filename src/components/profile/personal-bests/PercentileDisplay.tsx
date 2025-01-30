@@ -17,9 +17,9 @@ export const PercentileDisplay = ({ distance, time }: PercentileDisplayProps) =>
   if (!percentile) return null;
 
   const getColor = (percentile: number) => {
-    if (percentile >= 90) return "text-yellow-400";
-    if (percentile >= 75) return "text-emerald-400";
-    if (percentile >= 50) return "text-blue-400";
+    if (percentile >= 95) return "text-yellow-400";
+    if (percentile >= 85) return "text-emerald-400";
+    if (percentile >= 70) return "text-blue-400";
     return "text-zinc-400";
   };
 
