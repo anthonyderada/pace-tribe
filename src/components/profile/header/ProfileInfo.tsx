@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { FollowButton } from "../FollowButton";
 import { ChatRoom } from "../../messages/ChatRoom";
 import { Link } from "react-router-dom";
-import { Instagram, Strava } from "lucide-react";
+import { Instagram, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ProfileInfoProps {
@@ -91,7 +91,7 @@ export const ProfileInfo = ({ profile, captainRoles, isOwnProfile }: ProfileInfo
                 size="icon"
                 className="bg-gradient-to-br from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 border-0"
               >
-                <Strava className="h-5 w-5 text-white" />
+                <Activity className="h-5 w-5 text-white" />
               </Button>
             </a>
           )}

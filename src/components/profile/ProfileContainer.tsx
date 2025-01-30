@@ -17,6 +17,8 @@ type Profile = {
   seeking_race_pacers: boolean | null;
   seeking_coach: boolean | null;
   preferred_shoe_brand: string[] | null;
+  instagram_username: string | null;
+  strava_athlete_id: string | null;
 };
 
 interface ProfileContainerProps {
