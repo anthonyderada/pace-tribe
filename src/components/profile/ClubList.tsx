@@ -41,7 +41,7 @@ export const ClubList = ({ joinedClubs }: ClubListProps) => {
                       <AvatarImage 
                         src={club.thumbnail_url || undefined} 
                         alt={club.name}
-                        className="object-cover absolute -left-1 -top-1 w-[110%] h-[110%]"
+                        className="object-cover absolute -left-2 -top-1 w-[110%] h-[110%]"
                       />
                       <AvatarFallback className="bg-emerald-600 text-white text-lg">
                         {club.name[0].toUpperCase()}
