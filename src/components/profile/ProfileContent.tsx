@@ -1,5 +1,5 @@
 import { RunningPreferences } from "./RunningPreferences";
-import { PersonalBests } from "./PersonalBests";
+import { PersonalBests } from "./personal-bests/PersonalBests";
 import { FollowersSection } from "./FollowersSection";
 import { ClubList } from "./ClubList";
 import { EventList } from "./EventList";
