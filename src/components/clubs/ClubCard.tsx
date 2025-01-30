@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, Route, Trophy, Loader2 } from "lucide-react";
 import { Club } from "./types";
 import { useClubActions } from "./useClubActions";
-import { MeetingScheduleOverlay } from "./MeetingScheduleOverlay";
 
 interface ClubCardProps {
   club: Club;
@@ -26,7 +25,6 @@ const ClubCard = ({ club, userId }: ClubCardProps) => {
               alt={club.name}
               className="w-full h-48 object-cover"
             />
-            <MeetingScheduleOverlay schedule={club.meeting_schedule} />
           </div>
         ) : (
           <div className="w-full h-48 bg-white/10 flex items-center justify-center">
