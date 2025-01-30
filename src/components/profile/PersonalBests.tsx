@@ -12,7 +12,6 @@ type Time = {
   seconds: string;
 };
 
-// Move the helper function before it's used
 const parseIntervalToTime = (interval: string | null): Time => {
   if (!interval) return { hours: "00", minutes: "00", seconds: "00" };
   const [hours = "00", minutes = "00", seconds = "00"] = interval.split(':');
@@ -86,12 +85,24 @@ export const PersonalBests = ({ userId, accolades, onAccoladesUpdate, isEditable
     }
   };
 
+  const renderTime = (time: string | null) => {
+    if (!time) return "Not set";
+    const [hours, minutes, seconds] = time.split(':');
+    const formattedTime = [];
+    
+    if (hours !== "00") formattedTime.push(`${parseInt(hours)}h`);
+    if (minutes !== "00") formattedTime.push(`${parseInt(minutes)}m`);
+    if (seconds !== "00") formattedTime.push(`${parseInt(seconds)}s`);
+    
+    return formattedTime.join(' ') || "Not set";
+  };
+
   return (
     <Card className="border-0 bg-zinc-900/90">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-zinc-100">
           <Trophy className="h-5 w-5" />
-          Personal Bests
+          Personal Records
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -169,22 +180,22 @@ export const PersonalBests = ({ userId, accolades, onAccoladesUpdate, isEditable
                 <Pencil className="h-5 w-5 md:h-6 md:w-6" />
               </Button>
             )}
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold text-zinc-100">5K</h3>
-                <p className="text-zinc-400">{accolades?.pb_5k || "Not set"}</p>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-zinc-800/50 p-4 rounded-lg">
+                <h3 className="text-sm font-medium text-zinc-400 mb-1">5K</h3>
+                <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_5k)}</p>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-zinc-100">10K</h3>
-                <p className="text-zinc-400">{accolades?.pb_10k || "Not set"}</p>
+              <div className="bg-zinc-800/50 p-4 rounded-lg">
+                <h3 className="text-sm font-medium text-zinc-400 mb-1">10K</h3>
+                <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_10k)}</p>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-zinc-100">Half Marathon</h3>
-                <p className="text-zinc-400">{accolades?.pb_half_marathon || "Not set"}</p>
+              <div className="bg-zinc-800/50 p-4 rounded-lg">
+                <h3 className="text-sm font-medium text-zinc-400 mb-1">Half Marathon</h3>
+                <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_half_marathon)}</p>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-zinc-100">Marathon</h3>
-                <p className="text-zinc-400">{accolades?.pb_marathon || "Not set"}</p>
+              <div className="bg-zinc-800/50 p-4 rounded-lg">
+                <h3 className="text-sm font-medium text-zinc-400 mb-1">Marathon</h3>
+                <p className="text-xl font-semibold text-zinc-100">{renderTime(accolades?.pb_marathon)}</p>
               </div>
             </div>
           </div>
