@@ -22,9 +22,6 @@ const Register = () => {
     if (!emailRegex.test(email)) {
       return "Please enter a valid email address";
     }
-    if (email.length < 6) {
-      return "Email must be at least 6 characters long";
-    }
     return null;
   };
 
@@ -37,14 +34,22 @@ const Register = () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/`
+          redirectTo: `${window.location.origin}/onboarding`
         }
       });
       
       if (error) throw error;
+      
+      // If we have data but no error, the OAuth flow has started
+      if (data) {
+        toast({
+          title: "Redirecting to Google",
+          description: "Please complete the sign in process.",
+        });
+      }
     } catch (error: any) {
       const message = error.message || "An error occurred during Google sign in";
       setError(message);
@@ -76,9 +81,15 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/onboarding`,
+          data: {
+            email: email,
+          }
+        }
       });
 
       if (error) {
@@ -93,7 +104,13 @@ const Register = () => {
         throw error;
       }
 
-      setIsSuccess(true);
+      if (data.user) {
+        setIsSuccess(true);
+        toast({
+          title: "Success",
+          description: "Registration successful! Please check your email.",
+        });
+      }
     } catch (error: any) {
       const message = error.message || "An error occurred during registration";
       setError(message);
@@ -155,7 +172,7 @@ const Register = () => {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  setError(""); // Clear error when user types
+                  setError("");
                 }}
                 required
                 className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-400"
@@ -168,7 +185,7 @@ const Register = () => {
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  setError(""); // Clear error when user types
+                  setError("");
                 }}
                 required
                 className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-400"
