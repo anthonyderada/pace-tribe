@@ -30,14 +30,14 @@ export const MeetingScheduleOverlay = ({ schedule }: MeetingScheduleOverlayProps
       <div className="flex items-center gap-1">
         {days.map((day, index) => (
           <div key={index} className="relative">
-            <Circle className="h-5 w-5 text-white" />
+            <Circle className="h-5 w-5 text-white fill-white" />
             <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-black">
               {day}
             </span>
           </div>
         ))}
       </div>
-      <div className="text-black font-bold text-base">
+      <div className="text-white font-bold text-base">
         {time}
       </div>
     </div>
