@@ -8,8 +8,8 @@ const Index = () => {
   return (
     <div className="relative">
       <HeroSection />
-      <FeaturedLocation />
       <ClubTypeFilters />
+      <FeaturedLocation />
       <FeaturedClubs />
       <CallToAction />
     </div>
