@@ -72,7 +72,7 @@ export const FollowersSection = ({ userId }: FollowersSectionProps) => {
                   to={`/profile/${follow.profiles.id}`}
                   className="flex items-center gap-2 p-2 hover:bg-zinc-800/50 rounded-lg transition-colors"
                 >
-                  <div className="p-[2px] bg-white/30 rounded-full">
+                  <div className="p-[1px] bg-white/30 rounded-full">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={follow.profiles.avatar_url || undefined} />
                       <AvatarFallback className="bg-zinc-800">
@@ -100,7 +100,7 @@ export const FollowersSection = ({ userId }: FollowersSectionProps) => {
                   to={`/profile/${follow.profiles.id}`}
                   className="flex items-center gap-2 p-2 hover:bg-zinc-800/50 rounded-lg transition-colors"
                 >
-                  <div className="p-[2px] bg-white/30 rounded-full">
+                  <div className="p-[1px] bg-white/30 rounded-full">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={follow.profiles.avatar_url || undefined} />
                       <AvatarFallback className="bg-zinc-800">
