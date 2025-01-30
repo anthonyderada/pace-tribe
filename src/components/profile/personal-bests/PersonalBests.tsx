@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { parseIntervalToTime } from "./utils/timeUtils";
 import { EditableTimeInputs } from "./components/EditableTimeInputs";
 import { PRGrid } from "./components/PRGrid";
+import { PercentileLegend } from "./components/PercentileLegend";
 
 type Time = {
   hours: string;
@@ -143,6 +144,7 @@ export const PersonalBests = ({
               accolades={accolades}
               currentUserAccolades={!isEditable ? currentUserAccolades : undefined}
             />
+            <PercentileLegend />
           </div>
         )}
       </CardContent>
