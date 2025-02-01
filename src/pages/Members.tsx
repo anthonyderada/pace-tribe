@@ -100,7 +100,7 @@ const Members = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
+        <Card className="border border-zinc-800 bg-transparent rounded-2xl">
           <CardContent className="p-6">
             <div className="h-8 w-3/4 bg-zinc-800 rounded animate-pulse" />
           </CardContent>
@@ -111,9 +111,9 @@ const Members = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="border border-zinc-800 bg-zinc-900/90 rounded-2xl">
+      <Card className="border border-zinc-800 bg-transparent rounded-2xl">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-white">
             <Users className="h-5 w-5" />
             Community Members ({members?.length || 0})
           </CardTitle>
