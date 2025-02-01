@@ -39,7 +39,7 @@ export const ProfileContainer = ({
   const navigate = useNavigate();
 
   return (
-    <>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {fromClubId && (
         <Button
           variant="ghost"
@@ -51,13 +51,13 @@ export const ProfileContainer = ({
         </Button>
       )}
 
-      <div className="mb-8">
+      <div className="bg-black/50 rounded-2xl overflow-hidden mb-8">
         <ProfileHeader
           profile={profile}
           user={isOwnProfile ? user : null}
           onProfileUpdate={(updates) => isOwnProfile && onProfileUpdate(updates)}
         />
       </div>
-    </>
+    </div>
   );
 };
