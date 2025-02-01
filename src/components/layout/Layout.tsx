@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
 import { Navbar } from "./Navbar";
-import { MobileNav } from "./MobileNav";
 import VideoBackground from "./VideoBackground";
 
 export const Layout = () => {
@@ -9,10 +8,9 @@ export const Layout = () => {
       <VideoBackground />
       <div className="relative">
         <Navbar />
-        <main className="pb-16 md:pb-0">
+        <main>
           <Outlet />
         </main>
-        <MobileNav />
       </div>
     </div>
   );
