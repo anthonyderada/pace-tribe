@@ -51,7 +51,7 @@ export const ProfileContainer = ({
         </Button>
       )}
 
-      <div className="rounded-2xl overflow-hidden mb-8">
+      <div className="bg-black/30 backdrop-blur-sm rounded-2xl overflow-hidden mb-8">
         <ProfileHeader
           profile={profile}
           user={isOwnProfile ? user : null}
