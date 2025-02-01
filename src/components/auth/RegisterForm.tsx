@@ -26,47 +26,46 @@ export const RegisterForm = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (loading) {
-      console.log("Registration already in progress");
-      return;
-    }
 
-    // Validate email
-    if (!validateEmail(email)) {
-      toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate password
-    if (!validatePassword(password)) {
-      toast({
-        title: "Invalid Password",
-        description: "Password must be at least 6 characters long",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check if passwords match
-    if (password !== confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Passwords do not match",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setLoading(true);
+    // Prevent multiple submissions
+    if (loading) return;
 
     try {
-      console.log("Starting registration process...");
-      
+      // Reset any previous verification state
+      setVerificationSent(false);
+
+      // Validate email
+      if (!validateEmail(email)) {
+        toast({
+          title: "Invalid Email",
+          description: "Please enter a valid email address",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate password length
+      if (!validatePassword(password)) {
+        toast({
+          title: "Invalid Password",
+          description: "Password must be at least 6 characters long",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Check if passwords match
+      if (password !== confirmPassword) {
+        toast({
+          title: "Passwords Don't Match",
+          description: "Please ensure both passwords are identical",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setLoading(true);
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -78,29 +77,25 @@ export const RegisterForm = () => {
         }
       });
 
-      console.log("Registration response:", { data, error });
-
       if (error) {
-        console.error("Registration error:", error);
         throw error;
       }
 
-      if (data.user) {
-        console.log("User created successfully:", data.user);
-        if (!data.user.confirmed_at) {
-          setVerificationSent(true);
-          toast({
-            title: "Success",
-            description: "Please check your email to verify your account.",
-          });
-        }
+      if (data?.user) {
+        setVerificationSent(true);
+        toast({
+          title: "Success",
+          description: "Please check your email to verify your account.",
+        });
+      } else {
+        throw new Error("No user data returned");
       }
+
     } catch (error: any) {
-      console.error("Registration error caught:", error);
-      const message = error.message || "An error occurred during registration";
+      console.error("Registration error:", error);
       toast({
-        title: "Error",
-        description: message,
+        title: "Registration Failed",
+        description: error.message || "An error occurred during registration",
         variant: "destructive",
       });
     } finally {
