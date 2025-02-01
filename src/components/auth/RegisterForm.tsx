@@ -36,7 +36,7 @@ export const RegisterForm = () => {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/onboarding`,
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
             email: email,
           }
@@ -52,7 +52,7 @@ export const RegisterForm = () => {
           description: "Please check your email to verify your account.",
         });
       } else if (data.user && data.user.confirmed_at) {
-        navigate("/onboarding");
+        navigate("/");
       }
     } catch (error: any) {
       const message = error.message || "An error occurred during registration";
@@ -75,7 +75,7 @@ export const RegisterForm = () => {
         </p>
         <p className="text-gray-400 text-sm">
           Please check your email and click the link to verify your account.
-          Once verified, you'll be able to complete your profile setup.
+          Once verified, you'll be able to sign in and complete your profile setup.
         </p>
         <Button
           type="button"
