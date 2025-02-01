@@ -20,6 +20,11 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
+            {/* Auth routes without layout */}
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            
+            {/* Main app routes with layout */}
             <Route path="/" element={<Layout />}>
               <Route index element={<Index />} />
               <Route path="clubs" element={<Clubs />} />
@@ -27,8 +32,6 @@ function App() {
               <Route path="profile/:id" element={<Profile />} />
               <Route path="members" element={<Members />} />
               <Route path="events/:id" element={<EventDetail />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
               <Route path="onboarding" element={<Onboarding />} />
               <Route path="settings" element={<Profile />} /> {/* Temporarily using Profile component for settings */}
             </Route>
