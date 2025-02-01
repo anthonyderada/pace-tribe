@@ -33,7 +33,15 @@ const Login = () => {
           .eq("id", data.user.id)
           .single();
 
-        if (!profile?.username || !profile?.bio || !profile?.location) {
+        const metadata = data.user.user_metadata;
+        const isFirstLogin = metadata?.is_first_login === true;
+
+        if (isFirstLogin || !profile?.username || !profile?.bio || !profile?.location) {
+          // Update the metadata to remove the first login flag
+          await supabase.auth.updateUser({
+            data: { is_first_login: false }
+          });
+          
           navigate("/onboarding");
         } else {
           navigate("/");
