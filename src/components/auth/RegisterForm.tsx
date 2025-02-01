@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,12 +13,42 @@ export const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
-  const navigate = useNavigate();
   const { toast } = useToast();
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    // Supabase requires passwords to be at least 6 characters long
+    return password.length >= 6;
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate email
+    if (!validateEmail(email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate password
+    if (!validatePassword(password)) {
+      toast({
+        title: "Invalid Password",
+        description: "Password must be at least 6 characters long",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if passwords match
     if (password !== confirmPassword) {
       toast({
         title: "Error",
@@ -38,8 +67,7 @@ export const RegisterForm = () => {
         options: {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
-            email: email,
-            is_first_login: true, // Add this flag to track first login
+            is_first_login: true,
           }
         }
       });
