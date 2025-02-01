@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Users, LogOut, Home, User, UserGroup } from "lucide-react";
+import { Users, LogOut, Home, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -30,7 +30,7 @@ export const NavItems = () => {
       </Link>
       <Link to="/members">
         <Button variant="ghost" className="text-zinc-400 hover:text-white gap-1.5">
-          <UserGroup className="h-4 w-4" />
+          <Users className="h-4 w-4" />
           Members
         </Button>
       </Link>
