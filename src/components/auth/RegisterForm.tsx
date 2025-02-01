@@ -13,6 +13,7 @@ export const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -44,12 +45,13 @@ export const RegisterForm = () => {
 
       if (error) throw error;
 
-      if (data.user) {
-        setLoading(false);
+      if (data.user && !data.user.confirmed_at) {
+        setVerificationSent(true);
         toast({
           title: "Success",
-          description: "Registration successful! Please check your email.",
+          description: "Please check your email to verify your account.",
         });
+      } else if (data.user && data.user.confirmed_at) {
         navigate("/onboarding");
       }
     } catch (error: any) {
@@ -59,9 +61,33 @@ export const RegisterForm = () => {
         description: message,
         variant: "destructive",
       });
+    } finally {
       setLoading(false);
     }
   };
+
+  if (verificationSent) {
+    return (
+      <div className="text-center space-y-4">
+        <h3 className="text-xl font-semibold text-white">Verify Your Email</h3>
+        <p className="text-gray-300">
+          We've sent a verification link to <span className="font-medium">{email}</span>
+        </p>
+        <p className="text-gray-400 text-sm">
+          Please check your email and click the link to verify your account.
+          Once verified, you'll be able to complete your profile setup.
+        </p>
+        <Button
+          type="button"
+          variant="outline"
+          className="mt-4 w-full border-white/20 bg-white/10 text-white hover:bg-white/20"
+          onClick={() => setVerificationSent(false)}
+        >
+          Use a different email
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleRegister} className="space-y-6">
