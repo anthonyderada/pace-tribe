@@ -48,7 +48,7 @@ const Profile = () => {
   const isOwnProfile = user?.id === profileId;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white pb-12">
+    <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white py-12">
       <ProfileContainer
         profile={profile}
         user={user}
