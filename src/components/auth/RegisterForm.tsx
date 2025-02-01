@@ -21,13 +21,17 @@ export const RegisterForm = () => {
   };
 
   const validatePassword = (password: string) => {
-    // Supabase requires passwords to be at least 6 characters long
     return password.length >= 6;
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (loading) {
+      console.log("Registration already in progress");
+      return;
+    }
+
     // Validate email
     if (!validateEmail(email)) {
       toast({
@@ -61,6 +65,8 @@ export const RegisterForm = () => {
     setLoading(true);
 
     try {
+      console.log("Starting registration process...");
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -72,16 +78,25 @@ export const RegisterForm = () => {
         }
       });
 
-      if (error) throw error;
+      console.log("Registration response:", { data, error });
 
-      if (data.user && !data.user.confirmed_at) {
-        setVerificationSent(true);
-        toast({
-          title: "Success",
-          description: "Please check your email to verify your account.",
-        });
+      if (error) {
+        console.error("Registration error:", error);
+        throw error;
+      }
+
+      if (data.user) {
+        console.log("User created successfully:", data.user);
+        if (!data.user.confirmed_at) {
+          setVerificationSent(true);
+          toast({
+            title: "Success",
+            description: "Please check your email to verify your account.",
+          });
+        }
       }
     } catch (error: any) {
+      console.error("Registration error caught:", error);
       const message = error.message || "An error occurred during registration";
       toast({
         title: "Error",
@@ -126,6 +141,7 @@ export const RegisterForm = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
           className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+          disabled={loading}
         />
       </div>
       
@@ -137,6 +153,7 @@ export const RegisterForm = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
           className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+          disabled={loading}
         />
         <button
           type="button"
@@ -155,6 +172,7 @@ export const RegisterForm = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
           className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+          disabled={loading}
         />
         <button
           type="button"
