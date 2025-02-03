@@ -18,38 +18,40 @@ const ClubTypeFilters = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-      <div className="flex justify-center gap-6 md:gap-16">
-        <ClubFilterButton
-          onClick={() => handleTypeSelect('trails')}
-          isSelected={selectedType === 'trails'}
-          icon={<TrailsIcon />}
-          label="Trails"
-        />
-        <ClubFilterButton
-          onClick={() => handleTypeSelect('road')}
-          isSelected={selectedType === 'road'}
-          icon={<RoadIcon />}
-          label="Road"
-        />
-        <ClubFilterButton
-          onClick={() => handleTypeSelect('track')}
-          isSelected={selectedType === 'track'}
-          icon={<TrackIcon />}
-          label="Track"
-        />
-        <ClubFilterButton
-          onClick={() => handleTypeSelect('performance')}
-          isSelected={selectedType === 'performance'}
-          icon={<PerformanceIcon />}
-          label="Performance"
-        />
-        <ClubFilterButton
-          onClick={() => handleTypeSelect('social')}
-          isSelected={selectedType === 'social'}
-          icon={<SocialIcon />}
-          label="Social"
-        />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="overflow-x-auto scrollbar-hide">
+        <div className="flex justify-start md:justify-center gap-8 md:gap-16 min-w-max px-2">
+          <ClubFilterButton
+            onClick={() => handleTypeSelect('trails')}
+            isSelected={selectedType === 'trails'}
+            icon={<TrailsIcon />}
+            label="Trails"
+          />
+          <ClubFilterButton
+            onClick={() => handleTypeSelect('road')}
+            isSelected={selectedType === 'road'}
+            icon={<RoadIcon />}
+            label="Road"
+          />
+          <ClubFilterButton
+            onClick={() => handleTypeSelect('track')}
+            isSelected={selectedType === 'track'}
+            icon={<TrackIcon />}
+            label="Track"
+          />
+          <ClubFilterButton
+            onClick={() => handleTypeSelect('performance')}
+            isSelected={selectedType === 'performance'}
+            icon={<PerformanceIcon />}
+            label="Performance"
+          />
+          <ClubFilterButton
+            onClick={() => handleTypeSelect('social')}
+            isSelected={selectedType === 'social'}
+            icon={<SocialIcon />}
+            label="Social"
+          />
+        </div>
       </div>
     </div>
   );
