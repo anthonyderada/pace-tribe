@@ -19,7 +19,7 @@ const StickyFilterSection = () => {
     <div
       className={`${
         isSticky
-          ? "fixed top-0 left-0 right-0 z-50 bg-background/95 dark:bg-background/95 backdrop-blur-sm border-b border-zinc-800/50 transition-all duration-300 ease-in-out"
+          ? "fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-zinc-800/50 transition-all duration-300 ease-in-out"
           : ""
       }`}
     >
