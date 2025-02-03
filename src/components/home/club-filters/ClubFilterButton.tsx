@@ -11,14 +11,14 @@ const ClubFilterButton = ({ onClick, isSelected, icon, label }: ClubFilterButton
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center group transition-colors duration-200 ${
-        isSelected ? 'text-white' : 'text-zinc-600 hover:text-zinc-400'
+      className={`flex flex-col items-center group ${
+        isSelected ? 'text-white' : 'text-zinc-600'
       }`}
     >
-      <div className="mb-2">{icon}</div>
-      <span className="text-sm font-light tracking-wider whitespace-nowrap">{label}</span>
+      {icon}
+      <span className="text-sm font-light tracking-wider">{label}</span>
       {isSelected && (
-        <div className="h-0.5 w-full bg-white mt-2 transition-all duration-200" />
+        <div className="h-0.5 w-full bg-white mt-2" />
       )}
     </button>
   );

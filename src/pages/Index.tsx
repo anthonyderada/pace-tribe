@@ -1,12 +1,14 @@
 import HeroSection from "@/components/home/HeroSection";
 import FeaturedClubs from "@/components/home/FeaturedClubs";
-import StickyFilterBar from "@/components/home/StickyFilterBar";
+import FeaturedLocation from "@/components/home/FeaturedLocation";
+import ClubTypeFilters from "@/components/home/ClubTypeFilters";
 
 const Index = () => {
   return (
     <div className="relative">
       <HeroSection />
-      <StickyFilterBar />
+      <FeaturedLocation />
+      <ClubTypeFilters />
       <FeaturedClubs />
     </div>
   );
