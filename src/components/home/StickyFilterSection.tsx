@@ -8,7 +8,7 @@ const StickyFilterSection = () => {
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
-      setIsSticky(offset > 400); // Adjust this value based on when you want the sticky behavior to start
+      setIsSticky(offset > 100); // Reduced threshold for earlier sticky behavior
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -19,7 +19,7 @@ const StickyFilterSection = () => {
     <div
       className={`${
         isSticky
-          ? "fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm shadow-md transition-all duration-300 ease-in-out"
+          ? "fixed top-0 left-0 right-0 z-50 bg-background/95 dark:bg-background/95 backdrop-blur-sm border-b border-zinc-800/50 transition-all duration-300 ease-in-out"
           : ""
       }`}
     >

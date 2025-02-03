@@ -6,7 +6,7 @@ const Index = () => {
   return (
     <div className="relative">
       <HeroSection />
-      <div className="min-h-[100px]"> {/* Spacer to prevent content jump when sticky activates */}
+      <div className="min-h-[80px]"> {/* Reduced spacer height */}
         <StickyFilterSection />
       </div>
       <FeaturedClubs />
