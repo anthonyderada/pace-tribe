@@ -1,14 +1,14 @@
 import HeroSection from "@/components/home/HeroSection";
 import FeaturedClubs from "@/components/home/FeaturedClubs";
-import FeaturedLocation from "@/components/home/FeaturedLocation";
-import ClubTypeFilters from "@/components/home/ClubTypeFilters";
+import StickyFilterSection from "@/components/home/StickyFilterSection";
 
 const Index = () => {
   return (
     <div className="relative">
       <HeroSection />
-      <FeaturedLocation />
-      <ClubTypeFilters />
+      <div className="min-h-[100px]"> {/* Spacer to prevent content jump when sticky activates */}
+        <StickyFilterSection />
+      </div>
       <FeaturedClubs />
     </div>
   );

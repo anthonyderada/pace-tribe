@@ -18,8 +18,8 @@ const ClubTypeFilters = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-      <div className="flex justify-center gap-6 md:gap-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-center gap-6 md:gap-16 py-2">
         <ClubFilterButton
           onClick={() => handleTypeSelect('trails')}
           isSelected={selectedType === 'trails'}
